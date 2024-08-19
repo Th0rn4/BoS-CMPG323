@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-connectDB();
+connectDB()
 
 // Routes
 app.use("/api/users", userRoutes);
