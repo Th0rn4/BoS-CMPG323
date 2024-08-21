@@ -1,7 +1,8 @@
-const express = require("express");
-const cors = require("cors");
-const connectDB = require("./Config/db");
-const userRoutes = require("./Routes/userRoutes");
+const express = require('express');
+const cors = require('cors');
+const connectDB = require('./Config/db');
+const userRoutes = require('./Routes/userRoutes');
+const assignmentRoutes = require('./Routes/AssignmentRoutes');
 
 const app = express();
 
@@ -13,8 +14,9 @@ app.use(express.json());
 connectDB();
 
 // Routes
-app.use("/api/users", userRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/assignments', assignmentRoutes);
 
 app.listen(3001, () => {
-  console.log("Server is running on port 3001");
+  console.log('Server is running on port 3001');
 });
