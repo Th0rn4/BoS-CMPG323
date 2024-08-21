@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./Config/db");
 const userRoutes = require("./Routes/userRoutes");
+const subRoutes = require("./Routes/submissionRoutes");
 
 const app = express();
 
@@ -14,6 +15,7 @@ connectDB();
 
 // Routes
 app.use("/api/users", userRoutes);
+app.use("/api/submissions", subRoutes);
 
 app.listen(3001, () => {
   console.log("Server is running on port 3001");
