@@ -1,5 +1,5 @@
 // Manages user-related actions (e.g., registration, login, update, deletion)
-const { createUser, getUsers } = require("../Services/userService");
+const { createUser, getUsers, deleteUser } = require("../Services/userService");
 
 exports.createUser = async (req, res) => {
   try {
@@ -16,5 +16,17 @@ exports.getUsers = async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: "Error fetching users", error });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const deleteUser = await this.deleteUser(req.parms.id);
+    if (!deleteUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ message: "User deleted" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting user", error });
   }
 };

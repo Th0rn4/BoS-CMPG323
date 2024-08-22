@@ -10,4 +10,8 @@ const getUsers = async () => {
   return await User.find();
 };
 
-module.exports = { createUser, getUsers };
+const deleteUser = async (userID) => {
+  return await User.findByIdAndDelete(userID);
+};
+
+module.exports = { createUser, getUsers, deleteUser };
