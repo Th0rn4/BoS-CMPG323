@@ -4,6 +4,7 @@ const { createUser, getUsers, deleteUser } = require("../Services/userService");
 const mongoose = require("mongoose");
 const { ObjectId } = require("mongoose").Types;
 
+//C
 exports.createUser = async (req, res) => {
   try {
     const user = await createUser(req.body);
@@ -13,6 +14,7 @@ exports.createUser = async (req, res) => {
   }
 };
 
+//R
 exports.getUsers = async (req, res) => {
   try {
     const users = await getUsers();
@@ -22,6 +24,7 @@ exports.getUsers = async (req, res) => {
   }
 };
 
+//U
 exports.updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -43,6 +46,7 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+//D
 exports.deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
