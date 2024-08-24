@@ -1,4 +1,3 @@
-// Contains business logic for user operations
 const User = require("../Models/User");
 
 const createUser = async (userData) => {
@@ -10,8 +9,12 @@ const getUsers = async () => {
   return await User.find();
 };
 
-const deleteUser = async (userID) => {
-  return await User.findByIdAndDelete(userID);
+const deleteUser = async (userId) => {
+  return await User.findByIdAndDelete(userId);
 };
 
-module.exports = { createUser, getUsers, deleteUser };
+module.exports = {
+  createUser,
+  getUsers,
+  deleteUser,
+};

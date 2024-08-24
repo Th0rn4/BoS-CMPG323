@@ -1,5 +1,7 @@
 // Manages user-related actions (e.g., registration, login, update, deletion)
 const { createUser, getUsers, deleteUser } = require("../Services/userService");
+const mongoose = require("mongoose");
+const { ObjectId } = require("mongoose").Types;
 
 exports.createUser = async (req, res) => {
   try {
@@ -21,12 +23,19 @@ exports.getUsers = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   try {
-    const deleteUser = await this.deleteUser(req.parms.id);
-    if (!deleteUser) {
+    const userId = req.params.id;
+    if (!ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    const deletedUser = await deleteUser(new ObjectId(userId));
+    if (!deletedUser) {
       return res.status(404).json({ message: "User not found" });
     }
+
     res.status(200).json({ message: "User deleted" });
   } catch (error) {
+    console.error("Error deleting user:", error);
     res.status(500).json({ message: "Error deleting user", error });
   }
 };
