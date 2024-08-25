@@ -19,4 +19,13 @@ const updateSubmission = async (submissionId, updateData) => {
   });
 };
 
-module.exports = { createSubmission, getSubmissions, updateSubmission };
+const deleteSubmission = async (submissionId) => {
+  return await Submission.findByIdAndDelete(submissionId);
+};
+
+module.exports = {
+  createSubmission,
+  getSubmissions,
+  updateSubmission,
+  deleteSubmission,
+};

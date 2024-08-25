@@ -3,6 +3,7 @@ const {
   createSubmission,
   getSubmissions,
   updateSubmission,
+  deleteSubmission,
 } = require("../Services/submissionServices");
 
 exports.createSubmission = async (req, res) => {
@@ -33,8 +34,23 @@ exports.updateSubmission = async (req, res) => {
       return res.status(404).json({ message: "Submission not found" });
     }
 
-    res.status(200).json(updatedSubmission);
+    res.status(200).json({ message: "Submission updated successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error updating submission", error });
+  }
+};
+
+exports.deleteSubmission = async (req, res) => {
+  try {
+    const submissionId = req.params.id;
+    const deletedSubmission = await deleteSubmission(submissionId);
+
+    if (!deletedSubmission) {
+      return res.status(404).json({ message: "Submission not found" });
+    }
+
+    res.status(200).json({ message: "Submission deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting submission", error });
   }
 };
