@@ -5,5 +5,6 @@ const SubmissionController = require("../Controllers/SubmissionController");
 
 router.post("/create", SubmissionController.createSubmission);
 router.get("/", SubmissionController.getSubmissions);
+router.put("/:id", SubmissionController.updateSubmission);
 
 module.exports = router;
