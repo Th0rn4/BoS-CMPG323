@@ -12,4 +12,20 @@ const getSubmissions = async () => {
   return await Submission.find();
 };
 
-module.exports = { createSubmission, getSubmissions };
+const updateSubmission = async (submissionId, updateData) => {
+  return await Submission.findByIdAndUpdate(submissionId, updateData, {
+    new: true,
+    runValidators: true,
+  });
+};
+
+const deleteSubmission = async (submissionId) => {
+  return await Submission.findByIdAndDelete(submissionId);
+};
+
+module.exports = {
+  createSubmission,
+  getSubmissions,
+  updateSubmission,
+  deleteSubmission,
+};
