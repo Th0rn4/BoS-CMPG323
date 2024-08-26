@@ -47,6 +47,7 @@ exports.getUserById = async (req, res) => {
 };
 
 //U
+
 exports.updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -55,15 +56,28 @@ exports.updateUser = async (req, res) => {
     if (!ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid user ID" });
     }
-    const updateUserData = await User.findByIdAndUpdate(userId, updateData, {
-      new: true,
-    });
 
-    if (!updateUserData) {
+    const user = await User.findById(userId);
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json(updateUserData);
+
+    for (const key in updateData) {
+      if (key === "password") {
+        await user.updatePassword(updateData[key]);
+      } else {
+        user[key] = updateData[key];
+      }
+    }
+    await user.save();
+
+    // remove from viewing
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    res.status(200).json(userResponse);
   } catch (error) {
+    console.error("Error in updateUser:", error);
     res.status(500).json({ message: "Error updating user", error });
   }
 };
