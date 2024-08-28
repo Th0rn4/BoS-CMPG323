@@ -21,7 +21,7 @@ const SubmissionSchema = new Schema({
   status: {
     type: String,
     enum: ["Not Started", "In progress", "Submitted", "Graded"],
-    default: "In progress",
+    default: "Not Started",
     required: true,
   },
   feedback: [
