@@ -8,6 +8,7 @@ const { ObjectId } = require("mongoose").Types;
 exports.createUser = async (req, res) => {
   try {
     const user = await createUser(req.body);
+    await user.save();
     res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ message: "Error creating user", error });
@@ -24,7 +25,29 @@ exports.getUsers = async (req, res) => {
   }
 };
 
+exports.getUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error in getUserById:", error);
+    res
+      .status(500)
+      .json({ message: "Error fetching user", error: error.message });
+  }
+};
+
 //U
+
 exports.updateUser = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -33,15 +56,28 @@ exports.updateUser = async (req, res) => {
     if (!ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid user ID" });
     }
-    const updateUserData = await User.findByIdAndUpdate(userId, updateData, {
-      new: true,
-    });
 
-    if (!updateUserData) {
+    const user = await User.findById(userId);
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json(updateUserData);
+
+    for (const key in updateData) {
+      if (key === "password") {
+        await user.updatePassword(updateData[key]);
+      } else {
+        user[key] = updateData[key];
+      }
+    }
+    await user.save();
+
+    // remove from viewing
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    res.status(200).json(userResponse);
   } catch (error) {
+    console.error("Error in updateUser:", error);
     res.status(500).json({ message: "Error updating user", error });
   }
 };
