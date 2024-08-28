@@ -21,7 +21,7 @@ const SubmissionSchema = new Schema({
   status: {
     type: String,
     enum: ["Not Started", "In progress", "Submitted", "Graded"],
-    default: "In progress",
+    default: "Not Started",
     required: true,
   },
   feedback: [
@@ -40,23 +40,23 @@ const SubmissionSchema = new Schema({
     {
       video_url: {
         type: String,
-        required: true,
+        default: null,
       },
       upload_date: {
         type: Date,
-        required: true,
+        default: null,
       },
       size: {
         type: Number,
-        required: true,
+        default: null,
       },
       duration: {
         type: Number,
-        required: true,
+        default: null,
       },
       format: {
         type: String,
-        required: true,
+        default: null,
       },
     },
   ],
