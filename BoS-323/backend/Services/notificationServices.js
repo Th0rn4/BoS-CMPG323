@@ -1,13 +1,27 @@
 // Contains business logic for notification operations
-const Notification = require("../Models/Notification");
+const { StudentNotification, LecturerNotification } = require("../Models/Notification");
 
-const createNotification = async (NotificationData) => {
-  const Notification = new Notification(userData);
-  return await Notification.save();
+const createStudentNotification = async (notificationData) => {
+  const notification = new StudentNotification(notificationData);
+  return await notification.save();
 };
 
-const getNotification = async () => {
-  return await Notification.find();
+const getStudentNotifications = async () => {
+  return await StudentNotification.find();
 };
 
-module.exports = { createNotification, getNotification };
+const createLecturerNotification = async (notificationData) => {
+  const notification = new LecturerNotification(notificationData);
+  return await notification.save();
+};
+
+const getLecturerNotifications = async () => {
+  return await LecturerNotification.find();
+};
+
+module.exports = { 
+  createStudentNotification, 
+  getStudentNotifications, 
+  createLecturerNotification, 
+  getLecturerNotifications 
+};
