@@ -4,6 +4,7 @@ const {
   getSubmissions,
   updateSubmission,
   deleteSubmission,
+  uploadVideoToCloudinary,
 } = require("../Services/submissionServices");
 
 exports.createSubmission = async (req, res) => {
@@ -52,5 +53,30 @@ exports.deleteSubmission = async (req, res) => {
     res.status(200).json({ message: "Submission deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting submission", error });
+  }
+};
+
+exports.uploadVideoToCloudinary = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const submissionId = req.params.id;
+    const updatedSubmission = await uploadVideoToCloudinary(
+      req.file,
+      submissionId
+    );
+
+    res
+      .status(200)
+      .json({ message: "Video uploaded successfully", updatedSubmission });
+  } catch (error) {
+    console.error("Error in uploadVideoToCloudinary controller:", error);
+    res.status(500).json({
+      message: "Error uploading video",
+      error: error.message || "Unknown error occurred",
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
   }
 };

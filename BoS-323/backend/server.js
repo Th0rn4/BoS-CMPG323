@@ -4,6 +4,8 @@ const connectDB = require("./Config/db");
 const userRoutes = require("./Routes/userRoutes");
 const subRoutes = require("./Routes/submissionRoutes");
 const assignmentRoutes = require("./Routes/AssignmentRoutes");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const app = express();
 
