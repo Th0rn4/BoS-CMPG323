@@ -5,6 +5,8 @@ const userRoutes = require("./Routes/userRoutes");
 const subRoutes = require("./Routes/submissionRoutes");
 const assignmentRoutes = require("./Routes/AssignmentRoutes");
 const notificationRoutes = require("./Routes/NotificationRoutes");
+const dotenv = require("dotenv");
+dotenv.config();
 
 app = express();
 
