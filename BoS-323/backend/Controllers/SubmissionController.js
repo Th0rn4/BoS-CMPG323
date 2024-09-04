@@ -1,7 +1,10 @@
 // Manages submission-related actions (e.g., submit, update, grade)
+const Submission = require("../Models/Submission");
+const mongoose = require("mongoose");
 const {
   createSubmission,
   getSubmissions,
+  getSubmissionById,
   updateSubmission,
   deleteSubmission,
   uploadVideoToCloudinary,
@@ -22,6 +25,29 @@ exports.getSubmissions = async (req, res) => {
     res.status(200).json(submissions);
   } catch (error) {
     res.status(500).json({ message: "Error fetching submissions", error });
+  }
+};
+
+exports.getOneSubmission = async (req, res) => {
+  try {
+    const submissionId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(submissionId)) {
+      return res.status(400).json({ message: "Invalid submission ID" });
+    }
+
+    const submission = await getSubmissionById(submissionId);
+
+    if (!submission) {
+      return res.status(404).json({ message: "Submission not found" });
+    }
+
+    res.status(200).json(submission);
+  } catch (error) {
+    console.error("Error in getOneSubmission:", error); // Log the error
+    res
+      .status(500)
+      .json({ message: "Error fetching submissions", error: error.message });
   }
 };
 
