@@ -13,6 +13,11 @@ const getSubmissions = async () => {
   return await Submission.find();
 };
 
+// Function to retrieve a single submission
+const getSubmissionById = async (submissionId) => {
+  return await Submission.findById(submissionId);
+};
+
 //Function to update a submission based on the id
 const updateSubmission = async (submissionId, updateData) => {
   return await Submission.findByIdAndUpdate(submissionId, updateData, {
@@ -71,6 +76,7 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
 module.exports = {
   createSubmission,
   getSubmissions,
+  getSubmissionById,
   updateSubmission,
   deleteSubmission,
   uploadVideoToCloudinary,
