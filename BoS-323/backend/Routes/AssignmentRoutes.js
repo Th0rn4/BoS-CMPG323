@@ -4,7 +4,7 @@ const router = express.Router();
 const AssignmentController = require('../Controllers/AssignmentController');
 
 router.post('/create', AssignmentController.createAssignment);
-router.get('/', AssignmentController.getAssignment);
+router.get('/', AssignmentController.getAssignments);
 router.delete('/:id', AssignmentController.deleteAssignment);
 
 module.exports = router;
