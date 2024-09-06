@@ -10,4 +10,12 @@ const getAssignments = async () => {
   return await Assignment.find();
 };
 
-module.exports = { createAssignment, getAssignments };
+const updateAssignments = async (assignmentId, assignmentData) => {
+  return await Assignment.findByIdAndUpdate(assignmentId, assignmentData);
+};
+
+module.exports = {
+  reateAssignment,
+  getAssignments,
+  updateAssignments,
+};

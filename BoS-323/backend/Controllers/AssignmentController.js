@@ -23,3 +23,15 @@ exports.getAssignment = async (req, res) => {
     res.status(500).json({ message: 'Error getting assignment', error });
   }
 };
+
+// Update a assignment
+exports.updateAssignment = async (req, res) => {
+  try {
+    const updatedAssignment = await updateAssignment(req.params.id, req.body);
+    if (!updatedAssignment)
+      return res.status(404).json({ message: 'Assignment not found' });
+    res.json(updatedAssignment);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating assignment', error });
+  }
+};

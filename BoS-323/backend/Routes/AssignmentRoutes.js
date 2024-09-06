@@ -3,7 +3,8 @@ const express = require('express');
 const router = express.Router();
 const AssignmentController = require('../Controllers/AssignmentController');
 
-router.post("/create", AssignmentController.createAssignment);
-router.get("/", AssignmentController.getAssignment);
+router.post('/create', AssignmentController.createAssignment);
+router.get('/', AssignmentController.getAssignment);
+router.put('/update/:id', AssignmentController.updateAssignment);
 
 module.exports = router;
