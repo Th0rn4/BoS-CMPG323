@@ -1,4 +1,5 @@
 // Contains business logic for assignment operations
+const mongoose = require('mongoose');
 const Assignment = require('../Models/Assignment');
 const mongoose = require('mongoose');
 
@@ -19,8 +20,18 @@ const updateAssignment = async (id, updateData) => {
   );
 };
 
+const getAssignment = async (id) => {
+  return await Assignment.findById(new mongoose.Types.ObjectId(id));
+};
+
+const deleteAssignment = async (id) => {
+  return await Assignment.findByIdAndDelete(new mongoose.Types.ObjectId(id));
+};
+
 module.exports = {
   createAssignment,
   getAssignments,
   updateAssignment,
+  getAssignment,
+  deleteAssignment,
 };
