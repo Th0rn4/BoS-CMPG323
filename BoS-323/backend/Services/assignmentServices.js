@@ -1,7 +1,6 @@
 // Contains business logic for assignment operations
 const mongoose = require('mongoose');
 const Assignment = require('../Models/Assignment');
-const mongoose = require('mongoose');
 
 const createAssignment = async (assignmentData) => {
   const assignment = new Assignment(assignmentData);
