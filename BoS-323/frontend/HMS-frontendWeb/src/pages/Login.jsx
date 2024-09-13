@@ -1,41 +1,44 @@
-import React, { useState } from "react";
-import { loginUser } from "../Services/api";
+import React from "react";
+import "../pages/Login.css";
+import bluePanelImage from "../assets/blue-panel.png"; // Import image directly
+import googleImage from "../assets/Google-G.png"; // Import Google icon directly
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const result = await loginUser(email, password);
-      console.log("Login successful:", result);
-      // Handle successful login (e.g., store token, redirect)
-    } catch (error) {
-      console.error("Login failed:", error);
-      // Handle login failure (e.g., show error message)
-    }
-  };
-
+const LoginPage = () => {
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        required
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        required
-      />
-      <button type="submit">Login</button>
-    </form>
+    <div className="login-container">
+      <div className="left-panel">
+        <img
+          src={bluePanelImage} // Use imported image
+          alt="Blue Panel"
+          className="sloth-image"
+        />
+      </div>
+
+      <div className="right-panel">
+        <div className="input-field">
+          <label className="input-label">Email</label>
+          <input type="text" className="input" />
+        </div>
+        <div className="input-field">
+          <label className="input-label">Password</label>
+          <input type="password" className="input" />
+        </div>
+        <div className="forgot-password">
+          <a href="#">Forgot Password?</a>
+        </div>
+        <button className="login-button">Log in</button>
+        <div className="continue-with">
+          <div className="line"></div>
+          <span>Or Continue With</span>
+          <div className="line"></div>
+        </div>
+        <div className="google-login">
+          <img src={googleImage} alt="Google" />{" "}
+          {/* Use imported Google icon */}
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default Login;
+export default LoginPage;

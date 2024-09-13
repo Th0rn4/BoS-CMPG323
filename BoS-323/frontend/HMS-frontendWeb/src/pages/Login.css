@@ -1,0 +1,127 @@
+/* Body Styling */
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  display: flex;
+  justify-content: center; /* Center the container */
+  align-items: center; /* Center vertically */
+  height: 100vh; /* Full height of the viewport */
+  background-color: #f0f7f4; /* Optional: Background color for the body */
+}
+
+/* Container and Panels */
+.login-container {
+  display: flex;
+  justify-content: center; /* Center the panels horizontally */
+  align-items: center; /* Center the panels vertically */
+  width: 90%; /* Adjust the width */
+  max-width: 1200px;
+  background-color: #fff;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+/* Left Panel */
+.left-panel {
+  width: 50%; /* Half the width */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Sloth Image */
+.sloth-image {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Right Panel */
+.right-panel {
+  width: 50%; /* Half the width */
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+/* Input Fields */
+.input-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.input-label {
+  font-size: 18px;
+  color: #636363;
+  margin-bottom: 8px;
+}
+
+/* Input Styling */
+.input {
+  border: 2px solid black; /* Black outline */
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #f0f7f4; /* Same color as background */
+  outline: none;
+  color: #000; /* Black text inside the input */
+}
+
+.forgot-password {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.forgot-password a {
+  text-decoration: none;
+  font-size: 14px;
+  color: #70abaf;
+}
+
+/* Button Styling */
+.login-button {
+  background-color: #705d56;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 18px;
+  color: #fff;
+  cursor: pointer;
+  width: 100%; /* Full width */
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Continue With Section */
+.continue-with {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.continue-with .line {
+  width: 30%;
+  height: 1px;
+  background: #636363;
+}
+
+.continue-with span {
+  margin: 0 10px;
+  font-size: 14px;
+  color: #636363;
+}
+
+.google-login {
+  display: flex;
+  justify-content: center;
+}
+
+.google-login img {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
