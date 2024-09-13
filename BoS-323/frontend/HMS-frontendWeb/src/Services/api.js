@@ -1,24 +1,17 @@
-const API_BASE_URL = "http://localhost:3001/api";
+import axios from "axios";
+
+export const loginWithGoogle = () => {
+  window.open("http://localhost:3001/api/users/google", "_self");
+};
 
 export const loginUser = async (email, password) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/users/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
+    const response = await axios.post("http://localhost:3001/api/users/login", {
+      email,
+      password,
     });
-
-    if (!response.ok) {
-      throw new Error("Login failed");
-    }
-
-    return await response.json();
+    return response.data;
   } catch (error) {
-    console.error("Error during login:", error);
-    throw error;
+    throw new Error(error.response?.data?.message || "Login failed");
   }
 };
-
-// add more API functions here for other endpoints

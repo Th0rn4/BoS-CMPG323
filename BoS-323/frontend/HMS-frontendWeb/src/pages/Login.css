@@ -125,3 +125,14 @@ body {
   height: 40px;
   cursor: pointer;
 }
+/* Add this to Login.css */
+/* Add this to Login.css */
+.message {
+  font-size: 16px;
+  color: green; /* Green for success messages */
+  margin-top: 10px;
+}
+
+.message.error {
+  color: red; /* Red for error messages */
+}

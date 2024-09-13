@@ -16,11 +16,13 @@ router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
+
 router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
-    res.redirect("http://localhost:3000/dashboard");
+    // After successful login, redirect to the dashboard
+    res.redirect("http://localhost:5174/dashboard"); // frontend URL
   }
 );
 
