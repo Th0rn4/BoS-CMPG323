@@ -6,6 +6,8 @@ const subRoutes = require("./Routes/submissionRoutes");
 const assignmentRoutes = require("./Routes/AssignmentRoutes");
 const notificationRoutes = require("./Routes/NotificationRoutes");
 const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
+
 dotenv.config();
 
 app = express();
@@ -18,6 +20,7 @@ app.use(express.json());
 connectDB();
 
 // Routes
+app.use(cookieParser());
 app.use("/api/users", userRoutes);
 app.use("/api/submissions", subRoutes);
 app.use("/api/assignments", assignmentRoutes);

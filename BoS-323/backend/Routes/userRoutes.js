@@ -1,29 +1,33 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
-const UserController = require("../Controllers/UserController");
+const {
+  register,
+  login,
+  getMe,
+  updateDetails,
+  updatePassword,
+  getAllUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+} = require("../Controllers/UserController");
+const { protect, authorize } = require("../Middleware/authMiddleware");
 
-// CRUD
-router.post("/create", UserController.createUser);
-router.get("/", UserController.getUsers);
-router.get("/:id", UserController.getUserById);
-router.put("/update/:id", UserController.updateUser);
-router.delete("/delete/:id", UserController.deleteUser);
-router.post("/login", UserController.loginUser);
+// Public routes
+router.post("/register", register);
+router.post("/login", login);
 
-// OAuth Routes
-router.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
+// Protected routes
+router.get("/me", protect, getMe);
+router.put("/updatedetails", protect, updateDetails);
+router.put("/updatepassword", protect, updatePassword);
 
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  (req, res) => {
-    // After successful login, redirect to the dashboard
-    res.redirect("http://localhost:5174/dashboard"); // frontend URL
-  }
-);
+// Admin only routes
+router.use(protect);
+router.use(authorize("admin"));
+
+router.route("/").get(getAllUsers);
+
+router.route("/:id").get(getUser).put(updateUser).delete(deleteUser);
 
 module.exports = router;

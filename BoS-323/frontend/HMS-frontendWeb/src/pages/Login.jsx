@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import "../pages/Login.css";
 import bluePanelImage from "../assets/blue-panel.png";
-import googleImage from "../assets/Google-G.png";
-import { loginUser } from "../Services/api";
+import { loginUser } from "../Services/apiUsers"; // Removed loginWithGoogle
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +12,7 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const data = await loginUser(email, password);
-      setMessage(`Login successful! Welcome, ${data.user.name.firstName}`); // Customize this message based on response
+      setMessage(`Login successful! Welcome, ${data.user.name.firstName}`);
     } catch (error) {
       setMessage(`Login failed: ${error.message}`);
     }
@@ -24,7 +23,6 @@ const LoginPage = () => {
       <div className="left-panel">
         <img src={bluePanelImage} alt="Blue Panel" className="sloth-image" />
       </div>
-
       <div className="right-panel">
         <form onSubmit={handleLogin}>
           <div className="input-field">
@@ -51,19 +49,13 @@ const LoginPage = () => {
           <button type="submit" className="login-button">
             Log in
           </button>
-          <p className="message">{message}</p> {/* Display the message */}
-          <div className="continue-with">
-            <div className="line"></div>
-            <span>Or Continue With</span>
-            <div className="line"></div>
-          </div>
-          <div className="google-login">
-            <img
-              src={googleImage}
-              alt="Google"
-              onClick={() => loginWithGoogle()}
-            />
-          </div>
+          <p
+            className={`message ${
+              message.startsWith("Login failed") ? "error" : ""
+            }`}
+          >
+            {message}
+          </p>
         </form>
       </div>
     </div>
