@@ -10,6 +10,7 @@ const {
   getUser,
   updateUser,
   deleteUser,
+  logout,
 } = require("../Controllers/UserController");
 const { protect, authorize } = require("../Middleware/authMiddleware");
 
@@ -18,16 +19,15 @@ router.post("/register", register);
 router.post("/login", login);
 
 // Protected routes
+router.get("/logout", protect, logout); // Protect the logout route
 router.get("/me", protect, getMe);
 router.put("/updatedetails", protect, updateDetails);
 router.put("/updatepassword", protect, updatePassword);
 
-// Admin only routes
+// Admin routes (restricted to admin users)
 router.use(protect);
 router.use(authorize("admin"));
-
 router.route("/").get(getAllUsers);
-
 router.route("/:id").get(getUser).put(updateUser).delete(deleteUser);
 
 module.exports = router;

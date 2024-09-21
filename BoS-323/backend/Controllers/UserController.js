@@ -1,7 +1,7 @@
 const User = require("../Models/User");
 const jwt = require("jsonwebtoken");
 
-const sendTokenResponse = (user, statusCode, res) => {
+const sendTokenResponse = (user, statusCode, res, message) => {
   const token = user.getSignedJwtToken();
 
   const options = {
@@ -15,9 +15,19 @@ const sendTokenResponse = (user, statusCode, res) => {
   res
     .status(statusCode)
     .cookie("token", token, options)
-    .json({ success: true, token });
+    .json({
+      success: true,
+      message: message || "Success",
+      token,
+      user: {
+        id: user._id,
+        name: `${user.name.firstName} ${user.name.lastName}`,
+        role: user.role,
+      },
+    });
 };
 
+// Register a user
 exports.register = async (req, res) => {
   try {
     const { firstName, lastName, email, password, role } = req.body;
@@ -35,17 +45,16 @@ exports.register = async (req, res) => {
   }
 };
 
+// Login a user
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "Please provide an email and password",
-        });
+      return res.status(400).json({
+        success: false,
+        error: "Please provide an email and password",
+      });
     }
 
     const user = await User.findOne({ email }).select("+password");
@@ -56,12 +65,13 @@ exports.login = async (req, res) => {
         .json({ success: false, error: "Invalid credentials" });
     }
 
-    sendTokenResponse(user, 200, res);
+    // Generate token and respond with user details
+    sendTokenResponse(user, 200, res, "Logged in successfully");
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-
+// Get logged-in user details
 exports.getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -71,6 +81,7 @@ exports.getMe = async (req, res) => {
   }
 };
 
+// Update user details
 exports.updateDetails = async (req, res) => {
   try {
     const fieldsToUpdate = {
@@ -90,6 +101,7 @@ exports.updateDetails = async (req, res) => {
   }
 };
 
+// Update user password
 exports.updatePassword = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("+password");
@@ -109,6 +121,27 @@ exports.updatePassword = async (req, res) => {
   }
 };
 
+// Log out user and clear the token cookie
+exports.logout = (req, res) => {
+  if (!req.user) {
+    return res
+      .status(400)
+      .json({ success: false, message: "No user is logged in" });
+  }
+
+  res.cookie("token", "", {
+    expires: new Date(Date.now()), // Expire the cookie immediately
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  });
+
+  res.status(200).json({
+    success: true,
+    message: `${req.user.name.firstName} ${req.user.name.lastName} has logged out successfully`,
+  });
+};
+
+// Admin: Get all users
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -118,6 +151,7 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
+// Admin: Get a single user by ID
 exports.getUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -130,6 +164,7 @@ exports.getUser = async (req, res) => {
   }
 };
 
+// Admin: Update a user by ID
 exports.updateUser = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
@@ -145,6 +180,7 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+// Admin: Delete a user by ID
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
