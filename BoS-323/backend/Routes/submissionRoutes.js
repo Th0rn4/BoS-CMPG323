@@ -6,6 +6,8 @@ const uploadMulter = require("../Config/multer");
 
 router.post("/create", SubmissionController.createSubmission);
 router.get("/", SubmissionController.getSubmissions);
+router.get("/usersub/:studentid", SubmissionController.getUserSubmissions);
+router.get("feedback/:id", SubmissionController.getSubmissionFeedback);
 router.get("/:id/single", SubmissionController.getOneSubmission);
 router.put("/:id", SubmissionController.updateSubmission);
 router.delete("/:id", SubmissionController.deleteSubmission);

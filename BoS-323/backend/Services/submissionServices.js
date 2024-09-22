@@ -13,6 +13,18 @@ const getSubmissions = async () => {
   return await Submission.find();
 };
 
+//Function to retrieve all submissions for a user
+const getSubmissionByUserId = async (userId) => {
+  {
+    return await Submission.find({ student_id: userId });
+  }
+};
+
+//Function to retrieve only the feedback for a submission
+const getFeedbackForSubmission = async (submissionId) => {
+  const submission = await Submission.findById(submissionId).select("feedback");
+  return submission ? submission.feedback : null;
+};
 // Function to retrieve a single submission
 const getSubmissionById = async (submissionId) => {
   return await Submission.findById(submissionId);
@@ -31,6 +43,7 @@ const deleteSubmission = async (submissionId) => {
   return await Submission.findByIdAndDelete(submissionId);
 };
 
+//Function to upload video to Cloudinary
 const uploadVideoToCloudinary = async (file, submissionId) => {
   try {
     const result = await new Promise((resolve, reject) => {
@@ -76,6 +89,8 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
 module.exports = {
   createSubmission,
   getSubmissions,
+  getSubmissionByUserId,
+  getFeedbackForSubmission,
   getSubmissionById,
   updateSubmission,
   deleteSubmission,

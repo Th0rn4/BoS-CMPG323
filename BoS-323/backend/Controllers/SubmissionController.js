@@ -1,9 +1,10 @@
 // Manages submission-related actions (e.g., submit, update, grade)
-const Submission = require("../Models/Submission");
 const mongoose = require("mongoose");
 const {
   createSubmission,
   getSubmissions,
+  getSubmissionByUserId,
+  getFeedbackForSubmission,
   getSubmissionById,
   updateSubmission,
   deleteSubmission,
@@ -25,6 +26,47 @@ exports.getSubmissions = async (req, res) => {
     res.status(200).json(submissions);
   } catch (error) {
     res.status(500).json({ message: "Error fetching submissions", error });
+  }
+};
+
+exports.getUserSubmissions = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const submissions = await getSubmissionByUserId(userId);
+
+    if (!submissions) {
+      return res
+        .status(404)
+        .json({ message: "No submissions found for this user" });
+    }
+
+    res.status(200).json(submissions);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching submissions", error });
+  }
+};
+
+exports.getSubmissionFeedback = async (req, res) => {
+  try {
+    const submissionId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(submissionId)) {
+      return res.status(400).json({ message: "Invalid submission ID" });
+    }
+
+    const feedback = await getFeedbackForSubmission(submissionId);
+
+    if (!feedback) {
+      return res
+        .status(404)
+        .json({ message: "No feedback found for this submission" });
+    }
+
+    res.status(200).json(feedback);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching feedback for submission", error });
   }
 };
 
