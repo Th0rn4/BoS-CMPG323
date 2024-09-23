@@ -1,6 +1,7 @@
 // Contains business logic for submission operations
 const Submission = require("../Models/Submission");
 const cloudinary = require("../Config/cloudinary");
+const mongoose = require("mongoose");
 
 // Function to create a new submission
 const createSubmission = async (submissionData) => {
@@ -11,6 +12,38 @@ const createSubmission = async (submissionData) => {
 // Function to retrieve all submissions
 const getSubmissions = async () => {
   return await Submission.find();
+};
+
+//Function to retrieve user information and feedback on submission for an assignment
+const getFeedbackForAssignment = async (assignmentId) => {
+  const submissions = await Submission.aggregate([
+    {
+      $match: { assignment_id: new mongoose.Types.ObjectId(assignmentId) },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "student_id",
+        foreignField: "_id",
+        as: "student",
+      },
+    },
+    {
+      $unwind: "$student",
+    },
+    {
+      $project: {
+        submissionId: "$_id",
+        studentId: "$student_id",
+        studentName: {
+          $concat: ["$student.name.firstName", " ", "$student.name.lastName"],
+        },
+        feedback: 1,
+      },
+    },
+  ]);
+
+  return submissions;
 };
 
 // Function to retrieve a single submission
@@ -31,6 +64,7 @@ const deleteSubmission = async (submissionId) => {
   return await Submission.findByIdAndDelete(submissionId);
 };
 
+//Function to upload video to Cloudinary
 const uploadVideoToCloudinary = async (file, submissionId) => {
   try {
     const result = await new Promise((resolve, reject) => {
@@ -76,6 +110,7 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
 module.exports = {
   createSubmission,
   getSubmissions,
+  getFeedbackForAssignment,
   getSubmissionById,
   updateSubmission,
   deleteSubmission,
