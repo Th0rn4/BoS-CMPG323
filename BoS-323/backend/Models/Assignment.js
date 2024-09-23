@@ -9,13 +9,6 @@ const AssignmentSchema = new Schema({
   due_date: { type: Date, required: true }, // Assignment due date
   create_date: { type: Date, default: Date.now }, // Date when the assignment was created
   mark_allocation: { type: Number, default: 100 }, // Maximum marks for the assignment
-  attachments: [
-    {
-      file_name: { type: String, required: true }, // Attachment file name
-      file_url: { type: String, required: true }, // URL to the attachment
-      upload_date: { type: Date, default: Date.now }, // Date when the attachment was uploaded
-    },
-  ],
 });
 
-module.exports = mongoose.model("Assignment", AssignmentSchema);
+module.exports = mongoose.model('Assignment', AssignmentSchema);
