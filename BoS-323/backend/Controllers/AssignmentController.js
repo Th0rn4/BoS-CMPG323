@@ -123,6 +123,13 @@ exports.uploadAttachmentToCloudinary = async (req, res) => {
     }
 
     const assignmentId = req.params.id;
+    console.log('Received assignmentId:', assignmentId); // Add this log for debugging purposes
+
+    // Validate the assignmentId before passing it
+    if (!mongoose.isValidObjectId(assignmentId)) {
+      return res.status(400).json({ message: 'Invalid assignment ID' });
+    }
+
     const updatedAssignment = await uploadAttachmentToCloudinary(
       req.file,
       assignmentId
@@ -130,13 +137,12 @@ exports.uploadAttachmentToCloudinary = async (req, res) => {
 
     res
       .status(200)
-      .json({ message: 'Attachment uploaded successfully', updatedSubmission });
+      .json({ message: 'Attachment uploaded successfully', updatedAssignment });
   } catch (error) {
     console.error('Error in uploadAttachmentToCloudinary controller:', error);
     res.status(500).json({
       message: 'Error uploading attachment',
       error: error.message || 'Unknown error occurred',
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
   }
 };

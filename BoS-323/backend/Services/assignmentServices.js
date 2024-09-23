@@ -30,7 +30,9 @@ const deleteAssignment = async (id) => {
 
 const uploadAttachmentToCloudinary = async (attachment, id) => {
   try {
-    // Check if the provided id is valid
+    console.log('uploadAttachmentToCloudinary - received ID:', id);
+
+    // Validate the ID
     if (!mongoose.isValidObjectId(id)) {
       throw new Error('Invalid assignment ID');
     }
@@ -56,9 +58,9 @@ const uploadAttachmentToCloudinary = async (attachment, id) => {
       upload_date: new Date(),
     };
 
-    // Update the assignment with the Cloudinary URL
+    // Update the assignment with the Cloudinary URL using new ObjectId constructor
     const updatedAssignment = await Assignment.findByIdAndUpdate(
-      mongoose.Types.ObjectId(id), // Now safe since we validated the ID
+      new mongoose.Types.ObjectId(id),
       { $push: { attachments: attachmentData } },
       { new: true, runValidators: true }
     );
