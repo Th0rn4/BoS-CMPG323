@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const {
   createSubmission,
   getSubmissions,
-  getSubmissionByUserId,
-  getFeedbackForSubmission,
+  getFeedbackForAssignment,
   getSubmissionById,
   updateSubmission,
   deleteSubmission,
@@ -14,7 +13,9 @@ const {
 exports.createSubmission = async (req, res) => {
   try {
     const submission = await createSubmission(req.body);
-    res.status(201).json(submission);
+    res
+      .status(201)
+      .json({ message: "Sucessfully created a new submission", submission });
   } catch (error) {
     res.status(500).json({ message: "Error creating submission", error });
   }
@@ -29,45 +30,22 @@ exports.getSubmissions = async (req, res) => {
   }
 };
 
-exports.getUserSubmissions = async (req, res) => {
-  try {
-    const userId = req.params.userId;
-    const submissions = await getSubmissionByUserId(userId);
+exports.getAssignmentFeedback = async (req, res) => {
+  const assignmentId = req.params.assignmentId;
 
-    if (!submissions) {
-      return res
-        .status(404)
-        .json({ message: "No submissions found for this user" });
-    }
-
-    res.status(200).json(submissions);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching submissions", error });
+  if (!mongoose.Types.ObjectId.isValid(assignmentId)) {
+    return res.status(400).json({ message: "Invalid assignment ID format" });
   }
-};
 
-exports.getSubmissionFeedback = async (req, res) => {
-  try {
-    const submissionId = req.params.id;
+  const feedbackList = await getFeedbackForAssignment(assignmentId);
 
-    if (!mongoose.Types.ObjectId.isValid(submissionId)) {
-      return res.status(400).json({ message: "Invalid submission ID" });
-    }
-
-    const feedback = await getFeedbackForSubmission(submissionId);
-
-    if (!feedback) {
-      return res
-        .status(404)
-        .json({ message: "No feedback found for this submission" });
-    }
-
-    res.status(200).json(feedback);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching feedback for submission", error });
+  if (feedbackList.length === 0) {
+    return res
+      .status(404)
+      .json({ message: "No submissions found for this assignment" });
   }
+
+  res.status(200).json(feedbackList);
 };
 
 exports.getOneSubmission = async (req, res) => {

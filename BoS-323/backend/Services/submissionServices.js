@@ -1,6 +1,7 @@
 // Contains business logic for submission operations
 const Submission = require("../Models/Submission");
 const cloudinary = require("../Config/cloudinary");
+const mongoose = require("mongoose");
 
 // Function to create a new submission
 const createSubmission = async (submissionData) => {
@@ -13,18 +14,38 @@ const getSubmissions = async () => {
   return await Submission.find();
 };
 
-//Function to retrieve all submissions for a user
-const getSubmissionByUserId = async (userId) => {
-  {
-    return await Submission.find({ student_id: userId });
-  }
+//Function to retrieve user information and feedback on submission for an assignment
+const getFeedbackForAssignment = async (assignmentId) => {
+  const submissions = await Submission.aggregate([
+    {
+      $match: { assignment_id: new mongoose.Types.ObjectId(assignmentId) },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "student_id",
+        foreignField: "_id",
+        as: "student",
+      },
+    },
+    {
+      $unwind: "$student",
+    },
+    {
+      $project: {
+        submissionId: "$_id",
+        studentId: "$student_id",
+        studentName: {
+          $concat: ["$student.name.firstName", " ", "$student.name.lastName"],
+        },
+        feedback: 1,
+      },
+    },
+  ]);
+
+  return submissions;
 };
 
-//Function to retrieve only the feedback for a submission
-const getFeedbackForSubmission = async (submissionId) => {
-  const submission = await Submission.findById(submissionId).select("feedback");
-  return submission ? submission.feedback : null;
-};
 // Function to retrieve a single submission
 const getSubmissionById = async (submissionId) => {
   return await Submission.findById(submissionId);
@@ -89,8 +110,7 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
 module.exports = {
   createSubmission,
   getSubmissions,
-  getSubmissionByUserId,
-  getFeedbackForSubmission,
+  getFeedbackForAssignment,
   getSubmissionById,
   updateSubmission,
   deleteSubmission,
