@@ -1,11 +1,14 @@
-const express = require('express');
-const cors = require('cors');
-const connectDB = require('./Config/db');
-const userRoutes = require('./Routes/userRoutes');
-const subRoutes = require('./Routes/submissionRoutes');
-const assignmentRoutes = require('./Routes/AssignmentRoutes');
-const notificationRoutes = require('./Routes/NotificationRoutes');
-const dotenv = require('dotenv');
+
+const express = require("express");
+const cors = require("cors");
+const connectDB = require("./Config/db");
+const userRoutes = require("./Routes/userRoutes");
+const subRoutes = require("./Routes/submissionRoutes");
+const assignmentRoutes = require("./Routes/AssignmentRoutes");
+const notificationRoutes = require("./Routes/NotificationRoutes");
+const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
+
 dotenv.config();
 
 app = express();
@@ -18,10 +21,12 @@ app.use(express.json());
 connectDB();
 
 // Routes
-app.use('/api/users', userRoutes);
-app.use('/api/submissions', subRoutes);
-app.use('/api/assignments', assignmentRoutes);
-app.use('/api/notification', notificationRoutes);
+app.use(cookieParser());
+app.use("/api/users", userRoutes);
+app.use("/api/submissions", subRoutes);
+app.use("/api/assignments", assignmentRoutes);
+app.use("/api/notification", notificationRoutes);
+
 app.listen(3001, () => {
   console.log('Server is running on port 3001');
 });
