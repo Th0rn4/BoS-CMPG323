@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 
+//USer Schema for MongoDB
 const UserSchema = new mongoose.Schema({
   name: {
     firstName: { type: String, required: true },
@@ -17,6 +18,7 @@ const UserSchema = new mongoose.Schema({
   joinedDate: { type: Date, default: Date.now },
 });
 
+//Secure password hashing
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   try {
@@ -27,6 +29,7 @@ UserSchema.pre("save", async function (next) {
   }
 });
 
+//Check if typed in password matches hassed password
 UserSchema.methods.matchPassword = async function (enteredPassword) {
   try {
     return await argon2.verify(this.password, enteredPassword);
