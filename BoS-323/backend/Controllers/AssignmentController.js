@@ -6,7 +6,6 @@ const {
   getAssignment,
   updateAssignment,
   deleteAssignment,
-  uploadAttachmentToCloudinary,
 } = require('../Services/assignmentServices');
 
 exports.createAssignment = async (req, res) => {
@@ -113,36 +112,5 @@ exports.updateAssignment = async (req, res) => {
     res
       .status(500)
       .json({ message: 'Error updating assignment', error: error.message });
-  }
-};
-
-exports.uploadAttachmentToCloudinary = async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
-
-    const assignmentId = req.params.id;
-    console.log('Received assignmentId:', assignmentId); // Add this log for debugging purposes
-
-    // Validate the assignmentId before passing it
-    if (!mongoose.isValidObjectId(assignmentId)) {
-      return res.status(400).json({ message: 'Invalid assignment ID' });
-    }
-
-    const updatedAssignment = await uploadAttachmentToCloudinary(
-      req.file,
-      assignmentId
-    );
-
-    res
-      .status(200)
-      .json({ message: 'Attachment uploaded successfully', updatedAssignment });
-  } catch (error) {
-    console.error('Error in uploadAttachmentToCloudinary controller:', error);
-    res.status(500).json({
-      message: 'Error uploading attachment',
-      error: error.message || 'Unknown error occurred',
-    });
   }
 };
