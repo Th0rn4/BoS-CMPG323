@@ -1,5 +1,7 @@
 const User = require("../Models/User");
 
+//specific function calls
+
 const createUser = async (userData) => {
   const user = new User(userData);
   return await user.save();
@@ -19,22 +21,6 @@ const updateUser = async (userId) => {
 
 const deleteUser = async (userId) => {
   return await User.findByIdAndDelete(userId);
-};
-
-// In your userService.js
-const findOrCreate = async (profile) => {
-  const { id, emails, name } = profile;
-  let user = await User.findOne({ googleId: id });
-  if (!user) {
-    user = new User({
-      googleId: id,
-      email: emails[0].value,
-      name: { firstName: name.givenName, lastName: name.familyName },
-      // Add other fields if needed
-    });
-    await user.save();
-  }
-  return user;
 };
 
 module.exports = {
