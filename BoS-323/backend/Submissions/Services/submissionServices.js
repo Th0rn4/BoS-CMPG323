@@ -1,6 +1,6 @@
 // Contains business logic for submission operations
 const Submission = require("../Models/Submission");
-const cloudinary = require("../Config/cloudinary");
+const cloudinary = require("../../Config/cloudinary");
 const mongoose = require("mongoose");
 const XLSX = require("xlsx");
 
