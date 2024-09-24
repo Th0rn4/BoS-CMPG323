@@ -1,5 +1,5 @@
 // Contains business logic for notification operations
-const { Notification } = require("../Models/Notification");
+const { Notification } = require('../Models/Notification');
 
 const createNotification = async (notificationData) => {
   const notification = new Notification(notificationData);
