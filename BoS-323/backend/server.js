@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./Config/db");
@@ -28,5 +27,5 @@ app.use("/api/assignments", assignmentRoutes);
 app.use("/api/notification", notificationRoutes);
 
 app.listen(3001, () => {
-  console.log('Server is running on port 3001');
+  console.log("Server is running on port 3001");
 });
