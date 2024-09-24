@@ -72,6 +72,10 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
         {
           resource_type: "video",
           folder: "assignment_submissions",
+          quality: "auto:good", // Automatically adjusts quality for balance
+          transformation: [
+            { width: 1280, height: 720, crop: "limit" }, // Resize to 720p but keep the original format
+          ],
         },
         (error, result) => {
           if (error) reject(error);
@@ -79,15 +83,16 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
         }
       );
 
-      uploadStream.end(file.buffer);
+      uploadStream.end(file.buffer); // Upload video buffer to Cloudinary
     });
 
+    // Video data to store in Submission model
     const videoData = {
       video_url: result.secure_url,
       upload_date: new Date(),
       size: result.bytes,
       duration: result.duration,
-      format: result.format,
+      format: result.format, // Keeps the original format
     };
 
     const updatedSubmission = await Submission.findByIdAndUpdate(
