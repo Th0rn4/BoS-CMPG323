@@ -8,6 +8,7 @@ const {
   updateSubmission,
   deleteSubmission,
   uploadVideoToCloudinary,
+  generateFeedbackExcel,
 } = require("../Services/submissionServices");
 
 exports.createSubmission = async (req, res) => {
@@ -123,6 +124,36 @@ exports.uploadVideoToCloudinary = async (req, res) => {
       message: "Error uploading video",
       error: error.message || "Unknown error occurred",
       stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
+};
+
+exports.downloadAssignmentFeedback = async (req, res) => {
+  const assignmentId = req.params.assignmentId;
+
+  if (!mongoose.Types.ObjectId.isValid(assignmentId)) {
+    return res.status(400).json({ message: "Invalid assignment ID format" });
+  }
+
+  try {
+    const excelBuffer = await generateFeedbackExcel(assignmentId);
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=assignment_${assignmentId}_feedback.xlsx`
+    );
+    res.setHeader("Content-Length", excelBuffer.length);
+
+    res.end(excelBuffer);
+  } catch (error) {
+    console.error("Error in downloadAssignmentFeedback:", error);
+    res.status(500).json({
+      message: "Error generating feedback Excel file",
+      error: error.message || "Unknown error",
     });
   }
 };

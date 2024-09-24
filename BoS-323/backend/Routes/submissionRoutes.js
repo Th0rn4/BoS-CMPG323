@@ -18,5 +18,9 @@ router.put(
   SubmissionController.uploadVideoToCloudinary
 );
 router.delete("/:id", SubmissionController.deleteSubmission);
+router.get(
+  "/:assignmentId/feedback/download",
+  SubmissionController.downloadAssignmentFeedback
+);
 
 module.exports = router;
