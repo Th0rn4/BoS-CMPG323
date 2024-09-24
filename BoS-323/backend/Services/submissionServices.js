@@ -2,6 +2,7 @@
 const Submission = require("../Models/Submission");
 const cloudinary = require("../Config/cloudinary");
 const mongoose = require("mongoose");
+const XLSX = require("xlsx");
 
 // Function to create a new submission
 const createSubmission = async (submissionData) => {
@@ -107,6 +108,65 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
   }
 };
 
+// Function to download a submission video from Cloudinary
+const generateFeedbackExcel = async (assignmentId) => {
+  try {
+    const submissions = await Submission.aggregate([
+      {
+        $match: { assignment_id: new mongoose.Types.ObjectId(assignmentId) },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "student_id",
+          foreignField: "_id",
+          as: "student",
+        },
+      },
+      {
+        $unwind: "$student",
+      },
+      {
+        $project: {
+          firstName: "$student.name.firstName",
+          lastName: "$student.name.lastName",
+          feedback: 1,
+        },
+      },
+    ]);
+
+    if (submissions.length === 0) {
+      throw new Error("No submissions found for this assignment");
+    }
+
+    const worksheetData = [];
+
+    submissions.forEach((submission) => {
+      submission.feedback.forEach((feedback) => {
+        worksheetData.push({
+          "First Name": submission.firstName,
+          "Last Name": submission.lastName,
+          Grade: feedback.grade,
+          Comment: feedback.comment,
+        });
+      });
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Feedback");
+
+    const excelBuffer = XLSX.write(workbook, {
+      type: "buffer",
+      bookType: "xlsx",
+    });
+    return excelBuffer;
+  } catch (error) {
+    console.error("Error in generateFeedbackExcel:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createSubmission,
   getSubmissions,
@@ -115,4 +175,5 @@ module.exports = {
   updateSubmission,
   deleteSubmission,
   uploadVideoToCloudinary,
+  generateFeedbackExcel,
 };
