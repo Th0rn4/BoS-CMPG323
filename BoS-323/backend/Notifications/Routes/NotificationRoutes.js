@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const NotificationController = require('../Controller/NotificationController');
+const NotificationController = require('../Controllers/NotificationController');
 
 router.post('/create', NotificationController.createNotification);
 router.get('/', NotificationController.getNotification);

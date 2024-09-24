@@ -1,10 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./Config/db');
-const userRoutes = require('./Routes/userRoutes');
-const subRoutes = require('./Routes/submissionRoutes');
-const assignmentRoutes = require('./Assignment/Routes/AssignmentRoutes');
-const notificationRoutes = require('./Notification/Routes/NotificationRoutes');
+const userRoutes = require('./Users/Routes/userRoutes');
+const subRoutes = require('./Submissions/Routes/submissionRoutes');
+const assignmentRoutes = require('./Assignments/Routes/AssignmentRoutes');
+const notificationRoutes = require('./Notifications/Routes/NotificationRoutes');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 
