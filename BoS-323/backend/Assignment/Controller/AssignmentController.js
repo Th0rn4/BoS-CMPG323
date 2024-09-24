@@ -6,7 +6,7 @@ const {
   getAssignment,
   updateAssignment,
   deleteAssignment,
-} = require('../Services/assignmentServices');
+} = require('../Service/assignmentServices');
 
 exports.createAssignment = async (req, res) => {
   try {
