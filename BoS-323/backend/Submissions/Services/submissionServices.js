@@ -73,6 +73,10 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
         {
           resource_type: "video",
           folder: "assignment_submissions",
+          quality: "auto:good", // Automatically adjusts quality for balance
+          transformation: [
+            { width: 1280, height: 720, crop: "limit" }, // Resize to 720p but keep the original format
+          ],
         },
         (error, result) => {
           if (error) reject(error);
@@ -80,15 +84,17 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
         }
       );
 
-      uploadStream.end(file.buffer);
+      uploadStream.end(file.buffer); // Upload video buffer to Cloudinary
     });
 
+    // Video data to store in Submission model
     const videoData = {
       video_url: result.secure_url,
       upload_date: new Date(),
       size: result.bytes,
       duration: result.duration,
-      format: result.format,
+      format: result.format, // Keeps the original format
+      public_id: result.public_id,
     };
 
     const updatedSubmission = await Submission.findByIdAndUpdate(
@@ -107,8 +113,30 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
     throw new Error(`Error uploading video to Cloudinary: ${error.message}`);
   }
 };
-
 // Function to download a submission video from Cloudinary
+// Function to stream a submission video from Cloudinary
+const streamVideoFromCloudinary = async (publicId, format, res) => {
+  try {
+    // Generate a URL for the video with optional transformations (for adaptive bitrate streaming)
+    const videoUrl = cloudinary.url(publicId, {
+      resource_type: "video",
+      format: format || "mp4",
+      quality: "auto", // For automatic bitrate adjustment
+      transformation: [
+        { width: 1280, height: 720, crop: "limit" }, // Resize to 720p but keep the original format
+        { fetch_format: "auto", bitrate: "auto" }, // Automatic bitrate selection for adaptive streaming
+      ],
+    });
+
+    // Redirect or stream video directly
+    res.redirect(videoUrl);
+  } catch (error) {
+    console.error("Error streaming video from Cloudinary:", error);
+    throw new Error(`Error streaming video from Cloudinary: ${error.message}`);
+  }
+};
+
+//Function to downlaod feeback to excel
 const generateFeedbackExcel = async (assignmentId) => {
   try {
     const submissions = await Submission.aggregate([
@@ -175,5 +203,6 @@ module.exports = {
   updateSubmission,
   deleteSubmission,
   uploadVideoToCloudinary,
+  streamVideoFromCloudinary,
   generateFeedbackExcel,
 };

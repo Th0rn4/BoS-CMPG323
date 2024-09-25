@@ -22,5 +22,6 @@ router.get(
   "/:assignmentId/feedback/download",
   SubmissionController.downloadAssignmentFeedback
 );
+router.get("/stream/:id", SubmissionController.streamVideo);
 
 module.exports = router;
