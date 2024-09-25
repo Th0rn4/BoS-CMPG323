@@ -24,4 +24,6 @@ router.get(
 );
 router.get("/stream/:id", SubmissionController.streamVideo);
 
+router.get("/:id/download", SubmissionController.downloadVideo);
+
 module.exports = router;
