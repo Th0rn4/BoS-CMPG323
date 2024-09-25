@@ -12,7 +12,7 @@ module.exports = multer({
       path.extname(file.originalname).toLowerCase()
     );
     // Check mime type
-    const mimetype = filetypes.test(file.mimetype);
+    const mimetype = file.mimetype.startsWith("video/");
 
     if (mimetype && extname) {
       return cb(null, true);

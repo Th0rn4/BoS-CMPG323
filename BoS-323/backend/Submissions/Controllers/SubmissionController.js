@@ -1,5 +1,6 @@
 // Manages submission-related actions (e.g., submit, update, grade)
 const mongoose = require("mongoose");
+const Submission = require("../Models/Submission");
 const {
   createSubmission,
   getSubmissions,
@@ -8,6 +9,7 @@ const {
   updateSubmission,
   deleteSubmission,
   uploadVideoToCloudinary,
+  streamVideoFromCloudinary,
   generateFeedbackExcel,
 } = require("../Services/submissionServices");
 
@@ -124,6 +126,37 @@ exports.uploadVideoToCloudinary = async (req, res) => {
       message: "Error uploading video",
       error: error.message || "Unknown error occurred",
       stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
+};
+
+exports.streamVideo = async (req, res) => {
+  try {
+    const submissionId = req.params.id;
+
+    // Retrieve the submission from MongoDB
+    const submission = await Submission.findById(submissionId);
+
+    if (!submission) {
+      return res.status(404).json({ message: "Submission not found" });
+    }
+
+    if (!submission.videos || !submission.videos[0].public_id) {
+      return res.status(404).json({ message: "Video not found" });
+    }
+
+    const videoFormat = req.query.format || "mp4"; // Optional query parameter for video format
+    // Call the stream service with the public ID from Cloudinary and the video format
+    await streamVideoFromCloudinary(
+      submission.videos[0].public_id,
+      videoFormat,
+      res
+    );
+  } catch (error) {
+    console.error("Error in streamVideo controller:", error);
+    res.status(500).json({
+      message: "Error streaming video",
+      error: error.message || "Unknown error occurred",
     });
   }
 };
