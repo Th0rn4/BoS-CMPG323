@@ -195,6 +195,24 @@ const generateFeedbackExcel = async (assignmentId) => {
   }
 };
 
+const downloadVideoFromCloudinary = async (publicId) => {
+  try {
+    // Generate a signed URL for the video file download
+    const videoUrl = cloudinary.url(publicId, {
+      resource_type: "video",
+      type: "upload",
+      flags: "attachment", // Forces the video to be downloaded instead of played in the browser
+    });
+
+    return videoUrl;
+  } catch (error) {
+    console.error("Error in downloadVideoFromCloudinary service:", error);
+    throw new Error(
+      `Error downloading video from Cloudinary: ${error.message}`
+    );
+  }
+};
+
 module.exports = {
   createSubmission,
   getSubmissions,
@@ -205,4 +223,5 @@ module.exports = {
   uploadVideoToCloudinary,
   streamVideoFromCloudinary,
   generateFeedbackExcel,
+  downloadVideoFromCloudinary,
 };

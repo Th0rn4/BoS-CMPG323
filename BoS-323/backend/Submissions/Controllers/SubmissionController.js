@@ -11,6 +11,7 @@ const {
   uploadVideoToCloudinary,
   streamVideoFromCloudinary,
   generateFeedbackExcel,
+  downloadVideoFromCloudinary,
 } = require("../Services/submissionServices");
 
 exports.createSubmission = async (req, res) => {
@@ -187,6 +188,36 @@ exports.downloadAssignmentFeedback = async (req, res) => {
     res.status(500).json({
       message: "Error generating feedback Excel file",
       error: error.message || "Unknown error",
+    });
+  }
+};
+
+exports.downloadVideo = async (req, res) => {
+  try {
+    const submissionId = req.params.id;
+
+    // Find the submission in MongoDB
+    const submission = await Submission.findById(submissionId);
+
+    if (!submission) {
+      return res.status(404).json({ message: "Submission not found" });
+    }
+
+    if (!submission.videos || !submission.videos[0].public_id) {
+      return res.status(404).json({ message: "Video not found" });
+    }
+
+    const videoDownloadUrl = await downloadVideoFromCloudinary(
+      submission.videos[0].public_id
+    );
+
+    // Send the download link as a response
+    res.status(200).json({ downloadUrl: videoDownloadUrl });
+  } catch (error) {
+    console.error("Error in downloadVideo controller:", error);
+    res.status(500).json({
+      message: "Error downloading video",
+      error: error.message || "Unknown error occurred",
     });
   }
 };
