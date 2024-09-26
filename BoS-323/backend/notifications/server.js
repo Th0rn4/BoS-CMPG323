@@ -3,16 +3,28 @@ const connectDB = require('./db');
 const notificationRoutes = require('./NotificationRoutes');
 const dotenv = require('dotenv');
 
+// Load environment variables
 dotenv.config();
 
-app = express();
+const app = express(); // Explicitly declare app
+
+// Middleware to handle JSON requests
+app.use(express.json());
 
 // Connect to MongoDB
-connectDB();
+connectDB().catch((err) => {
+  console.error('Database connection error:', err);
+});
 
 // Routes
-app.use('/api/notification', notificationRoutes);
+app.use('/api/notifications', notificationRoutes); // Use plural for consistency
 
-app.listen(3001, () => {
-  console.log('Server is running on port 3001');
-});
+// Start the server
+const PORT = process.env.PORT || 3000; // Dynamically use environment variable
+app
+  .listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  })
+  .on('error', (err) => {
+    console.error('Error starting the server:', err);
+  });
