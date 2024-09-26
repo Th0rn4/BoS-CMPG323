@@ -113,7 +113,7 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
     throw new Error(`Error uploading video to Cloudinary: ${error.message}`);
   }
 };
-// Function to download a submission video from Cloudinary
+
 // Function to stream a submission video from Cloudinary
 const streamVideoFromCloudinary = async (publicId, format, res) => {
   try {
@@ -195,6 +195,7 @@ const generateFeedbackExcel = async (assignmentId) => {
   }
 };
 
+// Function to download a submission video from Cloudinary
 const downloadVideoFromCloudinary = async (publicId) => {
   try {
     // Generate a signed URL for the video file download
