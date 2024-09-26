@@ -17,6 +17,7 @@ const SubmissionSchema = new Schema({
   submit_date: {
     type: Date,
     required: true,
+    index: true,
   },
   status: {
     type: String,
@@ -29,10 +30,12 @@ const SubmissionSchema = new Schema({
       grade: {
         type: Number,
         default: null,
+        index: true,
       },
       comment: {
         type: String,
         default: null,
+        index: true,
       },
     },
   ],
@@ -41,6 +44,7 @@ const SubmissionSchema = new Schema({
       video_url: {
         type: String,
         default: null,
+        index: true,
       },
       upload_date: {
         type: Date,
@@ -61,6 +65,7 @@ const SubmissionSchema = new Schema({
       public_id: {
         type: String,
         default: null,
+        index: true,
       },
     },
   ],
