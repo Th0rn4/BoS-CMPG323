@@ -1,0 +1,28 @@
+services:
+  assignments:
+    build: ./assignments
+    ports:
+      - '3002:3000'
+    env_file:
+      - ./assignments/config.env
+
+  notifications:
+    build: ./notifications
+    ports:
+      - '3003:3000'
+    env_file:
+      - ./notifications/config.env
+
+  submissions:
+    build: ./submissions
+    ports:
+      - '3004:3000'
+    env_file:
+      - ./submissions/config.env
+
+  users:
+    build: ./users
+    ports:
+      - '3005:3000'
+    env_file:
+      - ./users/config.env
