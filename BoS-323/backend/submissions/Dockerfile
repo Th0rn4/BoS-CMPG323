@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 3004
 
 # Start the Submission service
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

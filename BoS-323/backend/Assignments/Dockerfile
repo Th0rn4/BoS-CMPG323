@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 3002
 
 # Start the Assignment service
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
