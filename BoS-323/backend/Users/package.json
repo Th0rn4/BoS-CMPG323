@@ -1,9 +1,9 @@
 {
   "name": "simple-web-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "./server.js"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
