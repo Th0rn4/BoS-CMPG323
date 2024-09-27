@@ -8,6 +8,7 @@ WORKDIR /submissions
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
+RUN npm start
 
 # Copy all the files from the current directory
 COPY . .
