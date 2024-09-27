@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assignments-deployment
+  labels:
+    app: assignments
+spec:
+  replicas: 2 # Number of instances (adjust as needed)
+  selector:
+    matchLabels:
+      app: assignments
+  template:
+    metadata:
+      labels:
+        app: assignments
+    spec:
+      containers:
+        - name: assignments
+          image: danienieb/backend-assignments:latest # Replace with your Docker image
+          ports:
+            - containerPort: 3002 # This is the port exposed by your Node.js app
+          env:
+            - name: PORT
+              value: '3002' # Make sure this matches the exposed port in your app
+            - name: MONGODB_URI
+              value: 'mongodb+srv://overloaded:JbUgXQDZV1lZR2dk@bos323.r0js1.mongodb.net/?retryWrites=true&w=majority&appName=BoS323' # MongoDB connection string
+            - name: NODE_ENV
+              value: 'production'
+          resources:
+            limits:
+              memory: '256Mi'
+              cpu: '500m'
+            requests:
+              memory: '128Mi'
+              cpu: '250m'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: assignments-service
+spec:
+  selector:
+    app: assignments
+  ports:
+    - protocol: TCP
+      port: 3000 # The port the service is exposed on
+      targetPort: 3002 # The port your container is listening on
+      nodePort: 30080 # Exposed port on the Node (optional)
+  type: NodePort # Use NodePort for local development
