@@ -2,27 +2,27 @@ services:
   assignments:
     build: ./assignments
     ports:
-      - '3002:3000'
+      - "3002:3002" # Map port 3002 of the host to port 3002 of the container
     env_file:
       - ./assignments/config.env
 
   notifications:
     build: ./notifications
     ports:
-      - '3003:3000'
+      - "3003:3003" # Map port 3003 of the host to port 3003 of the container
     env_file:
       - ./notifications/config.env
 
   submissions:
     build: ./submissions
     ports:
-      - '3004:3000'
+      - "3004:3004" # Map port 3004 of the host to port 3004 of the container
     env_file:
       - ./submissions/config.env
 
   users:
     build: ./users
     ports:
-      - '3005:3000'
+      - "3005:3005" # Map port 3005 of the host to port 3005 of the container
     env_file:
       - ./users/config.env

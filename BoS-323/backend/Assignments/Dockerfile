@@ -4,11 +4,10 @@ FROM node:18-alpine
 # Set working directory
 WORKDIR /assignments
 
-# Copy package.json and install dependencies
+# Copy package.json and package-lock.json and install dependencies
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
-RUN npm start
 
 # Copy all the files from the current directory
 COPY . .
