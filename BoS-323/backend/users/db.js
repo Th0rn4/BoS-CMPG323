@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const path = require("path");
 require("dotenv").config({
-  path: path.resolve(__dirname, "/BoS-323/backend/Config/config.env"),
+  path: path.resolve(__dirname, "../Config/config.env"),
 }); // Adjust the path as needed
 
 const connectDB = async () => {
