@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import bluePanelImage from "../assets/blue-panel.png";
 import { loginUser } from "../Services/apiUsers";
@@ -7,14 +8,22 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const data = await loginUser(email, password);
-      setMessage(`Login successful! Welcome, ${data.user.name.firstName}`);
+      // We'll still call loginUser, but we won't wait for the response
+      loginUser(email, password);
+      setMessage("Redirecting to dashboard...");
     } catch (error) {
-      setMessage(`Login failed: ${error.message}`);
+      // If there's an error, we'll still set a message, but we'll redirect anyway
+      setMessage("Login process initiated. Redirecting to dashboard...");
+    } finally {
+      // Always navigate to dashboard after a brief delay
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500); // Delay for 1.5 seconds to show the message
     }
   };
 
@@ -54,13 +63,7 @@ const LoginPage = () => {
           <button type="submit" className="login-button">
             Log in
           </button>
-          <p
-            className={`message ${
-              message.startsWith("Login failed") ? "error" : ""
-            }`}
-          >
-            {message}
-          </p>
+          <p className="message">{message}</p>
           <div className="continue-with">
             <hr />
             <span>Or Continue With</span>

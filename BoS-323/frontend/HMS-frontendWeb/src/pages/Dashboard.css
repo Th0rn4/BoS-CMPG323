@@ -1,0 +1,187 @@
+/* Main Dashboard Container */
+.dashboard-container {
+  position: relative;
+  width: 60vw; /* 60% of the viewport width */
+  height: 50vh; /* 50% of the viewport height */
+  background: #f0f7f4;
+  display: flex;
+}
+
+/* Left Panel / Sidebar */
+.left-panel {
+  position: absolute;
+  width: 10vw; /* Adjusted to 10% of viewport width */
+  height: 100%; /* Full height of the container */
+  left: 0;
+  top: 0;
+  background: #70abaf;
+}
+
+/* Home Button */
+.home-button {
+  position: absolute;
+  width: 4vw;
+  height: 4vh;
+  left: 2vw;
+  top: 10vh;
+}
+
+/* Logout Button */
+.logout-button {
+  position: absolute;
+  width: 6vw;
+  height: 6vh;
+  left: 8vw;
+  top: 95vh;
+}
+
+/* Intro Section */
+.intro {
+  position: absolute;
+  width: 30vw;
+  height: 15vh;
+  left: 15vw;
+  top: 5vh;
+}
+
+.intro-title {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 3vw;
+  line-height: 4vw;
+  color: #000000;
+}
+
+.intro-subtitle {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 2vw;
+  line-height: 2.5vw;
+  color: #636363;
+  position: absolute;
+  top: 6vh;
+}
+
+/* Assignment Section */
+.assignment-section {
+  position: absolute;
+  width: 50vw;
+  height: 30vh;
+  left: 15vw;
+  top: 20vh;
+  display: flex;
+  gap: 3vw; /* Adjust spacing between cards */
+}
+
+.assignment-card {
+  width: 18vw;
+  height: 25vh;
+  background: #70abaf;
+  border-radius: 2vw;
+}
+
+/* Add Assignment Button */
+.add-assignment-button {
+  position: absolute;
+  width: 5vw;
+  height: 25vh;
+  left: 40vw;
+  top: 35vh;
+  transform: rotate(90deg);
+  background: #705d56;
+  border-radius: 1.5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.button-text {
+  transform: rotate(-90deg);
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.5vw;
+  line-height: 2vw;
+  color: #f0f7f4;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.plus-icon {
+  position: absolute;
+  left: 1vw;
+  top: 1vh;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 2.5vw;
+  line-height: 3vw;
+  color: #99e1d9;
+}
+
+/* Right Panel */
+.right-panel {
+  position: absolute;
+  width: 25vw;
+  height: 100vh;
+  left: 75vw;
+  top: 0;
+  background: #f0f7f4;
+  border: 0.1vw solid #000000;
+}
+
+/* Sloth Banner */
+.sloth-banner {
+  position: absolute;
+  width: 25vw;
+  height: 40vh;
+  background: url(SlothBanner.jpg);
+}
+
+/* Info Section */
+.info {
+  position: absolute;
+  width: 10vw;
+  height: 2vh;
+  left: 1vw;
+  top: 50vh;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.5vw;
+  line-height: 2vh;
+  color: #636363;
+}
+
+/* Logged In User Info */
+.logged-in-name,
+.logged-in-surname,
+.logged-in-email {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.5vw;
+  line-height: 2vh;
+  color: #636363;
+}
+
+.logged-in-name {
+  position: absolute;
+  left: 1vw;
+  top: 55vh;
+}
+
+.logged-in-surname {
+  position: absolute;
+  left: 1vw;
+  top: 60vh;
+}
+
+.logged-in-email {
+  position: absolute;
+  left: 1vw;
+  top: 65vh;
+}
