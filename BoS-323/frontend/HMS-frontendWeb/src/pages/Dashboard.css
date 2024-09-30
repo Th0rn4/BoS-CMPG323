@@ -1,8 +1,8 @@
 /* Main Dashboard Container */
 .dashboard-container {
   position: relative;
-  width: 60vw; /* 60% of the viewport width */
-  height: 50vh; /* 50% of the viewport height */
+  width: 100vw; /* 60% of the viewport width */
+  height: 100vh; /* 50% of the viewport height */
   background: #f0f7f4;
   display: flex;
 }
@@ -11,7 +11,7 @@
 .left-panel {
   position: absolute;
   width: 10vw; /* Adjusted to 10% of viewport width */
-  height: 100%; /* Full height of the container */
+  height: 99%; /* Full height of the container */
   left: 0;
   top: 0;
   background: #70abaf;
@@ -41,7 +41,7 @@
   width: 30vw;
   height: 15vh;
   left: 15vw;
-  top: 5vh;
+  top: 0vh;
 }
 
 .intro-title {
@@ -69,7 +69,7 @@
   position: absolute;
   width: 50vw;
   height: 30vh;
-  left: 15vw;
+  left: 20vw;
   top: 20vh;
   display: flex;
   gap: 3vw; /* Adjust spacing between cards */
@@ -77,7 +77,7 @@
 
 .assignment-card {
   width: 18vw;
-  height: 25vh;
+  height: 30vh;
   background: #70abaf;
   border-radius: 2vw;
 }
@@ -86,9 +86,9 @@
 .add-assignment-button {
   position: absolute;
   width: 5vw;
-  height: 25vh;
-  left: 40vw;
-  top: 35vh;
+  height: 32vh;
+  left: 22.5vw;
+  top: 25vh;
   transform: rotate(90deg);
   background: #705d56;
   border-radius: 1.5vw;
@@ -112,8 +112,8 @@
 
 .plus-icon {
   position: absolute;
-  left: 1vw;
-  top: 1vh;
+  left: 1.9vw;
+  top: 2vh;
   font-family: "Inter";
   font-style: normal;
   font-weight: 500;
@@ -125,9 +125,9 @@
 /* Right Panel */
 .right-panel {
   position: absolute;
-  width: 25vw;
-  height: 100vh;
-  left: 75vw;
+  width: 22vw;
+  height: 93.8%;
+  left: 80vw;
   top: 0;
   background: #f0f7f4;
   border: 0.1vw solid #000000;
