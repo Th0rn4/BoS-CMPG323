@@ -1,29 +1,44 @@
-// src/pages/Dashboard.jsx
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import "./Dashboard.css"; // Ensure the CSS file matches with the updated version
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const loggedUser = localStorage.getItem("user");
-    if (loggedUser) {
-      setUser(JSON.parse(loggedUser));
-    } else {
-      // Redirect to login if not authenticated
-      navigate("/login");
-    }
-  }, [navigate]);
-
-  if (!user) return <p>Loading...</p>;
-
   return (
-    <div>
-      <h2>Dashboard</h2>
-      <p>
-        Welcome, {user.name.firstName} {user.name.lastName}!
-      </p>
+    <div className="dashboard-container">
+      {/* Left Panel */}
+      <div className="left-panel">
+        <div className="home-button">{/* Home Button content goes here */}</div>
+        <div className="logout-button">
+          {/* Logout button content or icon */}
+        </div>
+      </div>
+
+      {/* Intro Section */}
+      <div className="intro">
+        <h1 className="intro-title">Hi, Lecturer!</h1>
+        <p className="intro-subtitle">Manage Assignments and Grades</p>
+      </div>
+
+      {/* Assignment Section */}
+      <div className="assignment-section">
+        <div className="assignment-card">{/* Assignment 1 */}</div>
+        <div className="assignment-card">{/* Assignment 2 */}</div>
+        <div className="assignment-card">{/* Assignment 3 */}</div>
+        <div className="add-assignment-button">
+          <span className="plus-icon">+</span>
+          <span className="button-text">Add Assignment</span>
+        </div>
+      </div>
+
+      {/* Right Panel */}
+      <div className="right-panel">
+        <div className="sloth-banner">{/* Sloth Banner Image */}</div>
+
+        {/* User Info Section */}
+        <div className="info">Info</div>
+        <div className="logged-in-name">John</div>
+        <div className="logged-in-surname">Doe</div>
+        <div className="logged-in-email">johndoe@example.com</div>
+      </div>
     </div>
   );
 };
