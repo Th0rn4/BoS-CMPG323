@@ -21,7 +21,7 @@ services:
       - ./Config/config.env
 
   users:
-    build: ./users
+    build: ./Users
     ports:
       - "3005:3005"
     env_file:
