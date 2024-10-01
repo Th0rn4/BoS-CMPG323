@@ -1,0 +1,178 @@
+html,
+body {
+  height: 94%;
+  width: 85%;
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f7f4;
+}
+
+.login-container {
+  display: flex;
+  width: 1500px;
+  height: 100vh;
+  background-color: #f0f7f4;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.left-panel {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f7f4;
+}
+
+.sloth-image {
+  max-width: 900px;
+  max-height: 650px;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.right-panel {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-heading {
+  font-size: 35px;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+  position: relative;
+  top: -10px;
+  left: 10px;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f7f4;
+  width: 100%;
+  margin-bottom: 80px;
+  position: relative;
+  top: 20px;
+  left: 10px;
+}
+
+.input-wrapper {
+  position: relative; /* Allows for absolute positioning of the label */
+}
+
+.label-wrapper {
+  background: #f0f7f4; /* Matches the input background */
+  position: absolute;
+  top: -10px; /* Adjusts the label position */
+  left: 15px; /* Adjusts the label position */
+  z-index: 1; /* Ensure it appears above the input border */
+}
+
+.input-label {
+  font-size: 20px;
+  color: #000000;
+  background-color: #f0f7f4; /* Background color */
+  z-index: 1; /* Stays above other elements */
+  display: inline; /* Use inline to avoid extra space */
+  margin: 0 15px; /* Add margin for spacing, if needed */
+}
+
+.input {
+  padding: 12px 15px; /* Padding for input */
+  border: none; /* Remove the border */
+  background: #f0f7f4; /* White background */
+  border-radius: 12px; /* Rounded corners */
+  font-size: 16px;
+  outline: none;
+  height: auto; /* Dynamic height */
+  min-height: 20px; /* Minimum height */
+  width: 95%;
+  color: #000;
+  position: relative; /* Position relative to allow z-index */
+  z-index: 1; /* Ensure input is above the border */
+}
+
+/* New border wrapper */
+.input-field::before {
+  content: "";
+  position: absolute;
+  height: 80%;
+  top: 15px; /* Aligns with the input field */
+  left: -5px; /* Aligns with the input field */
+  right: 0; /* Aligns with the input field */
+  bottom: 0; /* Aligns with the input field */
+  border: 1px solid #636363; /* Border around the input */
+  border-radius: 12px; /* Match border radius */
+  z-index: 0; /* Ensure it stays behind the label and input */
+}
+
+.forgot-password {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.forgot-password a {
+  color: #70abaf;
+  text-decoration: none;
+  font-size: 14px;
+  position: relative;
+  top: -50px;
+  left: 0px;
+}
+
+.login-button {
+  width: 100%;
+  height: 10%;
+  padding: 10px;
+  background-color: #705d56;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  position: relative;
+  top: -50px;
+  left: 10px;
+}
+
+.message {
+  margin-top: 10px;
+  color: green;
+}
+
+.message.error {
+  color: red;
+}
+
+.continue-with {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #666;
+  position: relative;
+  top: 0px;
+  left: 10px;
+}
+
+.continue-with hr {
+  flex: 1;
+  border: none;
+  height: 1px;
+  background-color: #ddd;
+}
+
+.continue-with span {
+  padding: 0 10px;
+  font-size: 14px;
+}
