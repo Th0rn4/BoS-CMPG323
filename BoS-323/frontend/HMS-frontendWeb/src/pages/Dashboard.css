@@ -48,8 +48,8 @@
 }
 
 .logout-button img {
-  width: 75%;
-  height: 80%;
+  width: 5%;
+  height: 5%;
   object-fit: contain; /* Ensures the icon scales properly without distortion */
 }
 
@@ -87,7 +87,7 @@
   position: absolute;
   width: 50vw;
   height: 30vh;
-  left: 20vw;
+  left: 15vw;
   top: 20vh;
   display: flex;
   gap: 3vw; /* Adjust spacing between cards */
@@ -98,6 +98,7 @@
   height: 30vh;
   background: #70abaf;
   border-radius: 2vw;
+  cursor: pointer;
 }
 
 /* Add Assignment Button */
@@ -114,6 +115,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .button-text {
@@ -126,6 +128,7 @@
   color: #f0f7f4;
   white-space: nowrap;
   text-align: center;
+  cursor: pointer;
 }
 
 .plus-icon {
@@ -138,6 +141,7 @@
   font-size: 2.5vw;
   line-height: 3vw;
   color: #99e1d9;
+  cursor: pointer;
 }
 
 /* Right Panel */
@@ -145,7 +149,7 @@
   position: absolute;
   width: 22vw;
   height: 103vh;
-  right: -8vw; /* Changed from left: 80vw to right: 0 */
+  right: 0vw; /* Changed from left: 80vw to right: 0 */
   top: 0;
   background: #f0f7f4;
   border: 0.1vw solid #000000;
@@ -159,17 +163,20 @@
 .sloth-banner {
   width: 100%;
   height: 60vh;
-  margin-bottom: 2vh;
+  position: relative; /* Ensure positioning works */
+  top: 0; /* Pin it to the top of the container */
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f0f7f4; /* Match this with your dashboard background color */
+  background-color: #f0f7f4;
 }
 
 .sloth-banner img {
   width: 100%;
-  height: fixed;
-  object-fit: cover;
+  height: 100%; /* Adjust height to fit the banner */
+  object-fit: cover; /* Maintain aspect ratio while covering the container */
+  position: relative; /* Optional, but ensures no absolute positioning conflicts */
+  top: 0; /* Align to the top */
 }
 /* Info Section */
 .info {
@@ -220,7 +227,7 @@
   position: absolute;
   width: 50vw;
   height: 20vh;
-  left: 10vw;
+  left: 5vw;
   top: 60vh;
 }
 
@@ -241,19 +248,19 @@
 
 .notifications-container {
   position: absolute;
-  width: 50vw;
+  width: 100vw;
   top: 20vh;
-  left: 10vw;
+  left: 2vw;
   display: flex;
   flex-direction: column;
   gap: 2vh;
 }
 
 .notification-card {
-  width: 46.5vw;
+  width: 64vw;
   height: 6vh;
   background: #705d56;
-  border-radius: 1.5vw;
+  border-radius: 1vw;
   display: flex;
   align-items: center;
   justify-content: space-between;

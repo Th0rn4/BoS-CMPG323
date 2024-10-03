@@ -1,0 +1,114 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  box-sizing: border-box;
+}
+
+.assignments-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: #f0f7f4;
+  display: flex;
+}
+
+/* Left Panel / Sidebar */
+.left-panel {
+  position: fixed;
+  width: 2vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  background: #70abaf;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+/* Home Button */
+.home-button {
+  position: absolute;
+  width: 4vw;
+  height: 4vh;
+  left: -0.5vw;
+  top: 5vh;
+  cursor: pointer;
+}
+
+.home-button img {
+  width: 150%;
+  height: 150%;
+  object-fit: contain;
+}
+
+/* Logout Button */
+.logout-button {
+  position: absolute;
+  width: 10vw;
+  height: 10vh;
+  left: -1vw;
+  top: 90vh;
+  cursor: pointer;
+}
+
+.logout-button img {
+  width: 75%;
+  height: 80%;
+  object-fit: contain;
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 2vw;
+  width: calc(100vw - 2vw); /* Fix to match the viewport width exactly */
+}
+
+.page-title {
+  position: absolute;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  left: 6vw;
+  top: 0vh;
+  font-weight: 700;
+  font-size: 3vw;
+  line-height: 4vw;
+  color: #000000;
+  margin-bottom: 2vh;
+}
+
+/* List of Students */
+.list-of-students {
+  margin-top: 20vh;
+}
+
+.students-header {
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.5vw;
+  color: #000000;
+  margin-bottom: 2vh;
+}
+
+.student {
+  margin-left: 4vw;
+  background: #705d56;
+  border-radius: 25px;
+  margin-bottom: 2vh;
+  padding: 1.5vh 0;
+  cursor: pointer;
+}
+
+.student-name {
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.2vw;
+  color: #f0f7f4;
+  text-align: center;
+}

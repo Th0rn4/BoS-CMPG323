@@ -18,6 +18,10 @@ const Dashboard = () => {
     navigate("/login");
   };
 
+  const handleAssignmentClick = () => {
+    navigate("/assignments");
+  };
+
   return (
     <div className="dashboard-container">
       {/* Left Panel */}
@@ -29,6 +33,7 @@ const Dashboard = () => {
           <img src={LogoutIcon} alt="Logout" />
         </div>
       </div>
+
       {/* Intro Section */}
       <div className="intro">
         <h1 className="intro-title">Hi, Lecturer!</h1>
@@ -36,9 +41,15 @@ const Dashboard = () => {
       </div>
       {/* Assignment Section */}
       <div className="assignment-section">
-        <div className="assignment-card">{/* Assignment 1 */}</div>
-        <div className="assignment-card">{/* Assignment 2 */}</div>
-        <div className="assignment-card">{/* Assignment 3 */}</div>
+        <div className="assignment-card" onClick={handleAssignmentClick}>
+          Assignment 1
+        </div>
+        <div className="assignment-card" onClick={handleAssignmentClick}>
+          Assignment 2
+        </div>
+        <div className="assignment-card" onClick={handleAssignmentClick}>
+          Assignment 3
+        </div>
         <div className="add-assignment-button">
           <span className="plus-icon">+</span>
           <span className="button-text">Add Assignment</span>
