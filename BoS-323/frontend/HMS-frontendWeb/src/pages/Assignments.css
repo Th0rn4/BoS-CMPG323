@@ -19,7 +19,7 @@ body {
 /* Left Panel / Sidebar */
 .left-panel {
   position: fixed;
-  width: 2vw;
+  width: 5vw;
   height: 100vh;
   left: 0;
   top: 0;
@@ -101,6 +101,7 @@ body {
   border-radius: 25px;
   margin-bottom: 2vh;
   padding: 1.5vh 0;
+  width: 90vw;
   cursor: pointer;
 }
 
