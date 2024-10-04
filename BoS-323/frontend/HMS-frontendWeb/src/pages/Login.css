@@ -1,4 +1,3 @@
-/* Add this to your CSS */
 body {
   margin: 0; /* Ensure no default margin */
   overflow: hidden; /* Prevent scrolling */
@@ -21,17 +20,17 @@ body {
 }
 
 .login__sloth-wrapper {
-  position: absolute; /* Allows positioning outside of the parent */
-  left: 0vw; /* Move sloth image outside to the left */
-  top: -3vh; /* Move sloth image outside to the top */
-  width: 100vw; /* Enlarge wrapper to allow overflow */
-  height: auto; /* Maintain aspect ratio */
+  position: absolute;
+  left: 0vw;
+  top: -3vh;
+  width: 100vw;
+  height: auto;
 }
 
 .login__sloth-image {
-  width: 60vw; /* Make image fill the wrapper */
-  height: auto; /* Maintain aspect ratio */
-  object-fit: cover; /* Ensure it covers the area */
+  width: 60vw;
+  height: auto;
+  object-fit: cover;
 }
 
 .login__panel {
@@ -42,8 +41,8 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative; /* Ensure it can contain absolutely positioned elements */
-  z-index: 1; /* Make sure it's above background elements */
+  position: relative;
+  z-index: 1;
 }
 .login__title {
   font-family: "Inter", sans-serif;
