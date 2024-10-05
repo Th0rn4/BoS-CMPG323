@@ -104,7 +104,7 @@
 /* Add Assignment Button */
 .add-assignment-button {
   position: absolute;
-  width: 5vw;
+  width: 4vw;
   height: 32vh;
   left: 22.5vw;
   top: 25vh;
@@ -116,6 +116,8 @@
   justify-content: center;
   overflow: hidden;
   cursor: pointer;
+  z-index: 10;
+  padding: 1vw;
 }
 
 .button-text {
@@ -129,11 +131,12 @@
   white-space: nowrap;
   text-align: center;
   cursor: pointer;
+  margin: 0;
 }
 
 .plus-icon {
   position: absolute;
-  left: 1.9vw;
+  left: 1.3vw;
   top: 2vh;
   font-family: "Inter";
   font-style: normal;
@@ -141,7 +144,7 @@
   font-size: 2.5vw;
   line-height: 3vw;
   color: #99e1d9;
-  cursor: pointer;
+  margin-left: 1vw;
 }
 
 /* Right Panel */
