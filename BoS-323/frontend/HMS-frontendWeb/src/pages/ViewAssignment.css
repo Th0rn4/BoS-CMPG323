@@ -1,0 +1,144 @@
+.va-container {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background: #f0f7f4;
+  position: relative;
+}
+
+/* Main Content (Video Player Section) */
+.va-main-content {
+  flex: 1;
+  padding: 2vw;
+  margin-left: 3vw; /* Push everything to the right */
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Video Player Container */
+.va-video-container {
+  background: #99e1d9;
+  border-radius: 15px;
+  width: 90vw;
+  height: 50vh;
+  margin-bottom: 2vh;
+  transform: translateY(-15%);
+}
+
+.va-page-title {
+  font-family: "Inter", sans-serif;
+  font-size: 3vw;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 1vh;
+  transform: translateY(-130%);
+}
+
+/* Comments Block */
+.va-comments-block {
+  position: absolute;
+  width: 90vw;
+  height: 30vh;
+  left: 5vw;
+  top: 68vh;
+  background: #f0f7f4;
+  border: 1px solid #000000;
+  border-radius: 40px;
+  box-sizing: border-box;
+}
+
+/* Mark Panel */
+.va-mark-panel {
+  position: absolute;
+  width: 85px;
+  height: 165px;
+  left: 319px;
+  top: 620px;
+  transform: rotate(90deg);
+}
+
+/* Mark Rectangle */
+.va-mark-rectangle {
+  width: 85px;
+  height: 165px;
+  background: #f0f7f4;
+  border: 1px solid #000000;
+  border-radius: 25px;
+  box-sizing: border-box;
+}
+
+/* Mark Text */
+.va-mark-text {
+  position: absolute;
+  width: 130px;
+  height: 30px;
+  left: 18px;
+  top: 28px;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 25px;
+  color: #000000;
+}
+
+/* Publish Mark Button */
+.va-publish-mark {
+  position: absolute;
+  width: 85px;
+  height: 246px;
+  left: 1401px;
+  top: 20vh;
+}
+
+/* Publish Mark Rectangle */
+.va-publish-rectangle {
+  width: 85px;
+  height: 246px;
+  background: #705d56;
+  border-radius: 25px;
+  top: 20vh;
+}
+
+/* Publish Mark Text */
+.va-publish-text {
+  position: absolute;
+  width: 155px;
+  height: 30px;
+  left: 45px;
+  top: 28px;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 25px;
+  color: #f0f7f4;
+}
+
+/* Download Video Button */
+.va-download-video {
+  position: absolute;
+  width: 10vh;
+  height: 10vh;
+  left: 70vw;
+  top: 50vh;
+}
+
+/* Download Rectangle */
+.va-download-rectangle {
+  width: 8vh;
+  height: 15vw;
+  background: #99e1d9;
+  border-radius: 25px;
+  transform: rotate(90deg);
+}
+
+/* Download Text */
+.va-download-text {
+  position: absolute;
+  width: 120px;
+  height: 30vw;
+  left: -3vh;
+  top: 6vw;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 25px;
+  color: #000000;
+}
