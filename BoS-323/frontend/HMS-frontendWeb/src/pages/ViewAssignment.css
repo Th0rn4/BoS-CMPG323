@@ -1,29 +1,16 @@
 .va-container {
   display: flex;
-  flex-direction: column;
   width: 100vw;
   height: 100vh;
   background: #f0f7f4;
-  position: relative;
 }
 
-/* Main Content (Video Player Section) */
 .va-main-content {
   flex: 1;
   padding: 2vw;
-  margin-left: 3vw; /* Push everything to the right */
   box-sizing: border-box;
-  position: relative;
-}
-
-/* Video Player Container */
-.va-video-container {
-  background: #99e1d9;
-  border-radius: 15px;
-  width: 90vw;
-  height: 50vh;
-  margin-bottom: 2vh;
-  transform: translateY(-15%);
+  display: flex;
+  flex-direction: column;
 }
 
 .va-page-title {
@@ -31,114 +18,86 @@
   font-size: 3vw;
   font-weight: 700;
   color: #000000;
-  margin-bottom: 1vh;
-  transform: translateY(-130%);
+  margin-bottom: 2vh;
+  margin-left: 3vw;
+  margin-top: 0vh;
 }
 
-/* Comments Block */
-.va-comments-block {
-  position: absolute;
-  width: 90vw;
-  height: 30vh;
-  left: 5vw;
-  top: 68vh;
-  background: #f0f7f4;
-  border: 1px solid #000000;
-  border-radius: 40px;
-  box-sizing: border-box;
-}
-
-/* Mark Panel */
-.va-mark-panel {
-  position: absolute;
-  width: 85px;
-  height: 165px;
-  left: 319px;
-  top: 620px;
-  transform: rotate(90deg);
-}
-
-/* Mark Rectangle */
-.va-mark-rectangle {
-  width: 85px;
-  height: 165px;
-  background: #f0f7f4;
-  border: 1px solid #000000;
-  border-radius: 25px;
-  box-sizing: border-box;
-}
-
-/* Mark Text */
-.va-mark-text {
-  position: absolute;
-  width: 130px;
-  height: 30px;
-  left: 18px;
-  top: 28px;
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  font-size: 25px;
-  color: #000000;
-}
-
-/* Publish Mark Button */
-.va-publish-mark {
-  position: absolute;
-  width: 85px;
-  height: 246px;
-  left: 1401px;
-  top: 20vh;
-}
-
-/* Publish Mark Rectangle */
-.va-publish-rectangle {
-  width: 85px;
-  height: 246px;
-  background: #705d56;
-  border-radius: 25px;
-  top: 20vh;
-}
-
-/* Publish Mark Text */
-.va-publish-text {
-  position: absolute;
-  width: 155px;
-  height: 30px;
-  left: 45px;
-  top: 28px;
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  font-size: 25px;
-  color: #f0f7f4;
-}
-
-/* Download Video Button */
-.va-download-video {
-  position: absolute;
-  width: 10vh;
-  height: 10vh;
-  left: 70vw;
-  top: 50vh;
-}
-
-/* Download Rectangle */
-.va-download-rectangle {
-  width: 8vh;
-  height: 15vw;
+.va-video-container {
   background: #99e1d9;
-  border-radius: 25px;
-  transform: rotate(90deg);
+  border-radius: 15px;
+  width: 96%;
+  height: 50vh;
+  margin-bottom: 1vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000000;
+  margin-left: 3vw;
 }
 
-/* Download Text */
-.va-download-text {
-  position: absolute;
-  width: 120px;
-  height: 30vw;
-  left: -3vh;
-  top: 6vw;
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
-  font-size: 25px;
+.va-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0vh;
+}
+
+.va-mark-panel {
+  flex: 1;
+  margin-right: 1vw;
+  margin-left: 3vw;
+}
+
+.va-mark-input {
+  width: 7%;
+  height: 20%;
+  padding: 1vh;
+  font-size: 1.2vw;
+  border: 1px solid #000000;
+  background-color: #f0f7f4;
   color: #000000;
+  border-radius: 10px;
+}
+
+.va-download-button,
+.va-publish-mark-button {
+  padding: 1vh 2vw;
+  font-size: 1.2vw;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.va-download-button {
+  background: #99e1d9;
+  color: #000000;
+  margin-right: 2vw;
+}
+
+.va-publish-mark-button {
+  background: #705d56;
+  color: #f0f7f4;
+  margin-right: 1vw;
+}
+
+.va-comments-block {
+  flex: 1;
+  width: 100%;
+  margin-top: 1vh;
+  margin-left: 3vw;
+}
+
+.va-comments-textarea {
+  width: 96%;
+  height: 100%;
+  padding: 2vh;
+  box-sizing: border-box;
+  border: 1px solid #000000;
+  color: #000000;
+  border-radius: 25px;
+  font-family: "Inter", sans-serif;
+  font-size: 1vw;
+  resize: none;
+  background-color: #f0f7f4;
 }

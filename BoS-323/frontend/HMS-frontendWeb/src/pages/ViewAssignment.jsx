@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./ViewAssignment.css";
 import HomeButton from "../assets/HomeButton.svg";
@@ -7,6 +7,7 @@ import LogoutIcon from "../assets/LogoutIcon.svg";
 const ViewAssignment = () => {
   const navigate = useNavigate();
   const { studentId } = useParams();
+  const [comments, setComments] = useState("");
 
   const handleLogout = () => {
     navigate("/login");
@@ -16,13 +17,9 @@ const ViewAssignment = () => {
     navigate("/dashboard");
   };
 
-  const assignmentDetails = {
-    totalPoints: 100,
-  };
-
   const getStudentName = (id) => {
     const students = {
-      1: "Student1 Name Lastname",
+      1: "StudentName StudentLastname",
       2: "Student2 Name Lastname",
       3: "Student3 Name Lastname",
       4: "Student4 Name Lastname",
@@ -44,34 +41,31 @@ const ViewAssignment = () => {
       </div>
 
       <div className="va-main-content">
-        <h1 className="va-page-title">{studentName}'s Assignment</h1>
+        <h1 className="va-page-title">{studentName}</h1>
         <div className="va-video-container">
           <p>Video Player Placeholder</p>
         </div>
 
-        <div className="va-assignment-details">
-          <p>Total Points: {assignmentDetails.totalPoints}</p>
+        <div className="va-controls">
+          <div className="va-mark-panel">
+            <input
+              type="text"
+              placeholder="Mark Out/X"
+              className="va-mark-input"
+            />
+          </div>
+          <button className="va-download-button">Download</button>
+          <button className="va-publish-mark-button">Publish Mark</button>
         </div>
-      </div>
 
-      {/* Bottom Section */}
-      <div className="va-comments-block">
-        {/* Comments section for lecturer */}
-      </div>
-
-      <div className="va-mark-panel">
-        <div className="va-mark-rectangle"></div>
-        <div className="va-mark-text">Mark / 100</div>
-      </div>
-
-      <div className="va-publish-mark">
-        <div className="va-publish-rectangle"></div>
-        <div className="va-publish-text">Publish Mark</div>
-      </div>
-
-      <div className="va-download-video">
-        <div className="va-download-rectangle"></div>
-        <div className="va-download-text">Download</div>
+        <div className="va-comments-block">
+          <textarea
+            value={comments}
+            onChange={(e) => setComments(e.target.value)}
+            placeholder="Enter your comments here..."
+            className="va-comments-textarea"
+          />
+        </div>
       </div>
     </div>
   );
