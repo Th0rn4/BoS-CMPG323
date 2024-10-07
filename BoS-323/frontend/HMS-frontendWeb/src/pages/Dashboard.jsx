@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 import HomeButton from "../assets/HomeButton.svg";
@@ -8,19 +8,26 @@ import DeleteIcon from "../assets/DeleteNotification.svg";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
+  // Fetch user info from localStorage when component mounts
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem("user"));
+    if (userInfo) {
+      setUser(userInfo); // Set user state if user info is found
+    } else {
+      navigate("/login"); // Redirect to login if no user is found
+    }
+  }, [navigate]);
+
+  // Handle logout, clear localStorage, and navigate to login
   const handleLogout = () => {
-    // Perform any logout logic here (e.g., clearing local storage, etc.)
-    // For example:
-    // localStorage.removeItem('token');
-
-    // Navigate to the login page
-    navigate("/login");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login", { state: { message: "Logout successful!" } });
   };
 
-  const handleAssignmentClick = () => {
-    navigate("/assignments");
-  };
+  if (!user) return null; // Prevent rendering if no user data is loaded
 
   return (
     <div className="dashboard-container">
@@ -36,18 +43,30 @@ const Dashboard = () => {
 
       {/* Intro Section */}
       <div className="intro">
-        <h1 className="intro-title">Hi, Lecturer!</h1>
+        <h1 className="intro-title">
+          Hi, {user.role === "lecturer" ? "Lecturer" : "Admin"}!
+        </h1>
         <p className="intro-subtitle">Manage Assignments and Grades</p>
       </div>
+
       {/* Assignment Section */}
       <div className="assignment-section">
-        <div className="assignment-card" onClick={handleAssignmentClick}>
+        <div
+          className="assignment-card"
+          onClick={() => navigate("/assignments")}
+        >
           Assignment 1
         </div>
-        <div className="assignment-card" onClick={handleAssignmentClick}>
+        <div
+          className="assignment-card"
+          onClick={() => navigate("/assignments")}
+        >
           Assignment 2
         </div>
-        <div className="assignment-card" onClick={handleAssignmentClick}>
+        <div
+          className="assignment-card"
+          onClick={() => navigate("/assignments")}
+        >
           Assignment 3
         </div>
         <div className="add-assignment-button">
@@ -61,13 +80,13 @@ const Dashboard = () => {
         <h2 className="notifications-title">Notifications</h2>
         <div className="notifications-container">
           <div className="notification-card">
-            <p className="notification-text">Notification1</p>
+            <p className="notification-text">Notification 1</p>
             <button className="delete-notification">
               <img src={DeleteIcon} alt="Delete" className="delete-icon" />
             </button>
           </div>
           <div className="notification-card">
-            <p className="notification-text">Notification2</p>
+            <p className="notification-text">Notification 2</p>
             <button className="delete-notification">
               <img src={DeleteIcon} alt="Delete" className="delete-icon" />
             </button>
@@ -80,10 +99,13 @@ const Dashboard = () => {
         <div className="sloth-banner">
           <img src={SlothBanner} alt="Sloth" />
         </div>
-        <div className="info">Information</div>
-        <div className="logged-in-name">John</div>
-        <div className="logged-in-surname">Doe</div>
-        <div className="logged-in-email">johndoe@example.com</div>
+        <div className="info">
+          <div className="logged-in-name">
+            {user.name.firstName} {user.name.lastName}{" "}
+            {/* Access firstName and lastName */}
+          </div>
+          <div className="logged-in-email">{user.email}</div>
+        </div>
       </div>
     </div>
   );
