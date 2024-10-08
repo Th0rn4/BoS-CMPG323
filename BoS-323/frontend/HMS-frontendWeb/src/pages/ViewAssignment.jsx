@@ -18,8 +18,7 @@ const ViewAssignment = () => {
       try {
         setLoading(true);
         setError(null);
-        // For now, we're using a hardcoded video ID. You'll need to replace this with the actual video ID later.
-        const videoId = "66f1a83f3ef7cb7a887eb23a";
+        const videoId = "66f1a83f3ef7cb7a887eb23a"; // Replace with actual video ID later
         const url = await streamVideo(videoId);
         setVideoUrl(url);
       } catch (error) {
@@ -71,7 +70,7 @@ const ViewAssignment = () => {
           ) : error ? (
             <p>Error: {error}</p>
           ) : videoUrl ? (
-            <video controls width="100%">
+            <video controls className="va-video">
               <source src={videoUrl} type="video/mp4" />
               Your browser does not support the video tag.
             </video>

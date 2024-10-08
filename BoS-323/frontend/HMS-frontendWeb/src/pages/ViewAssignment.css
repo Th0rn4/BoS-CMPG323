@@ -34,6 +34,14 @@
   align-items: center;
   color: #000000;
   margin-left: 3vw;
+  overflow: hidden; /* Ensures content doesn't overflow the container */
+}
+
+.va-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Ensures the video fits inside the container without distortion */
+  border-radius: 15px;
 }
 
 .va-controls {
