@@ -2,13 +2,15 @@ const express = require("express");
 const connectDB = require("./db");
 const subRoutes = require("./SubmissionRoutes");
 const dotenv = require("dotenv");
+const cors = require("cors"); // Import CORS
 
 dotenv.config();
 
-const app = express(); // Explicitly declare app
+const app = express();
 
 // Middleware
-app.use(express.json()); // Add this to handle JSON requests
+app.use(express.json());
+app.use(cors()); // Use CORS middleware
 
 // Connect to MongoDB
 connectDB().catch((err) => {
@@ -19,7 +21,7 @@ connectDB().catch((err) => {
 app.use("/api/submissions", subRoutes);
 
 // Start the server
-const PORT = process.env.PORT || 3004; // Use environment variable
+const PORT = process.env.PORT || 3004;
 app
   .listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
