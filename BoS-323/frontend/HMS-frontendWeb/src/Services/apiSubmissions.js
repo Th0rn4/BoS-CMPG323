@@ -48,7 +48,17 @@ export const getDownloadUrl = async (videoId) => {
 export const downloadVideo = async (videoId) => {
   try {
     const downloadUrl = await getDownloadUrl(videoId);
-    window.open(downloadUrl, "_blank");
+    // Instead of window.open, use fetch to get the file
+    const response = await fetch(downloadUrl);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = `video_${videoId}.mp4`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
   } catch (error) {
     console.error("Failed to download video:", error);
     throw error;

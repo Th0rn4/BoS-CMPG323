@@ -11,19 +11,19 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-// More permissive CORS configuration
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-    optionsSuccessStatus: 204,
-  })
-);
+// CORS configuration
+const corsOptions = {
+  origin: "http://localhost:3000", // Replace frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 
 // Enable pre-flight requests for all routes
-app.options("*", cors());
+app.options("*", cors(corsOptions));
 
 // Connect to MongoDB
 connectDB().catch((err) => {
