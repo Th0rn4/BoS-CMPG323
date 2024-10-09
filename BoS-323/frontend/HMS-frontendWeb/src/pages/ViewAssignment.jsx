@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./ViewAssignment.css";
 import HomeButton from "../assets/HomeButton.svg";
 import LogoutIcon from "../assets/LogoutIcon.svg";
-import { streamVideo, getDownloadUrl } from "../Services/apiSubmissions";
+import { streamVideo, downloadVideo } from "../Services/apiSubmissions";
 
 const ViewAssignment = () => {
   const navigate = useNavigate();
@@ -42,15 +42,10 @@ const ViewAssignment = () => {
 
   const handleDownload = async () => {
     try {
-      const downloadUrl = await getDownloadUrl(videoId); // Fetch the download URL from the API
-      if (downloadUrl) {
-        window.open(downloadUrl, "_blank"); // Trigger the download
-      } else {
-        throw new Error("Download URL not found");
-      }
+      await downloadVideo(videoId);
     } catch (error) {
       console.error("Failed to initiate download:", error);
-      alert("Failed to download the video. Please try again.");
+      alert(`Failed to download the video: ${error.message}`);
     }
   };
 

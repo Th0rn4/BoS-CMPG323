@@ -44,3 +44,13 @@ export const getDownloadUrl = async (videoId) => {
     throw error;
   }
 };
+
+export const downloadVideo = async (videoId) => {
+  try {
+    const downloadUrl = await getDownloadUrl(videoId);
+    window.open(downloadUrl, "_blank");
+  } catch (error) {
+    console.error("Failed to download video:", error);
+    throw error;
+  }
+};
