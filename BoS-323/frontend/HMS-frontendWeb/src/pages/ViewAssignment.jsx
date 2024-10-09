@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./ViewAssignment.css";
 import HomeButton from "../assets/HomeButton.svg";
 import LogoutIcon from "../assets/LogoutIcon.svg";
-import { streamVideo } from "../Services/apiSubmissions";
+import { streamVideo, getDownloadUrl } from "../Services/apiSubmissions";
 
 const ViewAssignment = () => {
   const navigate = useNavigate();
@@ -12,13 +12,13 @@ const ViewAssignment = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [videoId, setVideoId] = useState("66f1a83f3ef7cb7a887eb23a"); // Replace with actual video ID later
 
   useEffect(() => {
     const loadVideo = async () => {
       try {
         setLoading(true);
         setError(null);
-        const videoId = "66f1a83f3ef7cb7a887eb23a"; // Replace with actual video ID later
         const url = await streamVideo(videoId);
         setVideoUrl(url);
       } catch (error) {
@@ -30,7 +30,7 @@ const ViewAssignment = () => {
     };
 
     loadVideo();
-  }, []);
+  }, [videoId]);
 
   const handleLogout = () => {
     navigate("/login");
@@ -38,6 +38,20 @@ const ViewAssignment = () => {
 
   const handleHomeClick = () => {
     navigate("/dashboard");
+  };
+
+  const handleDownload = async () => {
+    try {
+      const downloadUrl = await getDownloadUrl(videoId); // Fetch the download URL from the API
+      if (downloadUrl) {
+        window.open(downloadUrl, "_blank"); // Trigger the download
+      } else {
+        throw new Error("Download URL not found");
+      }
+    } catch (error) {
+      console.error("Failed to initiate download:", error);
+      alert("Failed to download the video. Please try again.");
+    }
   };
 
   const getStudentName = (id) => {
@@ -86,7 +100,9 @@ const ViewAssignment = () => {
               className="va-mark-input"
             />
           </div>
-          <button className="va-download-button">Download</button>
+          <button className="va-download-button" onClick={handleDownload}>
+            Download
+          </button>
           <button className="va-publish-mark-button">Publish Mark</button>
         </div>
         <div className="va-comments-block">

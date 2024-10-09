@@ -7,8 +7,6 @@ export const streamVideo = async (videoId) => {
   try {
     const response = await axios.get(`${API_URL}/stream/${videoId}`, {
       responseType: "blob",
-      // If you need to add authentication, uncomment and modify the following line:
-      // headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
 
     console.log("Response headers:", response.headers);
@@ -28,6 +26,21 @@ export const streamVideo = async (videoId) => {
       console.error("Error status:", error.response.status);
       console.error("Error headers:", error.response.headers);
     }
+    throw error;
+  }
+};
+
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
+});
+
+export const getDownloadUrl = async (videoId) => {
+  try {
+    const response = await axiosInstance.get(`/${videoId}/download`);
+    return response.data.downloadUrl;
+  } catch (error) {
+    console.error("Failed to get download URL:", error);
     throw error;
   }
 };

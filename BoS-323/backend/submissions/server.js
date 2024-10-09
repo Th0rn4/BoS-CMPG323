@@ -2,7 +2,7 @@ const express = require("express");
 const connectDB = require("./db");
 const subRoutes = require("./SubmissionRoutes");
 const dotenv = require("dotenv");
-const cors = require("cors"); // Import CORS
+const cors = require("cors");
 
 dotenv.config();
 
@@ -10,7 +10,17 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors()); // Use CORS middleware
+
+// CORS configuration
+const corsOptions = {
+  origin: "http://localhost:3000", // Replace with frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 
 // Connect to MongoDB
 connectDB().catch((err) => {
