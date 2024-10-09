@@ -48,7 +48,6 @@ export const getDownloadUrl = async (videoId) => {
 export const downloadVideo = async (videoId) => {
   try {
     const downloadUrl = await getDownloadUrl(videoId);
-    // Instead of window.open, use fetch to get the file
     const response = await fetch(downloadUrl);
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
