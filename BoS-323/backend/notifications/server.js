@@ -1,15 +1,27 @@
-const express = require("express");
-const connectDB = require("./db");
-const notificationRoutes = require("./NotificationRoutes");
-const dotenv = require("dotenv");
+const express = require('express');
+const connectDB = require('./db');
+const notificationRoutes = require('./NotificationRoutes');
+const dotenv = require('dotenv');
+const cors = require('cors'); // Import the CORS package
 
 // Load environment variables
-dotenv.config();
+dotenv.config(); 
 
-const app = express(); // Explicitly declare app
+const app = express(); 
 
 // Middleware to handle JSON requests
 app.use(express.json());
+
+// CORS configuration
+const corsOptions = {
+  origin: "http://localhost:3000", // Specify the origin of your frontend
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, 
+  optionsSuccessStatus: 204, 
+};
+
+app.use(cors(corsOptions)); // Apply CORS middleware before routes
 
 // Connect to MongoDB
 connectDB().catch((err) => {
@@ -17,14 +29,12 @@ connectDB().catch((err) => {
 });
 
 // Routes
-app.use("/api/notifications", notificationRoutes); // Use plural for consistency
+app.use('/api/notifications', notificationRoutes); // Use assignment routes
 
 // Start the server
-const PORT = process.env.PORT || 3003; // Dynamically use environment variable
-app
-  .listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  })
-  .on("error", (err) => {
-    console.error("Error starting the server:", err);
-  });
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+}).on('error', (err) => {
+  console.error('Error starting the server:', err);
+});
