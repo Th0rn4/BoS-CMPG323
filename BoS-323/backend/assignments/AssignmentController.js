@@ -42,6 +42,44 @@ exports.getAssignments = async (req, res) => {
   }
 };
 
+// Get an assignment by ID
+exports.getAssignmentById = async (req, res) => {
+  try {
+    const assignmentId = req.params.id;
+
+    // Remove leading colon if present
+    if (assignmentId.startsWith(':')) {
+      assignmentId = assignmentId.slice(1);
+    }
+
+    // Validate if the ID is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(assignmentId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Invalid assignment ID format' });
+    }
+
+    const assignment = await getAssignment(assignmentId);
+    if (!assignment) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Assignment not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Assignment retrieved successfully',
+      assignment,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error retrieving assignment',
+      error: error.message,
+    });
+  }
+};
+
 exports.deleteAssignment = async (req, res) => {
   try {
     let assignmentId = req.params.id;
