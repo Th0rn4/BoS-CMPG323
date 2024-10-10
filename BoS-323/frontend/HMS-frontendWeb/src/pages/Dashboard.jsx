@@ -11,7 +11,7 @@ import DeleteIcon from "../assets/DeleteNotification.svg";
 import AddAssignmentModal from "./AddAssignmentModal"; // Import the modal
 import { fetchAssignments, addAssignment } from "../Services/apiAssignments"; // Import API services
 import { fetchNotifications, addNotification, deleteNotification as deleteNotificationService } from "../Services/apiNotifications"; // Import API services
-
+import { fetchUserInfo } from "../Services/apiUsers";
 const MAX_DESCRIPTION_LENGTH = 100; // Set a limit for description length
 
 const Dashboard = () => {
@@ -30,7 +30,7 @@ const Dashboard = () => {
         const notificationsData = await fetchNotifications();
         setNotifications(notificationsData);
 
-        const userData = await fetch("/api/user").then(res => res.json());
+        const userData = await fetchUserInfo();
         setUser(userData);
       } catch (error) {
         console.error("Error loading data:", error);
