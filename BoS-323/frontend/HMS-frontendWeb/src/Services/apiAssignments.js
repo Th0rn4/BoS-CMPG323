@@ -5,16 +5,21 @@ const API_URL = "https://bos-cmpg323-assignmentdeploy.onrender.com/api/assignmen
 // Fetch assignments function
 export const fetchAssignments = async () => {
   try {
-    const response = await axios.get(`${API_URL}/assignments`); 
+    const response = await axios.get(API_URL); 
     return response.data; 
   } catch (error) {
     console.error("Error fetching assignments:", error.response?.data?.error || error.message);
-    throw new Error("Failed to fetch assignments"); // Throw a more general error
+    throw new Error("Failed to fetch assignments");
   }
 };
 
 // Add assignment function
 export const addAssignment = async (newAssignment) => {
+  // Validate the newAssignment object
+  if (!newAssignment.title || !newAssignment.description || !newAssignment.due_date) {
+    throw new Error("Title, description, and due date are required fields.");
+  }
+
   try {
     const response = await axios.post(API_URL, newAssignment, { 
       headers: {
@@ -24,6 +29,6 @@ export const addAssignment = async (newAssignment) => {
     return response.data; // Axios automatically parses the JSON response
   } catch (error) {
     console.error("Error adding assignment:", error.response?.data?.error || error.message);
-    throw new Error("Failed to add assignment"); // Throw a more general error
+    throw new Error("Failed to add assignment");
   }
 };
