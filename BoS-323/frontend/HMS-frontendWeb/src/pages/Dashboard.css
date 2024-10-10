@@ -83,6 +83,7 @@
 }
 
 /* Assignment Section */
+
 .assignment-section {
   position: absolute;
   width: 50vw;
@@ -99,13 +100,39 @@
   background: #70abaf;
   border-radius: 2vw;
 }
+.assignment-card:hover {
+  transform: scale(1.02); 
+}
+
+.assignment-title {
+  font-size: 1.5rem; 
+  margin: 0.5rem 0; 
+  text-align: center; 
+  color: #f0f7f4; 
+}
+
+.assignment-description {
+  font-size: 1rem; 
+  margin: 0.5rem 0;
+  text-align: center; 
+  color: #f0f7f4; 
+}
+
+.assignment-due-date {
+  font-size: 0.9rem; 
+  text-align: center; 
+  color: #f0f7f4; 
+}
+
+
+
 
 /* Add Assignment Button */
 .add-assignment-button {
-  position: absolute;
-  width: 5vw;
-  height: 32vh;
-  left: 22.5vw;
+  position:absolute; 
+  width: 5vw; 
+  height: 32vh; 
+  left: 22.5vw; 
   top: 25vh;
   transform: rotate(90deg);
   background: #705d56;
@@ -114,7 +141,8 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-}
+  cursor: pointer; 
+  padding: 1vh; }
 
 .button-text {
   transform: rotate(-90deg);
@@ -130,15 +158,17 @@
 
 .plus-icon {
   position: absolute;
-  left: 1.9vw;
+  left: 3vw; /* Adjusted for better positioning */
   top: 2vh;
   font-family: "Inter";
   font-style: normal;
   font-weight: 500;
-  font-size: 2.5vw;
+  font-size: 3vw; /* Increased size of the plus icon */
   line-height: 3vw;
   color: #99e1d9;
 }
+
+
 
 /* Right Panel */
 .right-panel {
@@ -226,7 +256,7 @@
 
 .notifications-title {
   position: absolute;
-  width: 15vw;
+  width: 1vw;
   height: 3vh;
   left: 10vw;
   top: 10vh;
