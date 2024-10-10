@@ -1,5 +1,7 @@
+// Dashboard.js
+
 // eslint-disable-next-line no-unused-vars
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 import HomeButton from "../assets/HomeButton.svg";
@@ -7,50 +9,35 @@ import LogoutIcon from "../assets/LogoutIcon.svg";
 import SlothBanner from "../assets/SlothBanner.svg";
 import DeleteIcon from "../assets/DeleteNotification.svg";
 import AddAssignmentModal from "./AddAssignmentModal"; // Import the modal
+import { fetchAssignments, addAssignment } from "../Services/apiAssignments"; // Import API services
+import { fetchNotifications, addNotification, deleteNotification as deleteNotificationService } from "../Services/apiNotifications"; // Import API services
 
 const MAX_DESCRIPTION_LENGTH = 100; // Set a limit for description length
 
 const Dashboard = () => {
-  const [assignments, setAssignments] = useState([]); // State to store assignments
-  const [notifications, setNotifications] = useState([]); // State to store notifications
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
-  const [user, setUser] = useState({}); // State to store user data
+  const [assignments, setAssignments] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [user, setUser] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchAssignments = async () => {
+    const loadData = async () => {
       try {
-        const response = await fetch("/api/assignments"); // Replace with your API endpoint
-        const data = await response.json();
-        setAssignments(data);
-      } catch (error) {
-        console.error("Error fetching assignments:", error);
-      }
-    };
+        const assignmentsData = await fetchAssignments();
+        setAssignments(assignmentsData);
 
-    const fetchNotifications = async () => {
-      try {
-        const response = await fetch("/api/notifications"); // Replace with your API endpoint
-        const data = await response.json();
-        setNotifications(data);
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
-    };
+        const notificationsData = await fetchNotifications();
+        setNotifications(notificationsData);
 
-    const fetchUser = async () => {
-      try {
-        const response = await fetch("/api/user"); // Replace with your API endpoint for fetching the user
-        const userData = await response.json();
+        const userData = await fetch("/api/user").then(res => res.json());
         setUser(userData);
       } catch (error) {
-        console.error("Error fetching user:", error);
+        console.error("Error loading data:", error);
       }
     };
 
-    fetchAssignments();
-    fetchNotifications();
-    fetchUser(); // Fetch user data on component mount
+    loadData();
   }, []);
 
   const truncateText = (text, maxLength) => {
@@ -58,59 +45,50 @@ const Dashboard = () => {
   };
 
   const handleLogout = () => {
-    // Perform any logout logic here
-    navigate("/login");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login", { state: { message: "Logout successful!" } });
   };
 
-  const handleAddAssignment = (newAssignment) => {
-    setAssignments((prevAssignments) => {
-      const updatedAssignments = [...prevAssignments, newAssignment];
-      return updatedAssignments.slice(-3); // Keep only the last three assignments
-    });
+  const handleAddAssignment = async (newAssignment) => {
+    try {
+      const addedAssignment = await addAssignment(newAssignment);
+      setAssignments((prevAssignments) => {
+        const updatedAssignments = [...prevAssignments, addedAssignment];
+        return updatedAssignments.slice(-3); // Keep only the last three assignments
+      });
 
-    // Optionally send to backend
-    fetch("/api/assignment", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newAssignment),
-    }).catch((error) => console.error("Error adding assignment:", error));
+      const currentTime = new Date();
+      const formattedTime = `${currentTime.toLocaleDateString()} ${currentTime.toLocaleTimeString()}`;
 
-    // Create a new notification when the assignment is added
-    const currentTime = new Date();
-    const formattedTime = `${currentTime.toLocaleDateString()} ${currentTime.toLocaleTimeString()}`;
+      const newNotification = {
+        id: Date.now(), // Use timestamp or another method to generate unique ID
+        text: `New Assignment: ${newAssignment.title} - (Added on: ${formattedTime})`,
+      };
 
-    const newNotification = {
-      id: Date.now(), // Use timestamp or another method to generate unique ID
-      text: `New Assignment: ${newAssignment.title} - (Added on: ${formattedTime})`,
-    };
+      setNotifications((prevNotifications) => [
+        ...prevNotifications,
+        newNotification,
+      ]);
 
-    setNotifications((prevNotifications) => [
-      ...prevNotifications,
-      newNotification,
-    ]);
-
-    // Optionally send the new notification to the backend
-    fetch("/api/notifications", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newNotification),
-    }).catch((error) => console.error("Error adding notification:", error));
+      await addNotification(newNotification); // Send the new notification to the backend
+    } catch (error) {
+      console.error("Error adding assignment:", error);
+    }
   };
 
-  const handleDeleteNotification = (notificationId) => {
-    setNotifications((prevNotifications) =>
-      prevNotifications.filter((notification) => notification.id !== notificationId)
-    );
-
-    // Optionally send to backend to delete notification
-    fetch(`/api/notifications/${notificationId}`, {
-      method: "DELETE",
-    }).catch((error) => console.error("Error deleting notification:", error));
+  const handleDeleteNotification = async (notificationId) => {
+    try {
+      setNotifications((prevNotifications) =>
+        prevNotifications.filter((notification) => notification.id !== notificationId)
+      );
+      await deleteNotificationService(notificationId); // Send to backend to delete notification
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+    }
   };
+
+  if (!user) return null; // Prevent rendering if no user data is loaded
 
   return (
     <div className="dashboard-container">
@@ -126,7 +104,9 @@ const Dashboard = () => {
 
       {/* Intro Section */}
       <div className="intro">
-        <h1 className="intro-title">Hi, Lecturer!</h1>
+        <h1 className="intro-title">
+          Hi, {user.role === "lecturer" ? "Lecturer" : "Admin"}!
+        </h1>
         <p className="intro-subtitle">Manage Assignments and Grades</p>
       </div>
 

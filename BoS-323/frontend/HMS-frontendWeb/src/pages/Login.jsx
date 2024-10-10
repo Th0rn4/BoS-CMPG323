@@ -1,78 +1,95 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { loginUser, fetchUserInfo } from "../Services/apiUsers";
 import "./Login.css";
-import bluePanelImage from "../assets/blue-panel.png";
-import { loginUser } from "../Services/apiUsers";
+import FriendlySloth from "../assets/FriendlySloth.svg";
 
-const LoginPage = () => {
+const Login = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setMessage(location.state.message); // Set the logout message
+    }
+  }, [location.state]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // We'll still call loginUser, but we won't wait for the response
-      loginUser(email, password);
-      setMessage("Redirecting to dashboard...");
-    } catch (error) {
-      // If there's an error, we'll still set a message, but we'll redirect anyway
-      setMessage("Login process initiated. Redirecting to dashboard...");
-    } finally {
-      // Always navigate to dashboard after a brief delay
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1500); // Delay for 1.5 seconds to show the message
+      const { token } = await loginUser(email, password);
+      localStorage.setItem("token", token);
+
+      const { data: user } = await fetchUserInfo(token);
+
+      if (user.role !== "lecturer" && user.role !== "admin") {
+        setError("Access restricted to lecturers and admins only.");
+        localStorage.removeItem("token");
+        return;
+      }
+
+      localStorage.setItem("user", JSON.stringify(user));
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message);
     }
   };
 
   return (
-    <div className="login-container">
-      <div className="left-panel">
-        <img
-          src={bluePanelImage}
-          alt="Friendly Sloth"
-          className="sloth-image"
-        />
+    <div className="login">
+      <div className="login__decorative-panel">
+        <div className="login__sloth-wrapper">
+          <img
+            src={FriendlySloth}
+            alt="Friendly Sloth"
+            className="login__sloth-image"
+          />
+        </div>
       </div>
-      <div className="right-panel">
-        <h2 className="login-heading">Login</h2>
-        <form onSubmit={handleLogin}>
-          <div className="input-field">
-            <label className="input-label">Email</label>
+      <div className="login__panel">
+        <h1 className="login__title">Login</h1>
+        {message && <p className="login__success">{message}</p>}{" "}
+        {/* Green message */}
+        {error && <p className="login__error">{error}</p>} {/* Error message */}
+        <form className="login__form" onSubmit={handleLogin}>
+          <div className="login__input-field">
+            <div className="login__input-label">Email</div>
             <input
+              className="login__input"
               type="email"
-              className="input"
+              placeholder="Enter your email"
+              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="input-field">
-            <label className="input-label">Password</label>
+          <div className="login__input-field">
+            <div className="login__input-label">Password</div>
             <input
+              className="login__input"
               type="password"
-              className="input"
+              placeholder="Enter your password"
+              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <div className="forgot-password">
-            <a href="#">Forgot Password?</a>
+          <div className="login__forgot-password">
+            <span className="login__forgot-password-text">
+              Forgot Password?
+            </span>
           </div>
-          <button type="submit" className="login-button">
+          <button type="submit" className="login__button">
             Log in
           </button>
-          <p className="message">{message}</p>
-          <div className="continue-with">
-            <hr />
-            <span>Or Continue With</span>
-            <hr />
-          </div>
         </form>
       </div>
     </div>
   );
 };
 
-export default LoginPage;
+export default Login;

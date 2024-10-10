@@ -4,6 +4,7 @@
   width: 100vw;
   height: 100vh;
   background: #f0f7f4;
+  display: flex;
   flex-direction: row;
 }
 
@@ -34,7 +35,7 @@
 .home-button img {
   width: 150%;
   height: 150%;
-  object-fit: contain; /* Ensures the icon scales properly without distortion */
+  object-fit: contain;
 }
 
 /* Logout Button */
@@ -48,9 +49,9 @@
 }
 
 .logout-button img {
-  width: 75%;
-  height: 80%;
-  object-fit: contain; /* Ensures the icon scales properly without distortion */
+  width: 5%;
+  height: 5%;
+  object-fit: contain;
 }
 
 /* Intro Section */
@@ -86,12 +87,12 @@
 
 .assignment-section {
   position: absolute;
-  width: 50vw;
+  width: 5vw;
   height: 30vh;
-  left: 20vw;
+  left: 15vw;
   top: 20vh;
   display: flex;
-  gap: 3vw; /* Adjust spacing between cards */
+  gap: 3vw;
 }
 
 .assignment-card {
@@ -99,6 +100,7 @@
   height: 30vh;
   background: #70abaf;
   border-radius: 2vw;
+  cursor: pointer;
 }
 .assignment-card:hover {
   transform: scale(1.02); 
@@ -129,10 +131,10 @@
 
 /* Add Assignment Button */
 .add-assignment-button {
-  position:absolute; 
-  width: 5vw; 
-  height: 32vh; 
-  left: 22.5vw; 
+  position: absolute;
+  width: 4vw;
+  height: 32vh;
+  left: 22.5vw;
   top: 25vh;
   transform: rotate(90deg);
   background: #705d56;
@@ -141,8 +143,10 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  cursor: pointer; 
-  padding: 1vh; }
+  cursor: pointer;
+  z-index: 10;
+  padding: 1vw;
+}
 
 .button-text {
   transform: rotate(-90deg);
@@ -154,11 +158,13 @@
   color: #f0f7f4;
   white-space: nowrap;
   text-align: center;
+  cursor: pointer;
+  margin: 0;
 }
 
 .plus-icon {
   position: absolute;
-  left: 3vw; /* Adjusted for better positioning */
+  left: 1.3vw;
   top: 2vh;
   font-family: "Inter";
   font-style: normal;
@@ -166,6 +172,7 @@
   font-size: 3vw; /* Increased size of the plus icon */
   line-height: 3vw;
   color: #99e1d9;
+  margin-left: 1vw;
 }
 
 
@@ -174,46 +181,42 @@
 .right-panel {
   position: absolute;
   width: 22vw;
-  height: 103vh;
-  right: -8vw; /* Changed from left: 80vw to right: 0 */
+  height: 100vh;
+  right: 0;
   top: 0;
   background: #f0f7f4;
   border: 0.1vw solid #000000;
   display: flex;
   flex-direction: column;
-  padding: 0vw;
   box-sizing: border-box;
+  padding: 0;
 }
 
 /* Sloth Banner */
 .sloth-banner {
   width: 100%;
   height: 60vh;
-  margin-bottom: 2vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f0f7f4; /* Match this with your dashboard background color */
+  background-color: #f0f7f4;
 }
 
 .sloth-banner img {
   width: 100%;
-  height: fixed;
+  height: 100%;
   object-fit: cover;
 }
+
 /* Info Section */
 .info {
-  position: absolute;
-  width: 10vw;
-  height: 2vh;
-  left: 1vw;
-  top: 62.5vh;
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 1.5vw;
-  line-height: 2vh;
-  color: #636363;
+  margin-top: 2vh;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1vw;
+  font-family: "Inter", sans-serif;
 }
 
 /* Logged In User Info */
@@ -224,66 +227,46 @@
   font-style: normal;
   font-weight: 500;
   font-size: 1.5vw;
-  line-height: 2vh;
   color: #636363;
-}
-
-.logged-in-name {
-  position: absolute;
-  left: 1vw;
-  top: 70vh;
-}
-
-.logged-in-surname {
-  position: absolute;
-  left: 1vw;
-  top: 75vh;
+  margin-bottom: 0.5vh;
 }
 
 .logged-in-email {
-  position: absolute;
-  left: 1vw;
-  top: 80vh;
+  font-size: 1.2vw;
+  color: #777;
 }
 
+/* Notifications Section */
 .notifications-section {
   position: absolute;
   width: 50vw;
   height: 20vh;
-  left: 10vw;
-  top: 60vh;
+  left: 5vw;
+  top: 70vh;
 }
 
 .notifications-title {
-  position: absolute;
-  width: 1vw;
-  height: 3vh;
-  left: 10vw;
-  top: 10vh;
-  left: 30vw;
   font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 2vw;
-  line-height: 3vh;
   color: #636363;
+  margin-left: 30vw;
+  margin-bottom: 2vh;
 }
 
 .notifications-container {
-  position: absolute;
-  width: 50vw;
-  top: 20vh;
-  left: 10vw;
   display: flex;
   flex-direction: column;
   gap: 2vh;
 }
 
 .notification-card {
-  width: 46.5vw;
+  width: 65vw;
   height: 6vh;
+  margin-left: 1vw;
   background: #705d56;
-  border-radius: 1.5vw;
+  border-radius: 1vw;
   display: flex;
   align-items: center;
   justify-content: space-between;

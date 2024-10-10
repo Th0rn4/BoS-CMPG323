@@ -1,178 +1,180 @@
-html,
 body {
-  height: 94%;
-  width: 85%;
-  margin: 0;
-  padding: 0;
-  font-family: "Inter", sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f0f7f4;
+  margin: 0; /* Ensure no default margin */
+  overflow: hidden; /* Prevent scrolling */
 }
 
-.login-container {
+.login {
   display: flex;
-  width: 1500px;
+  justify-content: flex-start;
+  align-items: center;
   height: 100vh;
+  width: 100vw;
   background-color: #f0f7f4;
-  border-radius: 20px;
-  overflow: hidden;
 }
 
-.left-panel {
-  flex: 1;
-  padding: 20px;
+.login__decorative-panel {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 2vw;
+}
+
+.login__sloth-wrapper {
+  position: absolute;
+  left: 0;
+  top: -3vh;
+  width: 50vw;
+  height: 100vh;
+}
+
+.login__sloth-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left;
+}
+
+.login__panel {
+  width: 50vw;
+  height: 100vh;
+  padding: 0 2vw;
+  background: #f0f7f4;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  background-color: #f0f7f4;
-}
-
-.sloth-image {
-  max-width: 900px;
-  max-height: 650px;
-  width: auto;
-  height: auto;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-}
-
-.right-panel {
-  flex: 1;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-}
-
-.login-heading {
-  font-size: 35px;
-  margin-bottom: 20px;
-  color: #333;
-  text-align: center;
   position: relative;
-  top: -10px;
-  left: 10px;
+  transform: translateX(-2vw);
+  z-index: 1;
 }
-
-.input-field {
-  display: flex;
-  flex-direction: column;
-  background-color: #f0f7f4;
-  width: 100%;
-  margin-bottom: 80px;
-  position: relative;
-  top: 20px;
-  left: 10px;
-}
-
-.input-wrapper {
-  position: relative; /* Allows for absolute positioning of the label */
-}
-
-.label-wrapper {
-  background: #f0f7f4; /* Matches the input background */
-  position: absolute;
-  top: -10px; /* Adjusts the label position */
-  left: 15px; /* Adjusts the label position */
-  z-index: 1; /* Ensure it appears above the input border */
-}
-
-.input-label {
-  font-size: 20px;
+.login__title {
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 3vw;
   color: #000000;
-  background-color: #f0f7f4; /* Background color */
-  z-index: 1; /* Stays above other elements */
-  display: inline; /* Use inline to avoid extra space */
-  margin: 0 15px; /* Add margin for spacing, if needed */
+  top: -2vh;
+  text-align: center;
+  transform: translateY(-150%);
 }
 
-.input {
-  padding: 12px 15px; /* Padding for input */
-  border: none; /* Remove the border */
-  background: #f0f7f4; /* White background */
-  border-radius: 12px; /* Rounded corners */
-  font-size: 16px;
-  outline: none;
-  height: auto; /* Dynamic height */
-  min-height: 20px; /* Minimum height */
-  width: 95%;
-  color: #000;
-  position: relative; /* Position relative to allow z-index */
-  z-index: 1; /* Ensure input is above the border */
+.login__input-field {
+  position: relative;
+  margin-bottom: 3vh;
 }
 
-/* New border wrapper */
-.input-field::before {
-  content: "";
+.login__input-label {
   position: absolute;
-  height: 80%;
-  top: 15px; /* Aligns with the input field */
-  left: -5px; /* Aligns with the input field */
-  right: 0; /* Aligns with the input field */
-  bottom: 0; /* Aligns with the input field */
-  border: 1px solid #636363; /* Border around the input */
-  border-radius: 12px; /* Match border radius */
-  z-index: 0; /* Ensure it stays behind the label and input */
+  top: -2.5vh;
+  left: 1vw;
+  background: #f0f7f4;
+  padding: 0 0.5vw;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 1.5vw;
+  color: #636363;
 }
 
-.forgot-password {
-  text-align: right;
-  margin-bottom: 20px;
+.login__input {
+  width: 100vw;
+  height: 13vh;
+  background: #f0f7f4;
+  border: 0.1vw solid #636363;
+  border-radius: 1vw;
+  padding: 0vh 1vw;
+  margin-bottom: 5vh;
+  font-size: 1.2vw;
+  width: 45vw;
+  color: #000000;
 }
 
-.forgot-password a {
+.login__forgot-password {
+  margin-bottom: 2vh;
+}
+
+.login__forgot-password-text {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 1.2vw;
   color: #70abaf;
-  text-decoration: none;
-  font-size: 14px;
-  position: relative;
-  top: -50px;
-  left: 0px;
-}
-
-.login-button {
-  width: 100%;
-  height: 10%;
-  padding: 10px;
-  background-color: #705d56;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 20px;
   cursor: pointer;
-  position: relative;
-  top: -50px;
-  left: 10px;
+  text-decoration: underline;
 }
 
-.message {
-  margin-top: 10px;
-  color: green;
-}
-
-.message.error {
-  color: red;
-}
-
-.continue-with {
-  display: flex;
-  align-items: center;
-  margin: 20px 0;
-  color: #666;
-  position: relative;
-  top: 0px;
-  left: 10px;
-}
-
-.continue-with hr {
-  flex: 1;
+.login__button {
+  width: 47vw;
+  height: 9vh;
+  background: #705d56;
   border: none;
-  height: 1px;
-  background-color: #ddd;
+  border-radius: 0.5vw;
+  color: #f0f7f4;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 2vw;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  z-index: 10;
 }
 
-.continue-with span {
-  padding: 0 10px;
-  font-size: 14px;
+.login__button:hover {
+  background-color: #5a4b45;
+}
+
+@media (max-width: 768px) {
+  .login {
+    flex-direction: column;
+  }
+
+  .login__decorative-panel {
+    width: 90vw;
+    height: 40vh;
+    margin: 5vh 0;
+  }
+
+  .login__panel {
+    width: 90vw;
+    height: auto;
+  }
+
+  .login__title {
+    font-size: 6vw;
+  }
+
+  .login__input-label {
+    font-size: 3vw;
+  }
+
+  .login__input {
+    font-size: 2.5vw;
+  }
+
+  .login__forgot-password-text {
+    font-size: 2.5vw;
+  }
+
+  .login__button {
+    font-size: 4vw;
+  }
+
+  /* Success message style */
+  .login__success {
+    color: #28a745;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1rem;
+  }
+
+  /* Error message  */
+  .login__error {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1rem;
+  }
 }
