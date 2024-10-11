@@ -1,52 +1,48 @@
-// services/apiNotifications.js
+import axios from "axios";
 
-const API_BASE_URL = "https://bos-cmpg323-notificationsdeploy.onrender.com/api/notifications"; 
+// Base API URL for notifications
+const API_URL = "https://bos-cmpg323-notificationsdeploy.onrender.com/api/notifications";
 
+// Fetch notifications function
 export const fetchNotifications = async () => {
   try {
-    const response = await fetch(API_BASE_URL); // Use the base URL directly
-    if (!response.ok) {
-      const errorData = await response.json(); // Attempt to parse error response
-      throw new Error(errorData.error || "Failed to fetch notifications");
-    }
-    return await response.json();
+    const response = await axios.get(API_URL); // Fetch from the main notifications endpoint
+    console.log("Fetched Notifications Data:", response.data); // Log the fetched data for debugging
+    return response.data; // Return the entire response or structure it according to the API
   } catch (error) {
-    console.error("Error fetching notifications:", error);
-    throw error; // Rethrow to handle in component
+    console.error("Error fetching notifications:", error.response?.data?.error || error.message);
+    throw new Error("Failed to fetch notifications");
   }
 };
 
+// Add notification function
 export const addNotification = async (newNotification) => {
+  // Validate the newNotification object
+  if (!newNotification.title || !newNotification.message) {
+    throw new Error("Title and message are required fields.");
+  }
+
   try {
-    const response = await fetch(API_BASE_URL, {
-      method: "POST",
+    // Post new notification to the API
+    const response = await axios.post(`${API_URL}/create`, newNotification, { 
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newNotification),
     });
-    if (!response.ok) {
-      const errorData = await response.json(); // Attempt to parse error response
-      throw new Error(errorData.error || "Failed to add notification");
-    }
-    return await response.json();
+    return response.data; // Axios automatically parses the JSON response
   } catch (error) {
-    console.error("Error adding notification:", error);
-    throw error; // Rethrow to handle in component
+    console.error("Error adding notification:", error.response?.data?.error || error.message);
+    throw new Error("Failed to add notification");
   }
 };
 
+// Delete notification function
 export const deleteNotification = async (notificationId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/${notificationId}`, {
-      method: "DELETE",
-    });
-    if (!response.ok) {
-      const errorData = await response.json(); // Attempt to parse error response
-      throw new Error(errorData.error || "Failed to delete notification");
-    }
+    // Make sure to use the correct endpoint for deletion
+    await axios.delete(`${API_URL}/delete/${notificationId}`);
   } catch (error) {
-    console.error("Error deleting notification:", error);
-    throw error; // Rethrow to handle in component
+    console.error("Error deleting notification:", error.response?.data?.error || error.message);
+    throw new Error("Failed to delete notification");
   }
 };

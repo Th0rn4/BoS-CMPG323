@@ -1,5 +1,3 @@
-// Dashboard.js
-
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,30 +8,37 @@ import SlothBanner from "../assets/SlothBanner.svg";
 import DeleteIcon from "../assets/DeleteNotification.svg";
 import AddAssignmentModal from "./AddAssignmentModal"; // Import the modal
 import { fetchAssignments, addAssignment } from "../Services/apiAssignments"; // Import API services
-import { fetchNotifications, addNotification, deleteNotification as deleteNotificationService } from "../Services/apiNotifications"; // Import API services
+import { fetchNotifications, deleteNotification as deleteNotificationService } from "../Services/apiNotifications"; // Import API services
 
 const MAX_DESCRIPTION_LENGTH = 100; // Set a limit for description length
 
 const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
+  const [error, setError] = useState(null); // Error state to track fetching issues
   const [notifications, setNotifications] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [user, setUser] = useState({});
   const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user")); // Retrieve user from local storage
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const assignmentsData = await fetchAssignments();
-        setAssignments(assignmentsData);
-
         const notificationsData = await fetchNotifications();
-        setNotifications(notificationsData);
 
-        const userData = await fetch("/api/user").then(res => res.json());
-        setUser(userData);
+        if (notificationsData.success && notificationsData.notifications) {
+          setNotifications(notificationsData.notifications); // Set fetched notifications
+        }
+
+        if (assignmentsData.success && assignmentsData.assignments) {
+          setAssignments(assignmentsData.assignments); // Set fetched assignments if available
+        } else {
+          setError(assignmentsData.message || "No assignments available."); // Error message if no assignments fetched
+        }
       } catch (error) {
-        console.error("Error loading data:", error);
+        console.error("Error fetching data:", error);
+        setError("Failed to fetch data. Please try again later."); // Error message for fetch failure
       }
     };
 
@@ -50,39 +55,42 @@ const Dashboard = () => {
     navigate("/login", { state: { message: "Logout successful!" } });
   };
 
-  const handleAddAssignment = async (newAssignment) => {
-    try {
-      const addedAssignment = await addAssignment(newAssignment);
-      setAssignments((prevAssignments) => {
-        const updatedAssignments = [...prevAssignments, addedAssignment];
-        return updatedAssignments.slice(-3); // Keep only the last three assignments
-      });
+  const handleAddAssignment = async (assignmentData) => {
+  try {
+    // Step 1: Add the assignment
+    const newAssignment = await addAssignment(assignmentData);
+    setAssignments((prevAssignments) => [...prevAssignments, newAssignment]);
+    setError(null); // Reset any previous errors
 
-      const currentTime = new Date();
-      const formattedTime = `${currentTime.toLocaleDateString()} ${currentTime.toLocaleTimeString()}`;
+    // Step 2: Create a notification
+  ; // Ensure to define this function
 
-      const newNotification = {
-        id: Date.now(), // Use timestamp or another method to generate unique ID
-        text: `New Assignment: ${newAssignment.title} - (Added on: ${formattedTime})`,
-      };
+    return true; // Indicate success
 
-      setNotifications((prevNotifications) => [
-        ...prevNotifications,
-        newNotification,
-      ]);
+  } catch (error) {
+    console.error('Error adding assignment:', error);
+    setError('Failed to add assignment. Please try again.');
+    return false; // Indicate failure
+  }
+};
 
-      await addNotification(newNotification); // Send the new notification to the backend
-    } catch (error) {
-      console.error("Error adding assignment:", error);
-    }
+
+  const handleAssignmentClick = () => {
+    navigate("/assignments"); // Navigate to the Assignments component
   };
 
+  // Delete notification handler
   const handleDeleteNotification = async (notificationId) => {
+    console.log('Deleting Notification ID:', notificationId); // Log the ID being deleted
     try {
+      if (!notificationId) {
+        throw new Error("Notification ID is missing"); // Check if the ID is present
+      }
+
+      await deleteNotificationService(notificationId);
       setNotifications((prevNotifications) =>
-        prevNotifications.filter((notification) => notification.id !== notificationId)
+        prevNotifications.filter((notification) => notification._id !== notificationId) // Use _id here
       );
-      await deleteNotificationService(notificationId); // Send to backend to delete notification
     } catch (error) {
       console.error("Error deleting notification:", error);
     }
@@ -104,28 +112,32 @@ const Dashboard = () => {
 
       {/* Intro Section */}
       <div className="intro">
-        <h1 className="intro-title">
-          Hi, {user.role === "lecturer" ? "Lecturer" : "Admin"}!
-        </h1>
-        <p className="intro-subtitle">Manage Assignments and Grades</p>
+        <h1 className="intro-title">Hi!</h1>
+        <p className="intro-subtitle">Manage Assignments</p>
       </div>
 
       {/* Assignment Section */}
       <div className="assignment-section">
-        {assignments.length > 0 ? (
-          assignments.slice(0, 3).map((assignment) => (
-            <div className="assignment-card" key={assignment.id}>
-              <h3 className="assignment-title">{assignment.title}</h3>
+        {error ? (
+          <p>{error}</p>
+        ) : assignments.length > 0 ? (
+          assignments.slice(0, 3).map(({ id, title, description, due_date }) => (
+            <div 
+              className="assignment-card" 
+              key={id} 
+              onClick={handleAssignmentClick} // Updated to navigate to Assignments
+            >
+              <h3 className="assignment-title">{title}</h3>
               <p className="assignment-description">
-                {truncateText(assignment.description, MAX_DESCRIPTION_LENGTH)}
+                {truncateText(description, MAX_DESCRIPTION_LENGTH)}
               </p>
               <p className="assignment-due-date">
-                Due Date: {new Date(assignment.dueDate).toLocaleDateString()}
+                Due Date: {new Date(due_date).toLocaleDateString()}
               </p>
             </div>
           ))
         ) : (
-          <p>No assignments available.</p>
+          <p>Loading assignments...</p> // Display a loading message while fetching
         )}
 
         <div
@@ -150,11 +162,12 @@ const Dashboard = () => {
         <div className="notifications-container">
           {notifications.length > 0 ? (
             notifications.map((notification) => (
-              <div className="notification-card" key={notification.id}>
-                <p className="notification-text">{notification.text}</p>
+              <div className="notification-card" key={notification._id}>
+                <p className="notification-text">{notification.NotificationHeader}</p> 
+                <p className="notification-description">{notification.NotificationDescription}</p>
                 <button
                   className="delete-notification"
-                  onClick={() => handleDeleteNotification(notification.id)} // Delete notification handler
+                  onClick={() => handleDeleteNotification(notification._id)} // Pass _id correctly
                 >
                   <img src={DeleteIcon} alt="Delete" className="delete-icon" />
                 </button>
@@ -171,13 +184,10 @@ const Dashboard = () => {
         <div className="sloth-banner">
           <img src={SlothBanner} alt="Sloth" />
         </div>
-        <div className="info">Information</div>
-        <div className="logged-in-name">{user.firstName}</div>
-        <div className="logged-in-surname">{user.lastName}</div>
-        <div className="logged-in-email">{user.email}</div>
       </div>
     </div>
   );
 };
 
 export default Dashboard;
+
