@@ -15,7 +15,7 @@ const AddAssignmentModal = ({ show, onClose, onAddAssignment }) => {
     const newAssignment = {
       title,
       description,
-      dueDate,
+      due_date: dueDate, // Corrected to match backend schema
     };
 
     // Call the function passed from the parent to add the new assignment
