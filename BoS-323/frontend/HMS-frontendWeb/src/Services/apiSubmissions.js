@@ -63,3 +63,13 @@ export const downloadVideo = async (videoId) => {
     throw error;
   }
 };
+
+export const updateFeedback = async (submissionId, feedbackData) => {
+  try {
+    const response = await axiosInstance.put(`/${submissionId}`, feedbackData);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update feedback:", error);
+    throw error;
+  }
+};
