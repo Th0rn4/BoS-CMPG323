@@ -16,15 +16,16 @@ export const fetchNotifications = async () => {
 };
 
 // Add notification function
+// Add notification function
 export const addNotification = async (newNotification) => {
   // Validate the newNotification object
-  if (!newNotification.title || !newNotification.message) {
-    throw new Error("Title and message are required fields.");
+  if (!newNotification.NotificationHeader || !newNotification.NotificationDescription) {
+    throw new Error("NotificationHeader and NotificationDescription are required fields.");
   }
 
   try {
     // Post new notification to the API
-    const response = await axios.post(`${API_URL}/create`, newNotification, { 
+    const response = await axios.post(`${API_URL}/create`, newNotification, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -35,6 +36,7 @@ export const addNotification = async (newNotification) => {
     throw new Error("Failed to add notification");
   }
 };
+
 
 // Delete notification function
 export const deleteNotification = async (notificationId) => {
