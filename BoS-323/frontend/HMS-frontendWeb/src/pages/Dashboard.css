@@ -11,7 +11,7 @@
 /* Left Panel / Sidebar */
 .left-panel {
   position: fixed;
-  width: 2vw;
+  width: 5vw;
   height: 100vh;
   left: 0;
   top: 0;
@@ -83,77 +83,111 @@
   top: 6vh;
 }
 
-/* Assignment Section */
 
+/* Assignment Section */
 .assignment-section {
   position: absolute;
-  width: 5vw;
-  height: 30vh;
-  left: 15vw;
-  top: 20vh;
-  display: flex;
-  gap: 3vw;
+  width: 60vw; /* Full width of the container */
+  height: 30vh; /* Height of the section */
+  left: 10vw; /* Position relative to the main container */
+  top: 20vh; /* Position relative to the main container */
+  display: flex; /* Use flexbox for alignment */
+  flex-direction: row; /* Align items in a row */
+  flex-wrap: nowrap; /* Prevent wrapping to next line */
+  gap: 2vw; /* Space between cards */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-y: hidden; /* Hide vertical scrolling */
+  padding-bottom: 1vh; /* Padding at the bottom */
+  scrollbar-width: thin; /* Thin scrollbar for Firefox */
+  scrollbar-color: #70abaf #f0f7f4; /* Custom scrollbar colors for Firefox */
+}
+
+.assignment-section::-webkit-scrollbar {
+  height: 0.8vh; /* Height of the scrollbar */
+}
+
+.assignment-section::-webkit-scrollbar-thumb {
+  background-color: #70abaf; /* Color of the scroll thumb */
+  border-radius: 1vw; /* Rounded corners for the scrollbar thumb */
+}
+
+.assignment-section::-webkit-scrollbar-track {
+  background-color: #f0f7f4; /* Background of the scroll track */
 }
 
 .assignment-card {
-  width: 18vw;
-  height: 30vh;
-  background: #70abaf;
-  border-radius: 2vw;
-  cursor: pointer;
+  flex-shrink: 0; /* Prevent shrinking when scrolling */
+  width: 18vw; /* Width of each card */
+  height: 30vh; /* Height of each card */
+  background: #70abaf; /* Background color of cards */
+  border-radius: 2vw; /* Rounded corners for cards */
+  cursor: pointer; /* Change cursor to pointer on hover */
 }
+
 .assignment-card:hover {
-  transform: scale(1.02); 
+  transform: scale(1.02); /* Slightly enlarge card on hover */
 }
 
 .assignment-title {
-  font-size: 1.5rem; 
-  margin: 0.5rem 0; 
-  text-align: center; 
-  color: #f0f7f4; 
+  font-size: 1.5rem; /* Title font size */
+  margin: 0.5rem 0; /* Margin for title */
+  text-align: center; /* Center align text */
+  color: #f0f7f4; /* Title text color */
 }
 
 .assignment-description {
-  font-size: 1rem; 
-  margin: 0.5rem 0;
-  text-align: center; 
-  color: #f0f7f4; 
+  font-size: 1rem; /* Description font size */
+  margin: 0.5rem 0; /* Margin for description */
+  text-align: center; /* Center align text */
+  color: #f0f7f4; /* Description text color */
 }
 
 .assignment-due-date {
-  font-size: 0.9rem; 
-  text-align: center; 
-  color: #f0f7f4; 
+  font-size: 0.9rem; /* Due date font size */
+  text-align: center; /* Center align text */
+  color: #f0f7f4; /* Due date text color */
 }
 
+.assignment-mark-allocation {
+  font-size: 0.9rem; /* Due date font size */
+  text-align: center; /* Center align text */
+  color: #f0f7f4; /* Due date text color */
+}
 
+.delete-assignment-button {
+  border: 1px solid red;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.delete-assignment-button:hover {
+  opacity: 0.8; /* Hover effect */
+}
 
 
 /* Add Assignment Button */
 .add-assignment-button {
   position: absolute;
-  width: 4vw;
-  height: 32vh;
-  left: 22.5vw;
-  top: 25vh;
-  transform: rotate(90deg);
+  width: 30vw;
+  height: 7.5vh;
+  left: 25vw; /* Position it to the left of the assignment section */
+  top: 60vh;
   background: #705d56;
   border-radius: 1.5vw;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   cursor: pointer;
   z-index: 10;
-  padding: 1vw;
 }
 
 .button-text {
-  transform: rotate(-90deg);
   font-family: "Inter";
   font-style: normal;
   font-weight: 500;
-  font-size: 1.5vw;
+  font-size: 2vw;
   line-height: 2vw;
   color: #f0f7f4;
   white-space: nowrap;
@@ -163,19 +197,14 @@
 }
 
 .plus-icon {
-  position: absolute;
-  left: 1.3vw;
-  top: 2vh;
   font-family: "Inter";
   font-style: normal;
   font-weight: 500;
-  font-size: 3vw; /* Increased size of the plus icon */
+  font-size: 3vw;
   line-height: 3vw;
   color: #99e1d9;
-  margin-left: 1vw;
+  margin-left: vw;
 }
-
-
 
 /* Right Panel */
 .right-panel {

@@ -46,7 +46,11 @@ const Dashboard = () => {
   }, []);
 
   const truncateText = (text, maxLength) => {
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+    if (!text || typeof text !== "string") {
+      return ""; // Handle undefined or non-string descriptions
+    }
+    
+    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
   };
 
   const handleLogout = () => {
@@ -56,24 +60,22 @@ const Dashboard = () => {
   };
 
   const handleAddAssignment = async (assignmentData) => {
-  try {
-    // Step 1: Add the assignment
-    const newAssignment = await addAssignment(assignmentData);
-    setAssignments((prevAssignments) => [...prevAssignments, newAssignment]);
-    setError(null); // Reset any previous errors
+    try {
+      // Step 1: Add the assignment
+      const newAssignment = await addAssignment(assignmentData);
+      setAssignments((prevAssignments) => [...prevAssignments, newAssignment]);
+      setError(null); // Reset any previous errors
 
-    // Step 2: Create a notification
-  ; // Ensure to define this function
+      // Refresh the page to load new assignments
+      window.location.reload();
 
-    return true; // Indicate success
-
-  } catch (error) {
-    console.error('Error adding assignment:', error);
-    setError('Failed to add assignment. Please try again.');
-    return false; // Indicate failure
-  }
-};
-
+      return true;
+    } catch (error) {
+      console.error("Error adding assignment:", error);
+      setError("Failed to add assignment. Please try again.");
+      return false; // Indicate failure
+    }
+  };
 
   const handleAssignmentClick = () => {
     navigate("/assignments"); // Navigate to the Assignments component
@@ -81,7 +83,7 @@ const Dashboard = () => {
 
   // Delete notification handler
   const handleDeleteNotification = async (notificationId) => {
-    console.log('Deleting Notification ID:', notificationId); // Log the ID being deleted
+    console.log("Deleting Notification ID:", notificationId); // Log the ID being deleted
     try {
       if (!notificationId) {
         throw new Error("Notification ID is missing"); // Check if the ID is present
@@ -121,32 +123,38 @@ const Dashboard = () => {
         {error ? (
           <p>{error}</p>
         ) : assignments.length > 0 ? (
-          assignments.slice(0, 3).map(({ id, title, description, due_date }) => (
-            <div 
-              className="assignment-card" 
-              key={id} 
-              onClick={handleAssignmentClick} // Updated to navigate to Assignments
-            >
-              <h3 className="assignment-title">{title}</h3>
-              <p className="assignment-description">
-                {truncateText(description, MAX_DESCRIPTION_LENGTH)}
-              </p>
-              <p className="assignment-due-date">
-                Due Date: {new Date(due_date).toLocaleDateString()}
-              </p>
-            </div>
-          ))
+          <div className="assignment-cards-container" style={{ display: "flex", gap: "2vw" }}>
+            {assignments.map(({ _id, title, description, due_date, mark_allocation }) => (
+              <div 
+                className="assignment-card" 
+                key={_id} 
+                onClick={handleAssignmentClick} // Navigate to Assignments
+              >
+                <h3 className="assignment-title">{title}</h3>
+                <p className="assignment-description">
+                  {truncateText(description, MAX_DESCRIPTION_LENGTH)}
+                </p>
+                <p className="assignment-due-date">
+                  Due Date: {new Date(due_date).toLocaleDateString()}
+                </p>
+                <p className="assignment-mark-allocation">
+                  Mark Allocation: {mark_allocation}
+                </p>
+              </div>
+            ))}
+          </div>
         ) : (
           <p>Loading assignments...</p> // Display a loading message while fetching
         )}
+      </div>
 
-        <div
-          className="add-assignment-button"
-          onClick={() => setIsModalOpen(true)} // Open the modal
-        >
-          <span className="plus-icon">+</span>
-          <span className="button-text">Add Assignment</span>
-        </div>
+      {/* Add Assignment Button placed outside of the assignment section */}
+      <div
+        className="add-assignment-button"
+        onClick={() => setIsModalOpen(true)} // Open the modal
+      >
+        <span className="plus-icon">+</span>
+        <span className="button-text">Add Assignment</span>
       </div>
 
       {/* Add Assignment Modal */}
@@ -190,4 +198,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
