@@ -11,15 +11,33 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import { login } from "../services/api";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    navigation.navigate("ViewAssignment");
+  const handleLogin = async () => {
+    try {
+      const data = await login(email, password);
+      console.log(data);
+
+      const user = data.user;
+
+      if (user.role === "student") {
+        navigation.navigate("ViewAssignment");
+      } else {
+        Alert.alert("Access denied", "Only students are allowed to login.");
+      }
+    } catch (error) {
+      Alert.alert("Login failed", error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -72,7 +90,10 @@ const LoginScreen = ({ navigation }) => {
             </View>
           </View>
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>Login</Text>
+            <Text style={styles.loginButtonText}>
+              {" "}
+              {loading ? "Logging in..." : "Login"}
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </TouchableWithoutFeedback>
