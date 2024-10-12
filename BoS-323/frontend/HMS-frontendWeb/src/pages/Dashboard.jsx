@@ -1,3 +1,5 @@
+// Dashboard.js
+
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,8 +9,8 @@ import LogoutIcon from "../assets/LogoutIcon.svg";
 import SlothBanner from "../assets/SlothBanner.svg";
 import DeleteIcon from "../assets/DeleteNotification.svg";
 import AddAssignmentModal from "./AddAssignmentModal"; // Import the modal
-import { fetchAssignments, addAssignment } from "../Services/apiAssignments"; // Import API services
-import { fetchNotifications, deleteNotification as deleteNotificationService } from "../Services/apiNotifications"; // Import API services
+import { fetchAssignments, addAssignment, deleteAssignment as deleteAssignmentService} from "../Services/apiAssignments"; // Import API services
+import { fetchNotifications, deleteNotification as deleteNotificationService, addNotification } from "../Services/apiNotifications"; // Import API services
 
 const MAX_DESCRIPTION_LENGTH = 100; // Set a limit for description length
 
@@ -20,30 +22,35 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user")); // Retrieve user from local storage
+useEffect(() => {
+  const loadData = async () => {
+    try {
+      const assignmentsData = await fetchAssignments();
+      const notificationsData = await fetchNotifications();
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const assignmentsData = await fetchAssignments();
-        const notificationsData = await fetchNotifications();
-
-        if (notificationsData.success && notificationsData.notifications) {
-          setNotifications(notificationsData.notifications); // Set fetched notifications
-        }
-
-        if (assignmentsData.success && assignmentsData.assignments) {
-          setAssignments(assignmentsData.assignments); // Set fetched assignments if available
-        } else {
-          setError(assignmentsData.message || "No assignments available."); // Error message if no assignments fetched
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Failed to fetch data. Please try again later."); // Error message for fetch failure
+      if (notificationsData.success && notificationsData.notifications) {
+        setNotifications(notificationsData.notifications);
       }
-    };
 
-    loadData();
-  }, []);
+      if (assignmentsData.success && assignmentsData.assignments) {
+        setAssignments(assignmentsData.assignments);
+
+        const now = Date.now();
+        
+
+        // Store the current page load time for future comparison
+        localStorage.setItem("lastPageLoadTime", now);
+      } else {
+        setError(assignmentsData.message || "No assignments available.");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Failed to fetch data. Please try again later.");
+    }
+  };
+
+  loadData();
+}, []);
 
   const truncateText = (text, maxLength) => {
     if (!text || typeof text !== "string") {
@@ -65,7 +72,12 @@ const Dashboard = () => {
       const newAssignment = await addAssignment(assignmentData);
       setAssignments((prevAssignments) => [...prevAssignments, newAssignment]);
       setError(null); // Reset any previous errors
-
+      
+      await addNotification({
+        NotificationHeader: "New Assignment Created",
+        NotificationDescription: "You have a new assignment.",// Message for the notification
+      });
+  
       // Refresh the page to load new assignments
       window.location.reload();
 
@@ -76,6 +88,23 @@ const Dashboard = () => {
       return false; // Indicate failure
     }
   };
+  const handleDeleteAssignments = async (_id, e) => {
+    e.stopPropagation(); // Prevents the parent click event from being triggered
+    console.log("Deleting Assignment ID:", _id); // Log the ID being deleted
+    try {
+      if (!_id) {
+        throw new Error("Assignment ID is missing"); // Check if the ID is present
+      }
+  
+      await deleteAssignmentService(_id);
+      setAssignments((prevAssignments) =>
+        prevAssignments.filter((assignment) => assignment._id !== _id) // Use _id here
+      );
+    } catch (error) {
+      console.error("Error deleting assignment:", error);
+    }
+  };
+  
 
   const handleAssignmentClick = () => {
     navigate("/assignments"); // Navigate to the Assignments component
@@ -140,6 +169,13 @@ const Dashboard = () => {
                 <p className="assignment-mark-allocation">
                   Mark Allocation: {mark_allocation}
                 </p>
+                <button
+                  className="delete-assignment"
+                  onClick={(e) => handleDeleteAssignments(_id, e)} // Pass the event to the handler
+                >
+                <img src={DeleteIcon} alt="Delete" className="delete-icon" />
+                </button>
+
               </div>
             ))}
           </div>
