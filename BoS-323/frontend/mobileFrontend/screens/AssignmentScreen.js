@@ -1,23 +1,60 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  Image,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
+const { width, height } = Dimensions.get("window");
 
 const AssignmentScreen = () => {
+  const navigation = useNavigation();
+
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton}>
+      <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+        <Text style={styles.backButtonVector}>←</Text>
         <Text style={styles.backButtonText}>Back</Text>
       </TouchableOpacity>
-      <View style={styles.header}>
+      <View style={styles.assignmentNameContainer}>
         <Text style={styles.assignmentName}>Assignment Name</Text>
-        <View style={styles.gradeDisplay}></View>
+      </View>
+      <View style={styles.currentGrade}>
+        <Text style={styles.gradeText}>A+</Text>
       </View>
       <Text style={styles.assignmentDescription}>Assignment Description</Text>
       <Text style={styles.feedback}>Feedback</Text>
       <Text style={styles.uploadVideo}>Upload Video</Text>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.cameraButton}></TouchableOpacity>
-        <TouchableOpacity style={styles.addFromPhotosButton}></TouchableOpacity>
-        <TouchableOpacity style={styles.submitButton}></TouchableOpacity>
+        <TouchableOpacity style={styles.cameraButton}>
+          <Image
+            source={require("../assets/Cameras.png")}
+            style={styles.buttonIcon}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.addFromPhotosButton}>
+          <Image
+            source={require("../assets/Add.png")}
+            style={styles.buttonIcon}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.submitButton}>
+          <Image
+            source={require("../assets/Submit.png")}
+            style={styles.buttonIcon}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
       </View>
       <Text style={styles.fileUploaded}>File Uploaded</Text>
     </View>
@@ -27,48 +64,66 @@ const AssignmentScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#F0F7F4",
     position: "relative",
   },
   backButton: {
     position: "absolute",
     left: 15,
-    top: 31,
+    top: 70,
     width: 91,
     height: 25,
+    backgroundColor: "#705D56",
+    borderRadius: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  backButtonVector: {
+    color: "#F0F7F4",
+    fontSize: 18,
+    marginRight: 5,
   },
   backButtonText: {
-    fontSize: 16,
-    color: "#000",
+    fontSize: 15,
+    fontWeight: "400",
+    color: "#FFFFFF",
+    fontFamily: "Inter",
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  assignmentNameContainer: {
+    position: "absolute",
+    top: 100,
+    left: 0,
+    right: 0,
     alignItems: "center",
-    paddingHorizontal: 20,
-    marginBottom: 20,
   },
   assignmentName: {
-    position: "absolute",
-    top: "15%",
-    left: "20%",
     fontSize: 23,
     fontWeight: "700",
     color: "#000",
+    textAlign: "center",
+    top: 20,
   },
-  gradeDisplay: {
+  currentGrade: {
     position: "absolute",
     width: 60,
     height: 60,
-    left: 295,
-    top: 19,
+    right: 15,
+    top: 50,
     backgroundColor: "#99E1D9",
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  gradeText: {
+    fontSize: 16,
+    color: "#000",
   },
   assignmentDescription: {
     position: "absolute",
     left: 21,
     top: 166,
-    width: 175,
+    width: 400,
     fontSize: 18,
     color: "#000",
   },
@@ -76,7 +131,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 25,
     top: 348,
-    width: 71,
+    width: 100,
     fontSize: 18,
     color: "#000",
   },
@@ -89,27 +144,44 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   buttonsContainer: {
+    position: "absolute",
+    bottom: 20,
+    left: 0,
+    right: 0,
     flexDirection: "row",
     justifyContent: "space-between",
-    position: "absolute",
-    top: 670,
-    width: "100%",
-    paddingHorizontal: 60,
+    paddingHorizontal: 66,
   },
   cameraButton: {
-    width: 60,
-    height: 60,
-    backgroundColor: "#ccc",
+    width: 70,
+    height: 70,
+    backgroundColor: "#705D56",
+    borderRadius: 35,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "visible",
   },
   addFromPhotosButton: {
-    width: 60,
-    height: 60,
-    backgroundColor: "#ccc",
+    width: 70,
+    height: 70,
+    backgroundColor: "#705D56",
+    borderRadius: 35,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "visible",
   },
   submitButton: {
-    width: 60,
-    height: 60,
-    backgroundColor: "#ccc",
+    width: 70,
+    height: 70,
+    backgroundColor: "#705D56",
+    borderRadius: 35,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "visible",
+  },
+  buttonIcon: {
+    width: 35,
+    height: 35,
   },
   fileUploaded: {
     position: "absolute",
