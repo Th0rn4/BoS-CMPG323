@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,29 +7,70 @@ import {
   ScrollView,
   Image,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fetchAssignments } from "../services/api"; // Ensure correct import path
 
-const AssignmentTile = ({ title, navigation }) => (
+// Updated AssignmentTile component
+const AssignmentTile = ({ title, description, navigation }) => (
   <TouchableOpacity
     style={styles.assignmentTile}
-    onPress={() => navigation.navigate("AssignmentScreen")} // Navigate to AssignmentScreen
+    onPress={
+      () => navigation.navigate("AssignmentScreen", { title, description }) // Pass title and description
+    }
   >
     <Text style={styles.assignmentTitle}>{title}</Text>
   </TouchableOpacity>
 );
 
-const ViewAssignmentScreen = ({ navigation }) => {
-  // Accept the navigation prop
+const ViewAssignmentScreen = ({ navigation, route }) => {
+  const { user } = route.params; // Destructure user details from route params
+
+  const [userDetails, setUserDetails] = useState({
+    name: user.name || "Name",
+    email: user.email || "Email",
+  });
+
+  const [assignments, setAssignments] = useState([]);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const storedUser = await AsyncStorage.getItem("user");
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        setUserDetails({
+          name: parsedUser.name,
+          surname: parsedUser.surname,
+          email: parsedUser.email,
+        });
+      }
+    };
+
+    const fetchAssignmentData = async () => {
+      try {
+        const fetchedAssignments = await fetchAssignments();
+        setAssignments(fetchedAssignments);
+      } catch (error) {
+        console.error("Failed to fetch assignments:", error);
+      }
+    };
+
+    fetchUserDetails();
+    fetchAssignmentData(); // Call the function to fetch assignments
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.userInfo}>
-          <Text style={styles.nameText}>Name Surname</Text>
+          <Text style={styles.nameText}>
+            {userDetails.name} {userDetails.surname}
+          </Text>
           <View style={styles.emailContainer}>
             <Image
               source={require("../assets/aticon.png")}
               style={styles.emailIcon}
             />
-            <Text style={styles.emailText}>Email</Text>
+            <Text style={styles.emailText}>{userDetails.email}</Text>
           </View>
         </View>
         <TouchableOpacity style={styles.notificationIcon}>
@@ -41,12 +82,14 @@ const ViewAssignmentScreen = ({ navigation }) => {
       </View>
       <Text style={styles.tapableTextAssignment}>Assignments</Text>
       <ScrollView style={styles.scrollView}>
-        {/* Pass navigation prop to AssignmentTile */}
-        <AssignmentTile title="Assignment 1" navigation={navigation} />
-        <AssignmentTile title="Assignment 2" navigation={navigation} />
-        <AssignmentTile title="Assignment 3" navigation={navigation} />
-        <AssignmentTile title="Assignment 4" navigation={navigation} />
-        <AssignmentTile title="Assignment 5" navigation={navigation} />
+        {assignments.map((assignment) => (
+          <AssignmentTile
+            key={assignment._id} // Use unique ID for each tile
+            title={assignment.title}
+            description={assignment.description} // Pass description here
+            navigation={navigation}
+          />
+        ))}
       </ScrollView>
     </View>
   );
@@ -68,7 +111,7 @@ const styles = StyleSheet.create({
   userInfo: {
     position: "relative",
     justifyContent: "center",
-    alignItems: "left",
+    alignItems: "flex-start",
   },
   nameText: {
     fontFamily: "Inter",
@@ -81,7 +124,7 @@ const styles = StyleSheet.create({
   },
   emailContainer: {
     flexDirection: "row",
-    alignItems: "left",
+    alignItems: "flex-start",
     marginTop: 12,
   },
   emailIcon: {
