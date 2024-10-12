@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,16 +6,60 @@ import {
   StyleSheet,
   Dimensions,
   Image,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 
 const { width, height } = Dimensions.get("window");
 
 const AssignmentScreen = () => {
   const navigation = useNavigation();
+  const [video, setVideo] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status: cameraStatus } =
+        await ImagePicker.requestCameraPermissionsAsync();
+      const { status: mediaStatus } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (cameraStatus !== "granted" || mediaStatus !== "granted") {
+        Alert.alert(
+          "Sorry, we need camera and media permissions to make this work!"
+        );
+      }
+    })();
+  }, []);
 
   const handleBackPress = () => {
     navigation.goBack();
+  };
+
+  const recordVideo = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setVideo(result.assets[0].uri);
+    }
+  };
+
+  const pickVideo = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setVideo(result.assets[0].uri);
+    }
   };
 
   return (
@@ -34,14 +78,17 @@ const AssignmentScreen = () => {
       <Text style={styles.feedback}>Feedback</Text>
       <Text style={styles.uploadVideo}>Upload Video</Text>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.cameraButton}>
+        <TouchableOpacity style={styles.cameraButton} onPress={recordVideo}>
           <Image
             source={require("../assets/Cameras.png")}
             style={styles.buttonIcon}
             resizeMode="contain"
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.addFromPhotosButton}>
+        <TouchableOpacity
+          style={styles.addFromPhotosButton}
+          onPress={pickVideo}
+        >
           <Image
             source={require("../assets/Add.png")}
             style={styles.buttonIcon}
@@ -56,12 +103,20 @@ const AssignmentScreen = () => {
           />
         </TouchableOpacity>
       </View>
+      {video && <Video source={{ uri: video }} style={styles.preview} />}
       <Text style={styles.fileUploaded}>File Uploaded</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  preview: {
+    width: 200,
+    height: 200,
+    alignSelf: "center",
+    marginTop: 20,
+    marginBottom: 20,
+  },
   container: {
     flex: 1,
     backgroundColor: "#F0F7F4",
@@ -83,6 +138,8 @@ const styles = StyleSheet.create({
     color: "#F0F7F4",
     fontSize: 18,
     marginRight: 5,
+    lineHeight: 19, // Ensure the icon text stays vertically centered
+    textAlignVertical: "center", // Specifically for Android
   },
   backButtonText: {
     fontSize: 15,
