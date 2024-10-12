@@ -3,16 +3,22 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./ViewAssignment.css";
 import HomeButton from "../assets/HomeButton.svg";
 import LogoutIcon from "../assets/LogoutIcon.svg";
-import { streamVideo, downloadVideo } from "../Services/apiSubmissions";
+import {
+  streamVideo,
+  downloadVideo,
+  updateFeedback,
+} from "../Services/apiSubmissions";
 
 const ViewAssignment = () => {
   const navigate = useNavigate();
   const { studentId } = useParams();
+  const [grade, setGrade] = useState("");
   const [comments, setComments] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [videoId, setVideoId] = useState("66f1a83f3ef7cb7a887eb23a"); // Replace with actual video ID later
+  const [submissionId, setSubmissionId] = useState("66f1a83f3ef7cb7a887eb23a"); //Replace with actual submission ID later
 
   useEffect(() => {
     const loadVideo = async () => {
@@ -46,6 +52,24 @@ const ViewAssignment = () => {
     } catch (error) {
       console.error("Failed to initiate download:", error);
       alert(`Failed to download the video: ${error.message}`);
+    }
+  };
+
+  const handlePublishMark = async () => {
+    const feedbackData = {
+      status: "Gemerk",
+      feedback: {
+        grade: grade,
+        comment: comments,
+      },
+    };
+
+    try {
+      await updateFeedback(videoId, feedbackData);
+      alert("Feedback submitted successfully!");
+    } catch (error) {
+      console.error("Failed to update submission:", error);
+      alert(`Failed to submit feedback: ${error.message}`);
     }
   };
 
@@ -91,6 +115,8 @@ const ViewAssignment = () => {
           <div className="va-mark-panel">
             <input
               type="text"
+              value={grade}
+              onChange={(e) => setGrade(e.target.value)}
               placeholder="Mark Out/X"
               className="va-mark-input"
             />
@@ -98,14 +124,19 @@ const ViewAssignment = () => {
           <button className="va-download-button" onClick={handleDownload}>
             Download
           </button>
-          <button className="va-publish-mark-button">Publish Mark</button>
+          <button
+            className="va-publish-mark-button"
+            onClick={handlePublishMark}
+          >
+            Publish Mark
+          </button>
         </div>
         <div className="va-comments-block">
-          <textarea
+          <input
             value={comments}
             onChange={(e) => setComments(e.target.value)}
             placeholder="Enter your comments here..."
-            className="va-comments-textarea"
+            className="va-comments-input"
           />
         </div>
       </div>
