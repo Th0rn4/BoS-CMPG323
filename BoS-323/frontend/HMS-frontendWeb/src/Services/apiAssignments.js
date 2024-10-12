@@ -1,8 +1,7 @@
 import axios from "axios";
 
 // Change the API_URL to point to the create endpoint
-const API_URL =
-  "https://bos-cmpg323-assignmentdeploy.onrender.com/api/assignments";
+const API_URL = "https://bos-cmpg323-assignmentdeploy.onrender.com/api/assignments";
 
 // Fetch assignments function
 export const fetchAssignments = async () => {
@@ -19,12 +18,9 @@ export const fetchAssignments = async () => {
   }
 };
 
+// Add assignment function
 export const addAssignment = async (newAssignment) => {
-  if (
-    !newAssignment.title ||
-    !newAssignment.description ||
-    !newAssignment.due_date
-  ) {
+  if (!newAssignment.title || !newAssignment.description || !newAssignment.due_date) {
     throw new Error("Title, description, and due date are required fields.");
   }
 

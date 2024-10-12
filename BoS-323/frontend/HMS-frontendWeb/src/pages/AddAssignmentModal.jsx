@@ -7,15 +7,17 @@ const AddAssignmentModal = ({ show, onClose, onAddAssignment }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [markAllocation, setMarkAllocation] = useState(""); // State for mark allocation
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Create a new assignment object
+    // Create a new assignment object including mark allocation
     const newAssignment = {
       title,
       description,
-      due_date: dueDate, // Corrected to match backend schema
+      due_date: dueDate,
+      mark_allocation: markAllocation, // Include mark allocation
     };
 
     // Call the function passed from the parent to add the new assignment
@@ -25,6 +27,7 @@ const AddAssignmentModal = ({ show, onClose, onAddAssignment }) => {
     setTitle("");
     setDescription("");
     setDueDate("");
+    setMarkAllocation(""); // Clear mark allocation field
     onClose();
   };
 
@@ -60,6 +63,15 @@ const AddAssignmentModal = ({ show, onClose, onAddAssignment }) => {
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Mark Allocation</label>
+            <input
+              type="number"
+              value={markAllocation}
+              onChange={(e) => setMarkAllocation(e.target.value)}
               required
             />
           </div>
