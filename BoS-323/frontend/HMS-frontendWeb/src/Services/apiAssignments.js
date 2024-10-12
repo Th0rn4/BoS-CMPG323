@@ -39,3 +39,13 @@ export const addAssignment = async (newAssignment) => {
     throw new Error("Failed to add assignment");
   }
 };
+
+export const deleteAssignment = async (_id) => {
+  try {
+    // Make sure to use the correct endpoint for deletion
+    await axios.delete(`${API_URL}/delete/${_id}`);
+  } catch (error) {
+    console.error("Error deleting notification:", error.response?.data?.error || error.message);
+    throw new Error("Failed to delete notification");
+  }
+};

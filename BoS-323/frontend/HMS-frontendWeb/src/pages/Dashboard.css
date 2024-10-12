@@ -88,7 +88,7 @@
 .assignment-section {
   position: absolute;
   width: 60vw; /* Full width of the container */
-  height: 30vh; /* Height of the section */
+  height: 50vh; /* Height of the section */
   left: 10vw; /* Position relative to the main container */
   top: 20vh; /* Position relative to the main container */
   display: flex; /* Use flexbox for alignment */
@@ -117,7 +117,7 @@
 
 .assignment-card {
   flex-shrink: 0; /* Prevent shrinking when scrolling */
-  width: 18vw; /* Width of each card */
+  width: 20vw; /* Width of each card */
   height: 30vh; /* Height of each card */
   background: #70abaf; /* Background color of cards */
   border-radius: 2vw; /* Rounded corners for cards */
@@ -154,18 +154,21 @@
   color: #f0f7f4; /* Due date text color */
 }
 
-.delete-assignment-button {
-  border: 1px solid red;
+
+
+
+
+
+.delete-assignment{
+  position: absolute; 
+  width: 5vw; /* Full width of the container */
+  height: 5vh;
+  top: 24vh;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0;
 }
-
-.delete-assignment-button:hover {
-  opacity: 0.8; /* Hover effect */
-}
-
 
 /* Add Assignment Button */
 .add-assignment-button {
