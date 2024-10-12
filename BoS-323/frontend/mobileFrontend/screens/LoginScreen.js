@@ -22,13 +22,16 @@ const LoginScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Input Error", "Email and Password cannot be empty.");
+      return;
+    }
+    setLoading(true);
+
     try {
-      const data = await login(email, password);
-      console.log(data);
-
-      const user = data.user;
-
-      if (user.role === "student") {
+      const user = await login(email, password);
+      // Check if the user has a role and if it matches "student"
+      if (user && user.role.trim() === "student") {
         navigation.navigate("ViewAssignment");
       } else {
         Alert.alert("Access denied", "Only students are allowed to login.");
