@@ -42,7 +42,7 @@ const LoginScreen = ({ navigation }) => {
           user: {
             name: response.user.name,
             surname: response.user.surname,
-            email: email, // You can keep email if needed
+            email: email,
           },
         });
       } else {
