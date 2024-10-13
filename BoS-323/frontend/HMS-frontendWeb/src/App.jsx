@@ -9,6 +9,7 @@ import LoginPage from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Assignments from "./pages/Assignments";
 import ViewAssignment from "./pages/ViewAssignment"; // Make sure to import ViewAssignment
+import Admin from "./pages/admin";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/assignments" element={<Assignments />} />
+          <Route path="/admin" element={<Admin />} />
           <Route
             path="/view-assignment/:studentId"
             element={<ViewAssignment />}

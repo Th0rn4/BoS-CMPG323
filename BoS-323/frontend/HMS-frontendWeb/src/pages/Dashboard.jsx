@@ -7,7 +7,7 @@ import LogoutIcon from "../assets/LogoutIcon.svg";
 import SlothBanner from "../assets/SlothBanner.svg";
 import DeleteIcon from "../assets/DeleteNotification.svg";
 import AddAssignmentModal from "./AddAssignmentModal"; // Import the modal
-import { fetchAssignments, addAssignment, deleteAssignment as deleteAssignmentService} from "../Services/apiAssignments"; // Import API services
+import { fetchAssignments, addAssignment, deleteAssignment as deleteAssignmentService } from "../Services/apiAssignments"; // Import API services
 import { fetchNotifications, deleteNotification as deleteNotificationService, addNotification } from "../Services/apiNotifications"; // Import API services
 
 const MAX_DESCRIPTION_LENGTH = 100; // Set a limit for description length
@@ -20,7 +20,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user")); // Retrieve user from local storage
-  
 
   useEffect(() => {
     const loadData = async () => {
@@ -34,7 +33,6 @@ const Dashboard = () => {
 
         if (assignmentsData.success && assignmentsData.assignments) {
           setAssignments(assignmentsData.assignments);
-
           const now = Date.now();
 
           // Store the current page load time for future comparison
@@ -126,7 +124,7 @@ const Dashboard = () => {
     }
   };
 
-  if (!user) return null; // Prevent rendering if no user data is loaded
+  if (!user) return null; // Prevent rendering if no user data is loaded 
 
   return (
     <div className="dashboard-container">
@@ -138,6 +136,11 @@ const Dashboard = () => {
         <div className="logout-button" onClick={handleLogout}>
           <img src={LogoutIcon} alt="Logout" />
         </div>
+        {user.role === 'admin' && ( // Check if the user is an admin
+          <div className="admin-button" onClick={() => navigate("/Admin")}>
+            <span>Manage Users</span> {/* Button text */}
+          </div>
+        )}
       </div>
 
       {/* Intro Section */}
@@ -229,7 +232,7 @@ const Dashboard = () => {
         <div className="user-info"> {/* Add user info */}
           <p>Logged in as:</p>
           <p className="user-name">
-          {user.name?.firstName || "Unknown User"} {user.name?.lastName || ""}
+            {user.name?.firstName || "Unknown User"} {user.name?.lastName || ""}
           </p>
           <p className="user-email">{user.email || "No Email Provided"}</p> {/* Display email */}
         </div>

@@ -1,0 +1,235 @@
+/* Main Admin Container */
+.admin-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: #f0f7f4; /* Light background color */
+  display: flex; /* Flexbox for layout */
+  flex-direction: row; /* Horizontal layout */
+}
+
+/* Left Panel / Sidebar */
+.left-panel {
+  position: fixed;
+  width: 5vw; /* Fixed width for sidebar */
+  height: 100vh; /* Full height */
+  left: 0;
+  top: 0;
+  background: #70abaf; /* Sidebar background color */
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center align items */
+  z-index: 10; /* Ensure it appears above other elements */
+}
+
+/* Home Button */
+.home-button {
+  position: absolute;
+  width: 4vw;
+  height: 4vh;
+  left: -0.5vw; /* Positioning */
+  top: 5vh;
+  cursor: pointer; /* Pointer cursor for interactivity */
+}
+
+.home-button img {
+  width: 150%; /* Scale image */
+  height: 150%;
+  object-fit: contain; /* Maintain aspect ratio */
+}
+
+/* Logout Button */
+.logout-button {
+  position: absolute;
+  width: 10vw;
+  height: 10vh;
+  left: -1vw;
+  top: 90vh; /* Position near the bottom */
+  cursor: pointer; /* Pointer cursor for interactivity */
+}
+
+.logout-button img {
+  width: 5%; /* Scale image */
+  height: 5%;
+  object-fit: contain; /* Maintain aspect ratio */
+}
+
+/* Intro Section */
+.intro {
+  position: absolute;
+  width: 30vw; /* Width for the intro section */
+  height: 15vh; /* Height for the intro section */
+  left: 15vw; /* Center position */
+  top: 0vh; /* Position at the top */
+}
+
+.intro-title {
+  font-family: "Inter", sans-serif; /* Font family */
+  font-weight: 700; /* Bold font */
+  font-size: 3vw; /* Responsive font size */
+  line-height: 4vw; /* Line height */
+  color: #000; /* Text color */
+}
+
+.intro-subtitle {
+  font-family: "Inter", sans-serif; /* Font family */
+  font-weight: 500; /* Medium font weight */
+  font-size: 2vw; /* Responsive font size */
+  line-height: 2.5vw; /* Line height */
+  color: #636363; /* Subtitle color */
+  position: absolute;
+  top: 6vh; /* Position relative to intro section */
+}
+
+/* User Management Title */
+.user-management-title {
+  position: absolute;
+  width: 60vw; /* Full width of the container */
+  height: 10vh; /* Height for the title */
+  left: 10vw; /* Positioned relative to the main container */
+  top: 15vh; /* Space from the top */
+  font-family: "Inter", sans-serif; /* Font family */
+  font-weight: 700; /* Bold font */
+  font-size: 2.5vw; /* Responsive font size */
+  color: #705d56; /* Brown color for title */
+  text-align: left; /* Align text to the left */
+  z-index: 5; /* Ensure it's above other elements */
+}
+
+/* User Section */
+.user-section {
+  position: absolute;
+  width: 60vw; /* Full width of the container */
+  height: 50vh; /* Height of the section */
+  left: 10vw; /* Position relative to the main container */
+  top: 25vh; /* Position after the title */
+  display: flex; /* Use flexbox for alignment */
+  flex-direction: column; /* Align items in a column */
+  gap: 2vh; /* Space between cards */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding-bottom: 1vh; /* Padding at the bottom */
+  scrollbar-width: thin; /* Thin scrollbar for Firefox */
+  scrollbar-color: #70abaf #f0f7f4; /* Custom scrollbar colors for Firefox */
+}
+
+.user-section::-webkit-scrollbar {
+  width: 0.8vh; /* Width of the scrollbar */
+}
+
+.user-section::-webkit-scrollbar-thumb {
+  background-color: #70abaf; /* Color of the scroll thumb */
+  border-radius: 1vw; /* Rounded corners for the scrollbar thumb */
+}
+
+.user-section::-webkit-scrollbar-track {
+  background-color: #f0f7f4; /* Background of the scroll track */
+}
+
+.user-card {
+  background: #70abaf; /* Background color of cards */
+  border-radius: 2vw; /* Rounded corners for cards */
+  padding: 1vw; /* Padding inside the card */
+  display: flex; /* Flexbox for card content */
+  flex-direction: column; /* Stack content vertically */
+  align-items: center; /* Center align text */
+  position: relative; /* For delete button positioning */
+}
+
+.user-name {
+  font-size: 1.5rem; /* Name font size */
+  margin: 0.5rem 0; /* Margin for name */
+  text-align: center; /* Center align text */
+  color: #f0f7f4; /* Name text color */
+}
+
+.user-email,
+.user-role {
+  font-size: 1rem; /* Email/Role font size */
+  margin: 0.5rem 0; /* Margin for email/role */
+  text-align: center; /* Center align text */
+  color: #f0f7f4; /* Email/Role text color */
+}
+
+/* Delete User Button */
+.delete-user {
+  position: absolute;
+  top: 10px; /* Positioning relative to the card */
+  right: 10px; /* Positioning relative to the card */
+  background: none; /* No background */
+  border: none; /* No border */
+  cursor: pointer; /* Pointer cursor for interactivity */
+  padding: 0; /* No padding */
+}
+
+/* Add User Button */
+.add-user-button {
+  position: fixed; /* Fixed position to keep it in view */
+  width: 30vw; /* Width for the button */
+  height: 7.5vh; /* Height for the button */
+  left: 35vw; /* Center align the button horizontally */
+  bottom: 5vh; /* Position near the bottom */
+  background: #705d56; /* Background color */
+  border-radius: 1.5vw; /* Rounded corners */
+  display: flex; /* Flexbox for centering content */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  cursor: pointer; /* Pointer cursor for interactivity */
+  z-index: 10; /* Ensure it's above other elements */
+}
+
+.button-text {
+  font-family: "Inter", sans-serif; /* Font family */
+  font-weight: 500; /* Medium font weight */
+  font-size: 2vw; /* Responsive font size */
+  line-height: 2vw; /* Line height */
+  color: #f0f7f4; /* Text color */
+  white-space: nowrap; /* Prevent text wrapping */
+  text-align: center; /* Center align text */
+  cursor: pointer; /* Pointer cursor for interactivity */
+  margin: 0; /* No margin */
+}
+
+.plus-icon {
+  font-family: "Inter", sans-serif; /* Font family */
+  font-weight: 500; /* Medium font weight */
+  font-size: 3vw; /* Larger font size for plus icon */
+  line-height: 3vw; /* Line height */
+  color: #99e1d9; /* Plus icon color */
+  margin-left: 1vw; /* Space between icon and text */
+}
+
+/* Notifications Section */
+.notifications-section {
+  position: absolute;
+  width: 50vw; /* Width for notifications */
+  height: 20vh; /* Height for notifications */
+  left: 5vw; /* Position relative to the main container */
+  top: 70vh; /* Position below other sections */
+}
+
+.notifications-title {
+  font-family: "Inter", sans-serif; /* Font family */
+  font-weight: 500; /* Medium font weight */
+  font-size: 2vw; /* Responsive font size */
+  color: #636363; /* Text color */
+  margin-left: 30vw; /* Margin for positioning */
+  margin-bottom: 2vh; /* Spacing below title */
+}
+
+.notifications-container {
+  display: flex; /* Flexbox for layout */
+  flex-direction: column; /* Stack notifications vertically */
+  gap: 2vh; /* Space between notifications */
+}
+
+.notification-card {
+  width: 65vw; /* Width for notification card */
+  height: 6vh; /* Height for notification card */
+  margin-left: 1vw; /* Margin for positioning */
+  background: #705d56; /* Background color */
+  border-radius: 1vw; /* Rounded corners */
+  display: flex; /* Flexbox for layout */
+  align-items: center; /* Center vertically */
+  justify-content: space-between; /* Space items evenly */
+  padding: 0 2vw; /* Padding on the sides */
+}
