@@ -29,10 +29,22 @@ const LoginScreen = ({ navigation }) => {
     setLoading(true);
 
     try {
-      const user = await login(email, password);
-      // Check if the user has a role and if it matches "student"
-      if (user && user.role.trim() === "student") {
-        navigation.navigate("ViewAssignment");
+      const response = await login(email, password);
+      console.log("User object:", response); // Log the entire response
+
+      // Check if the user object has the role property correctly
+      if (
+        response.user &&
+        response.user.role &&
+        response.user.role.trim() === "student"
+      ) {
+        navigation.navigate("ViewAssignment", {
+          user: {
+            name: response.user.name,
+            surname: response.user.surname,
+            email: email, // You can keep email if needed
+          },
+        });
       } else {
         Alert.alert("Access denied", "Only students are allowed to login.");
       }
@@ -94,7 +106,6 @@ const LoginScreen = ({ navigation }) => {
           </View>
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.loginButtonText}>
-              {" "}
               {loading ? "Logging in..." : "Login"}
             </Text>
           </TouchableOpacity>
