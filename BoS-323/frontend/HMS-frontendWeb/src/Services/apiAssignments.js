@@ -3,11 +3,21 @@ import axios from "axios";
 // Change the API_URL to point to the create endpoint
 const API_URL = "https://bos-cmpg323-assignmentdeploy.onrender.com/api/assignments";
 
-// Fetch assignments function
+
+// Fetch assignments function (Lecturer-Specific)
 export const fetchAssignments = async () => {
+  const user = JSON.parse(localStorage.getItem("user")); // Get the logged-in user's details
+
+  if (!user || !user._id) {
+    throw new Error("User not logged in or invalid user data.");
+  }
+
+  console.log("Fetching assignments for creator_id:", user._id); // Log the creator_id being used
+
   try {
-    const response = await axios.get(API_URL); // Fetch from the main endpoint
-    console.log("Fetched Assignments Data:", response.data); // Log the fetched data for debugging
+    // Pass the creator_id (lecturer's ID) as a query parameter
+    const response = await axios.get(`${API_URL}?creator_id=${user._id}`);
+    console.log("Fetched Lecturer-Specific Assignments:", response.data); // Log the fetched data
     return response.data; // Adjust this based on the actual structure
   } catch (error) {
     console.error(
@@ -17,6 +27,7 @@ export const fetchAssignments = async () => {
     throw new Error("Failed to fetch assignments");
   }
 };
+
 
 // Add assignment function
 export const addAssignment = async (newAssignment) => {

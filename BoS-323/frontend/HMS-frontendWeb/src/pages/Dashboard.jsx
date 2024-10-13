@@ -1,5 +1,3 @@
-// Dashboard.js
-
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,41 +20,42 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user")); // Retrieve user from local storage
-useEffect(() => {
-  const loadData = async () => {
-    try {
-      const assignmentsData = await fetchAssignments();
-      const notificationsData = await fetchNotifications();
+  
 
-      if (notificationsData.success && notificationsData.notifications) {
-        setNotifications(notificationsData.notifications);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const assignmentsData = await fetchAssignments();
+        const notificationsData = await fetchNotifications();
+
+        if (notificationsData.success && notificationsData.notifications) {
+          setNotifications(notificationsData.notifications);
+        }
+
+        if (assignmentsData.success && assignmentsData.assignments) {
+          setAssignments(assignmentsData.assignments);
+
+          const now = Date.now();
+
+          // Store the current page load time for future comparison
+          localStorage.setItem("lastPageLoadTime", now);
+        } else {
+          setError(assignmentsData.message || "No assignments available.");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("Failed to fetch data. Please try again later.");
       }
+    };
 
-      if (assignmentsData.success && assignmentsData.assignments) {
-        setAssignments(assignmentsData.assignments);
-
-        const now = Date.now();
-        
-
-        // Store the current page load time for future comparison
-        localStorage.setItem("lastPageLoadTime", now);
-      } else {
-        setError(assignmentsData.message || "No assignments available.");
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setError("Failed to fetch data. Please try again later.");
-    }
-  };
-
-  loadData();
-}, []);
+    loadData();
+  }, []);
 
   const truncateText = (text, maxLength) => {
     if (!text || typeof text !== "string") {
       return ""; // Handle undefined or non-string descriptions
     }
-    
+
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
   };
 
@@ -72,12 +71,12 @@ useEffect(() => {
       const newAssignment = await addAssignment(assignmentData);
       setAssignments((prevAssignments) => [...prevAssignments, newAssignment]);
       setError(null); // Reset any previous errors
-      
+
       await addNotification({
         NotificationHeader: "New Assignment Created",
-        NotificationDescription: "You have a new assignment.",// Message for the notification
+        NotificationDescription: "You have a new assignment.", // Message for the notification
       });
-  
+
       // Refresh the page to load new assignments
       window.location.reload();
 
@@ -88,6 +87,7 @@ useEffect(() => {
       return false; // Indicate failure
     }
   };
+
   const handleDeleteAssignments = async (_id, e) => {
     e.stopPropagation(); // Prevents the parent click event from being triggered
     console.log("Deleting Assignment ID:", _id); // Log the ID being deleted
@@ -95,7 +95,7 @@ useEffect(() => {
       if (!_id) {
         throw new Error("Assignment ID is missing"); // Check if the ID is present
       }
-  
+
       await deleteAssignmentService(_id);
       setAssignments((prevAssignments) =>
         prevAssignments.filter((assignment) => assignment._id !== _id) // Use _id here
@@ -104,7 +104,6 @@ useEffect(() => {
       console.error("Error deleting assignment:", error);
     }
   };
-  
 
   const handleAssignmentClick = () => {
     navigate("/assignments"); // Navigate to the Assignments component
@@ -143,8 +142,8 @@ useEffect(() => {
 
       {/* Intro Section */}
       <div className="intro">
-        <h1 className="intro-title">Hi!</h1>
-        <p className="intro-subtitle">Manage Assignments</p>
+        <h1 className="intro-title">Hi, {user.role || "User"}!</h1> {/* Add the user's name */}
+        <p className="intro-subtitle">Manage your Assignments</p>
       </div>
 
       {/* Assignment Section */}
@@ -154,9 +153,9 @@ useEffect(() => {
         ) : assignments.length > 0 ? (
           <div className="assignment-cards-container" style={{ display: "flex", gap: "2vw" }}>
             {assignments.map(({ _id, title, description, due_date, mark_allocation }) => (
-              <div 
-                className="assignment-card" 
-                key={_id} 
+              <div
+                className="assignment-card"
+                key={_id}
                 onClick={handleAssignmentClick} // Navigate to Assignments
               >
                 <h3 className="assignment-title">{title}</h3>
@@ -173,9 +172,8 @@ useEffect(() => {
                   className="delete-assignment"
                   onClick={(e) => handleDeleteAssignments(_id, e)} // Pass the event to the handler
                 >
-                <img src={DeleteIcon} alt="Delete" className="delete-icon" />
+                  <img src={DeleteIcon} alt="Delete" className="delete-icon" />
                 </button>
-
               </div>
             ))}
           </div>
@@ -207,7 +205,7 @@ useEffect(() => {
           {notifications.length > 0 ? (
             notifications.map((notification) => (
               <div className="notification-card" key={notification._id}>
-                <p className="notification-text">{notification.NotificationHeader}</p> 
+                <p className="notification-text">{notification.NotificationHeader}</p>
                 <p className="notification-description">{notification.NotificationDescription}</p>
                 <button
                   className="delete-notification"
@@ -227,6 +225,13 @@ useEffect(() => {
       <div className="right-panel">
         <div className="sloth-banner">
           <img src={SlothBanner} alt="Sloth" />
+        </div>
+        <div className="user-info"> {/* Add user info */}
+          <p>Logged in as:</p>
+          <p className="user-name">
+          {user.name?.firstName || "Unknown User"} {user.name?.lastName || ""}
+          </p>
+          <p className="user-email">{user.email || "No Email Provided"}</p> {/* Display email */}
         </div>
       </div>
     </div>
