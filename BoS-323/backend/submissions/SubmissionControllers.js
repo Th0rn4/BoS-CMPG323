@@ -12,6 +12,7 @@ const {
   streamVideoFromCloudinary,
   generateFeedbackExcel,
   downloadVideoFromCloudinary,
+  getSubmissionsByAssignment,
 } = require('./SubmissionServices');
 
 exports.createSubmission = async (req, res) => {
@@ -291,5 +292,23 @@ exports.deleteSubmission = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: 'Error deleting submission', error });
+  }
+};
+
+exports.getSubmissionsByAssignment = async (req, res) => {
+  try {
+    const assignmentId = req.query.assignmentId;
+    const submissions = await getSubmissionsByAssignment(assignmentId);
+
+    res.status(200).json({
+      success: true,
+      submissions,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching submissions',
+      error: error.message,
+    });
   }
 };
