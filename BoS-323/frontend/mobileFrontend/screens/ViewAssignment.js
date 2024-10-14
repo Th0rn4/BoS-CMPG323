@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,10 +6,11 @@ import {
   StyleSheet,
   ScrollView,
   Image,
+  Modal,
   FlatList,
-  Animated,
-  TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   fetchAssignments,
   fetchSubmissions,
@@ -17,6 +18,7 @@ import {
   fetchNotifications,
 } from "../services/api";
 
+// AssignmentTile component
 const AssignmentTile = ({ assignment, onAssignmentClick }) => (
   <TouchableOpacity
     style={styles.assignmentTile}
@@ -26,6 +28,7 @@ const AssignmentTile = ({ assignment, onAssignmentClick }) => (
   </TouchableOpacity>
 );
 
+// NotificationItem component
 const NotificationItem = ({ notification }) => (
   <TouchableOpacity style={styles.notificationItem}>
     <View style={styles.notificationIcon}>
@@ -94,7 +97,80 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
     }).start();
   };
 
-  // ... (keep other existing functions like toggleViewType, handleAssignmentClick, etc.)
+  const toggleViewType = () => {
+    setViewType((prevType) => {
+      if (prevType === "Assignments") {
+        return "In progress";
+      } else if (prevType === "In progress") {
+        return "Completed";
+      } else {
+        return "Assignments";
+      }
+    });
+  };
+
+  const handleAssignmentClick = async (assignment) => {
+    try {
+      let submission = submissions.find(
+        (s) => s.assignment_id === assignment._id
+      );
+
+      if (!submission) {
+        console.log("Creating new submission for assignment:", assignment._id);
+
+        submission = await createSubmission({
+          assignment_id: assignment._id,
+          student_id: user.id,
+          submit_date: new Date().toISOString(),
+          status: "In progress",
+        });
+
+        console.log("New submission created:", submission);
+        setSubmissions([...submissions, submission]);
+      }
+
+      navigation.navigate("AssignmentScreen", {
+        assignment,
+        submission,
+        onComplete: () => handleSubmissionComplete(submission._id),
+      });
+    } catch (error) {
+      console.error("Failed to navigate to assignment screen:", error);
+      console.error("Error details:", error.message);
+      Alert.alert("Error", "Failed to create submission. Please try again.");
+    }
+  };
+
+  const handleSubmissionComplete = (submissionId) => {
+    setSubmissions(
+      submissions.map((s) =>
+        s._id === submissionId ? { ...s, status: "Submitted" } : s
+      )
+    );
+  };
+
+  const filteredAssignments = () => {
+    switch (viewType) {
+      case "Assignments":
+        return assignments.filter(
+          (a) => !submissions.some((s) => s.assignment_id === a._id)
+        );
+      case "In progress":
+        return assignments.filter((a) =>
+          submissions.some(
+            (s) => s.assignment_id === a._id && s.status === "In progress"
+          )
+        );
+      case "Completed":
+        return assignments.filter((a) =>
+          submissions.some(
+            (s) => s.assignment_id === a._id && s.status === "Submitted"
+          )
+        );
+      default:
+        return [];
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={closeNotifications}>
