@@ -6,6 +6,9 @@ import {
   StyleSheet,
   ScrollView,
   Image,
+  Modal,
+  FlatList,
+  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -15,8 +18,8 @@ import {
   fetchNotifications,
 } from "../services/api";
 
-// Updated AssignmentTile component
-const AssignmentTile = ({ assignment, navigation, onAssignmentClick }) => (
+// AssignmentTile component
+const AssignmentTile = ({ assignment, onAssignmentClick }) => (
   <TouchableOpacity
     style={styles.assignmentTile}
     onPress={() => onAssignmentClick(assignment)}
@@ -25,6 +28,7 @@ const AssignmentTile = ({ assignment, navigation, onAssignmentClick }) => (
   </TouchableOpacity>
 );
 
+// NotificationItem component
 const NotificationItem = ({ notification }) => (
   <View style={styles.notificationItem}>
     <Text style={styles.notificationHeader}>
@@ -47,7 +51,6 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
   const [assignments, setAssignments] = useState([]);
   const [submissions, setSubmissions] = useState([]);
   const [viewType, setViewType] = useState("Assignments");
-
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -65,14 +68,11 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
         setNotifications(fetchedNotifications);
       } catch (error) {
         console.error("Failed to fetch data:", error);
+        Alert.alert("Error", "Failed to load data. Please try again.");
       }
     };
     fetchData();
   }, [user._id]);
-
-  const toggleNotifications = () => {
-    setShowNotifications(!showNotifications);
-  };
 
   const toggleViewType = () => {
     setViewType((prevType) => {
@@ -95,10 +95,9 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
       if (!submission) {
         console.log("Creating new submission for assignment:", assignment._id);
 
-        // Make sure the student_id is included from the user object
         submission = await createSubmission({
           assignment_id: assignment._id,
-          student_id: user.id, // This ensures student_id is passed
+          student_id: user.id,
           submit_date: new Date().toISOString(),
           status: "In progress",
         });
@@ -150,6 +149,10 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
     }
   };
 
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -175,7 +178,18 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
           />
         </TouchableOpacity>
       </View>
-      {/* ... (existing JSX) */}
+      <TouchableOpacity onPress={toggleViewType}>
+        <Text style={styles.tapableTextAssignment}>{viewType}</Text>
+      </TouchableOpacity>
+      <ScrollView style={styles.scrollView}>
+        {filteredAssignments().map((assignment) => (
+          <AssignmentTile
+            key={assignment._id}
+            assignment={assignment}
+            onAssignmentClick={handleAssignmentClick}
+          />
+        ))}
+      </ScrollView>
       <Modal
         visible={showNotifications}
         transparent={true}
