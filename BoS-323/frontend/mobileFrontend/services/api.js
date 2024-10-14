@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const BASE_URL = "https://bos-cmpg323-usersdeploy.onrender.com/api"; // Define the base URL for the API
 const SUBMISSION_URL =
   "https://bos-cmpg323-submissionsdeploy.onrender.com/api/submissions";
+
 // Function to handle login
 export const login = async (email, password) => {
   try {
@@ -24,6 +25,15 @@ export const login = async (email, password) => {
     return user; // Return the user object
   } catch (error) {
     throw new Error(error.message);
+  }
+};
+
+// Function to handle logout
+export const logout = async () => {
+  try {
+    await AsyncStorage.removeItem("token"); // Clear the token from AsyncStorage
+  } catch (error) {
+    throw new Error("Failed to logout");
   }
 };
 
@@ -68,6 +78,7 @@ export const fetchAssignments = async () => {
   }
 };
 
+// Fetch submissions
 export const fetchSubmissions = async () => {
   try {
     const token = await AsyncStorage.getItem("token");
@@ -89,28 +100,10 @@ export const fetchSubmissions = async () => {
   }
 };
 
-// Function to create a new submission
+// Create a new submission
 export const createSubmission = async (submissionData) => {
   try {
     const token = await AsyncStorage.getItem("token");
-    console.log("Sending submission data:", JSON.stringify(submissionData));
-
-    // Check for missing fields
-    const requiredFields = [
-      "assignment_id",
-      "student_id",
-      "submit_date",
-      "status",
-    ];
-    const missingFields = requiredFields.filter(
-      (field) => !submissionData[field]
-    );
-
-    if (missingFields.length > 0) {
-      throw new Error(
-        `Missing required fields for submission: ${missingFields.join(", ")}`
-      );
-    }
 
     const response = await fetch(`${SUBMISSION_URL}/create`, {
       method: "POST",
@@ -121,22 +114,19 @@ export const createSubmission = async (submissionData) => {
       body: JSON.stringify(submissionData),
     });
 
-    console.log("Response status:", response.status);
-    const responseData = await response.json();
-    console.log("Response data:", responseData);
-
     if (!response.ok) {
-      throw new Error(responseData.message || "Failed to create submission");
+      const errorResponse = await response.json();
+      throw new Error(errorResponse.message || "Failed to create submission");
     }
 
+    const responseData = await response.json();
     return responseData.submission;
   } catch (error) {
-    console.error("Error in createSubmission:", error);
-    throw error;
+    throw new Error(error.message);
   }
 };
 
-// Function to update a submission
+// Update a submission
 export const updateSubmission = async (submissionId, updateData) => {
   try {
     const token = await AsyncStorage.getItem("token");
@@ -161,7 +151,7 @@ export const updateSubmission = async (submissionId, updateData) => {
   }
 };
 
-// Function to upload a video for a submission
+// Upload a video for a submission
 export const uploadSubmissionVideo = async (submissionId, videoFile) => {
   try {
     const token = await AsyncStorage.getItem("token");
@@ -188,7 +178,7 @@ export const uploadSubmissionVideo = async (submissionId, videoFile) => {
   }
 };
 
-// Function to get a single submission
+// Get a single submission
 export const getSubmission = async (submissionId) => {
   try {
     const token = await AsyncStorage.getItem("token");
@@ -210,7 +200,7 @@ export const getSubmission = async (submissionId) => {
   }
 };
 
-// Function to get feedback for an assignment
+// Get assignment feedback
 export const getAssignmentFeedback = async (assignmentId) => {
   try {
     const token = await AsyncStorage.getItem("token");
@@ -234,12 +224,12 @@ export const getAssignmentFeedback = async (assignmentId) => {
   }
 };
 
-// Function to get video stream URL
+// Get video stream URL
 export const getVideoStreamUrl = (submissionId) => {
   return `${SUBMISSION_URL}/stream/${submissionId}`;
 };
 
-// Function to get video download URL
+// Get video download URL
 export const getVideoDownloadUrl = (submissionId) => {
   return `${SUBMISSION_URL}/${submissionId}/download`;
 };
