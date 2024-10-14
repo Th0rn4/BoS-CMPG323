@@ -8,34 +8,23 @@
   flex-direction: row; /* Horizontal layout */
 }
 
-/* Left Panel / Sidebar */
-.left-panel {
-  position: fixed;
-  width: 5vw; /* Fixed width for sidebar */
-  height: 100vh; /* Full height */
-  left: 0;
-  top: 0;
-  background: #70abaf; /* Sidebar background color */
-  display: flex;
-  flex-direction: column; /* Stack items vertically */
-  align-items: center; /* Center align items */
-  z-index: 10; /* Ensure it appears above other elements */
-}
+
+
 
 /* Home Button */
 .home-button {
   position: absolute;
   width: 4vw;
   height: 4vh;
-  left: -0.5vw; /* Positioning */
+  left: -0.5vw;
   top: 5vh;
-  cursor: pointer; /* Pointer cursor for interactivity */
+  cursor: pointer;
 }
 
 .home-button img {
-  width: 150%; /* Scale image */
+  width: 150%;
   height: 150%;
-  object-fit: contain; /* Maintain aspect ratio */
+  object-fit: contain;
 }
 
 /* Logout Button */
@@ -57,44 +46,35 @@
 /* Intro Section */
 .intro {
   position: absolute;
-  width: 30vw; /* Width for the intro section */
-  height: 15vh; /* Height for the intro section */
-  left: 15vw; /* Center position */
-  top: 0vh; /* Position at the top */
+  width: 30vw;
+  height: 15vh;
+  left: 15vw;
+  top: 0vh;
 }
 
 .intro-title {
-  font-family: "Inter", sans-serif; /* Font family */
-  font-weight: 700; /* Bold font */
-  font-size: 3vw; /* Responsive font size */
-  line-height: 4vw; /* Line height */
-  color: #000; /* Text color */
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 3vw;
+  line-height: 4vw;
+  color: #000000;
 }
 
 .intro-subtitle {
-  font-family: "Inter", sans-serif; /* Font family */
-  font-weight: 500; /* Medium font weight */
-  font-size: 2vw; /* Responsive font size */
-  line-height: 2.5vw; /* Line height */
-  color: #636363; /* Subtitle color */
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 2vw;
+  line-height: 2.5vw;
+  color: #636363;
   position: absolute;
-  top: 6vh; /* Position relative to intro section */
+  top: 6vh;
 }
 
+
 /* User Management Title */
-.user-management-title {
-  position: absolute;
-  width: 60vw; /* Full width of the container */
-  height: 10vh; /* Height for the title */
-  left: 10vw; /* Positioned relative to the main container */
-  top: 15vh; /* Space from the top */
-  font-family: "Inter", sans-serif; /* Font family */
-  font-weight: 700; /* Bold font */
-  font-size: 2.5vw; /* Responsive font size */
-  color: #705d56; /* Brown color for title */
-  text-align: left; /* Align text to the left */
-  z-index: 5; /* Ensure it's above other elements */
-}
+
 
 /* User Section */
 .user-section {
@@ -102,15 +82,19 @@
   width: 60vw; /* Full width of the container */
   height: 50vh; /* Height of the section */
   left: 10vw; /* Position relative to the main container */
-  top: 25vh; /* Position after the title */
+  top: 20vh; /* Position relative to the main container */
   display: flex; /* Use flexbox for alignment */
-  flex-direction: column; /* Align items in a column */
-  gap: 2vh; /* Space between cards */
-  overflow-y: auto; /* Enable vertical scrolling */
+  flex-direction: column; /* Align items in a row */
+  flex-wrap: nowrap; /* Prevent wrapping to next line */
+  gap: 2vw; /* Space between cards */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-y: auto; /* Hide vertical scrolling */
   padding-bottom: 1vh; /* Padding at the bottom */
   scrollbar-width: thin; /* Thin scrollbar for Firefox */
   scrollbar-color: #70abaf #f0f7f4; /* Custom scrollbar colors for Firefox */
-}
+  
+} /* Custom scrollbar colors for Firefox */
+
 
 .user-section::-webkit-scrollbar {
   width: 0.8vh; /* Width of the scrollbar */
@@ -196,40 +180,4 @@
   line-height: 3vw; /* Line height */
   color: #99e1d9; /* Plus icon color */
   margin-left: 1vw; /* Space between icon and text */
-}
-
-/* Notifications Section */
-.notifications-section {
-  position: absolute;
-  width: 50vw; /* Width for notifications */
-  height: 20vh; /* Height for notifications */
-  left: 5vw; /* Position relative to the main container */
-  top: 70vh; /* Position below other sections */
-}
-
-.notifications-title {
-  font-family: "Inter", sans-serif; /* Font family */
-  font-weight: 500; /* Medium font weight */
-  font-size: 2vw; /* Responsive font size */
-  color: #636363; /* Text color */
-  margin-left: 30vw; /* Margin for positioning */
-  margin-bottom: 2vh; /* Spacing below title */
-}
-
-.notifications-container {
-  display: flex; /* Flexbox for layout */
-  flex-direction: column; /* Stack notifications vertically */
-  gap: 2vh; /* Space between notifications */
-}
-
-.notification-card {
-  width: 65vw; /* Width for notification card */
-  height: 6vh; /* Height for notification card */
-  margin-left: 1vw; /* Margin for positioning */
-  background: #705d56; /* Background color */
-  border-radius: 1vw; /* Rounded corners */
-  display: flex; /* Flexbox for layout */
-  align-items: center; /* Center vertically */
-  justify-content: space-between; /* Space items evenly */
-  padding: 0 2vw; /* Padding on the sides */
 }

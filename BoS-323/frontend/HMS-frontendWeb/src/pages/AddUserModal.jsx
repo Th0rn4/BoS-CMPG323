@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from 'react';
 import {
     fetchUsers,
@@ -5,6 +6,8 @@ import {
     deleteUser ,
   } from "../Services/apiUsers"; // Import API services
 import './Admin.css'; // Make sure to import your CSS for styles
+import HomeButton from "../assets/HomeButton.svg";
+import LogoutIcon from "../assets/LogoutIcon.svg";
 
 const Admin = () => {
     const [users, setUsers] = useState([]);
