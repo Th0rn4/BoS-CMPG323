@@ -1,8 +1,9 @@
 // Contains business logic for submission operations
-const Submission = require("./SubmissionModels");
-const cloudinary = require("./cloudinary");
-const mongoose = require("mongoose");
-const XLSX = require("xlsx");
+const Submission = require('./SubmissionModels');
+const User = require('../users/UserModels');
+const cloudinary = require('./cloudinary');
+const mongoose = require('mongoose');
+const XLSX = require('xlsx');
 
 // Function to create a new submission
 const createSubmission = async (submissionData) => {
@@ -23,21 +24,21 @@ const getFeedbackForAssignment = async (assignmentId) => {
     },
     {
       $lookup: {
-        from: "users",
-        localField: "student_id",
-        foreignField: "_id",
-        as: "student",
+        from: 'users',
+        localField: 'student_id',
+        foreignField: '_id',
+        as: 'student',
       },
     },
     {
-      $unwind: "$student",
+      $unwind: '$student',
     },
     {
       $project: {
-        submissionId: "$_id",
-        studentId: "$student_id",
+        submissionId: '$_id',
+        studentId: '$student_id',
         studentName: {
-          $concat: ["$student.name.firstName", " ", "$student.name.lastName"],
+          $concat: ['$student.name.firstName', ' ', '$student.name.lastName'],
         },
         feedback: 1,
       },
@@ -79,11 +80,11 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
     const result = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          resource_type: "video",
-          folder: "assignment_submissions",
-          quality: "auto:good", // Automatically adjusts quality for balance
+          resource_type: 'video',
+          folder: 'assignment_submissions',
+          quality: 'auto:good', // Automatically adjusts quality for balance
           transformation: [
-            { width: 1280, height: 720, crop: "limit" }, // Resize to 720p but keep the original format
+            { width: 1280, height: 720, crop: 'limit' }, // Resize to 720p but keep the original format
           ],
         },
         (error, result) => {
@@ -117,7 +118,7 @@ const uploadVideoToCloudinary = async (file, submissionId) => {
 
     return updatedSubmission;
   } catch (error) {
-    console.error("Error in uploadVideoToCloudinary service:", error);
+    console.error('Error in uploadVideoToCloudinary service:', error);
     throw new Error(`Error uploading video to Cloudinary: ${error.message}`);
   }
 };
@@ -127,19 +128,19 @@ const streamVideoFromCloudinary = async (publicId, format, res) => {
   try {
     // Generate a URL for the video with optional transformations (for adaptive bitrate streaming)
     const videoUrl = cloudinary.url(publicId, {
-      resource_type: "video",
-      format: format || "mp4",
-      quality: "auto", // For automatic bitrate adjustment
+      resource_type: 'video',
+      format: format || 'mp4',
+      quality: 'auto', // For automatic bitrate adjustment
       transformation: [
-        { width: 1280, height: 720, crop: "limit" }, // Resize to 720p but keep the original format
-        { fetch_format: "auto", bitrate: "auto" }, // Automatic bitrate selection for adaptive streaming
+        { width: 1280, height: 720, crop: 'limit' }, // Resize to 720p but keep the original format
+        { fetch_format: 'auto', bitrate: 'auto' }, // Automatic bitrate selection for adaptive streaming
       ],
     });
 
     // Redirect or stream video directly
     res.redirect(videoUrl);
   } catch (error) {
-    console.error("Error streaming video from Cloudinary:", error);
+    console.error('Error streaming video from Cloudinary:', error);
     throw new Error(`Error streaming video from Cloudinary: ${error.message}`);
   }
 };
@@ -153,26 +154,26 @@ const generateFeedbackExcel = async (assignmentId) => {
       },
       {
         $lookup: {
-          from: "users",
-          localField: "student_id",
-          foreignField: "_id",
-          as: "student",
+          from: 'users',
+          localField: 'student_id',
+          foreignField: '_id',
+          as: 'student',
         },
       },
       {
-        $unwind: "$student",
+        $unwind: '$student',
       },
       {
         $project: {
-          firstName: "$student.name.firstName",
-          lastName: "$student.name.lastName",
+          firstName: '$student.name.firstName',
+          lastName: '$student.name.lastName',
           feedback: 1,
         },
       },
     ]);
 
     if (submissions.length === 0) {
-      throw new Error("No submissions found for this assignment");
+      throw new Error('No submissions found for this assignment');
     }
 
     const worksheetData = [];
@@ -180,8 +181,8 @@ const generateFeedbackExcel = async (assignmentId) => {
     submissions.forEach((submission) => {
       submission.feedback.forEach((feedback) => {
         worksheetData.push({
-          "First Name": submission.firstName,
-          "Last Name": submission.lastName,
+          'First Name': submission.firstName,
+          'Last Name': submission.lastName,
           Grade: feedback.grade,
           Comment: feedback.comment,
         });
@@ -190,15 +191,15 @@ const generateFeedbackExcel = async (assignmentId) => {
 
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Feedback");
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Feedback');
 
     const excelBuffer = XLSX.write(workbook, {
-      type: "buffer",
-      bookType: "xlsx",
+      type: 'buffer',
+      bookType: 'xlsx',
     });
     return excelBuffer;
   } catch (error) {
-    console.error("Error in generateFeedbackExcel:", error);
+    console.error('Error in generateFeedbackExcel:', error);
     throw error;
   }
 };
@@ -208,14 +209,14 @@ const downloadVideoFromCloudinary = async (publicId) => {
   try {
     // Generate a signed URL for the video file download
     const videoUrl = cloudinary.url(publicId, {
-      resource_type: "video",
-      type: "upload",
-      flags: "attachment", // Forces the video to be downloaded instead of played in the browser
+      resource_type: 'video',
+      type: 'upload',
+      flags: 'attachment', // Forces the video to be downloaded instead of played in the browser
     });
 
     return videoUrl;
   } catch (error) {
-    console.error("Error in downloadVideoFromCloudinary service:", error);
+    console.error('Error in downloadVideoFromCloudinary service:', error);
     throw new Error(
       `Error downloading video from Cloudinary: ${error.message}`
     );
@@ -224,6 +225,21 @@ const downloadVideoFromCloudinary = async (publicId) => {
 
 const getSubmissionsByAssignment = async (assignmentId) => {
   return await Submission.find({ assignmentId });
+};
+
+const getSubmissionsByAssignmentId = async (assignmentId) => {
+  try {
+    const submissions = await Submission.find({ assignment_id: assignmentId })
+      .populate({
+        path: 'student_id',
+        select: 'name role',
+      })
+      .exec();
+
+    return submissions;
+  } catch (error) {
+    throw new Error('Error fetching submissions: ' + error.message);
+  }
 };
 
 module.exports = {
@@ -239,4 +255,5 @@ module.exports = {
   generateFeedbackExcel,
   downloadVideoFromCloudinary,
   getSubmissionsByAssignment,
+  getSubmissionsByAssignmentId,
 };
