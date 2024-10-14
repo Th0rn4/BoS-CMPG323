@@ -40,9 +40,10 @@ const LoginScreen = ({ navigation }) => {
       ) {
         navigation.navigate("ViewAssignment", {
           user: {
+            id: response.user.id,
             name: response.user.name,
             surname: response.user.surname,
-            email: email, // You can keep email if needed
+            email: email,
           },
         });
       } else {
@@ -59,58 +60,57 @@ const LoginScreen = ({ navigation }) => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0} // Offset for iOS
+      keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView
-          contentContainerStyle={styles.scrollView}
-          keyboardShouldPersistTaps="handled" // Ensures keyboard dismisses on tap
-          showsVerticalScrollIndicator={false}
-        >
-          <StatusBar style="auto" />
-          <Image
-            source={require("../assets/LoginSloth.png")}
-            style={styles.loginSlothImage}
-          />
-          <Text style={styles.loginText}>Login</Text>
-          <View style={styles.inputFields}>
-            <View style={styles.inputContainer}>
-              <Image
-                source={require("../assets/aticon.png")}
-                style={styles.icon}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                placeholderTextColor="#636363"
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Image
-                source={require("../assets/lockedIcon.png")}
-                style={styles.icon}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                placeholderTextColor="#636363"
-              />
-            </View>
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        keyboardShouldPersistTaps="always"
+        showsVerticalScrollIndicator={false}
+      >
+        <StatusBar style="auto" />
+        <Image
+          source={require("../assets/LoginSloth.png")}
+          style={styles.loginSlothImage}
+        />
+        <Text style={styles.loginText}>Login</Text>
+        <View style={styles.inputFields}>
+          <View style={styles.inputContainer}>
+            <Image
+              source={require("../assets/aticon.png")}
+              style={styles.icon}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              placeholderTextColor="#636363"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              editable={true}
+            />
           </View>
-          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>
-              {loading ? "Logging in..." : "Login"}
-            </Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </TouchableWithoutFeedback>
+          <View style={styles.inputContainer}>
+            <Image
+              source={require("../assets/lockedIcon.png")}
+              style={styles.icon}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              placeholderTextColor="#636363"
+            />
+          </View>
+        </View>
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <Text style={styles.loginButtonText}>
+            {loading ? "Logging in..." : "Login"}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#636363",
     width: 250,
     paddingBottom: 5,
+    zIndex: 1, // Ensure the input is interactable
   },
   loginButton: {
     width: 276,

@@ -8,22 +8,24 @@ import {
   Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { fetchAssignments } from "../services/api"; // Ensure correct import path
+import {
+  fetchAssignments,
+  fetchSubmissions,
+  createSubmission,
+} from "../services/api";
 
 // Updated AssignmentTile component
-const AssignmentTile = ({ title, description, navigation }) => (
+const AssignmentTile = ({ assignment, navigation, onAssignmentClick }) => (
   <TouchableOpacity
     style={styles.assignmentTile}
-    onPress={
-      () => navigation.navigate("AssignmentScreen", { title, description }) // Pass title and description
-    }
+    onPress={() => onAssignmentClick(assignment)}
   >
-    <Text style={styles.assignmentTitle}>{title}</Text>
+    <Text style={styles.assignmentTitle}>{assignment.title}</Text>
   </TouchableOpacity>
 );
 
 const ViewAssignmentScreen = ({ navigation, route }) => {
-  const { user } = route.params; // Destructure user details from route params
+  const { user } = route.params;
 
   const [userDetails, setUserDetails] = useState({
     name: user.name || "Name",
@@ -31,32 +33,99 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
   });
 
   const [assignments, setAssignments] = useState([]);
+  const [submissions, setSubmissions] = useState([]);
+  const [viewType, setViewType] = useState("Assignments");
 
   useEffect(() => {
-    const fetchUserDetails = async () => {
-      const storedUser = await AsyncStorage.getItem("user");
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        setUserDetails({
-          name: parsedUser.name,
-          surname: parsedUser.surname,
-          email: parsedUser.email,
-        });
-      }
-    };
-
-    const fetchAssignmentData = async () => {
+    const fetchData = async () => {
       try {
         const fetchedAssignments = await fetchAssignments();
         setAssignments(fetchedAssignments);
+
+        const fetchedSubmissions = await fetchSubmissions();
+        setSubmissions(fetchedSubmissions);
       } catch (error) {
-        console.error("Failed to fetch assignments:", error);
+        console.error("Failed to fetch data:", error);
       }
     };
+    fetchData();
+  }, [user._id]);
 
-    fetchUserDetails();
-    fetchAssignmentData(); // Call the function to fetch assignments
-  }, []);
+  const toggleViewType = () => {
+    setViewType((prevType) => {
+      if (prevType === "Assignments") {
+        return "In progress";
+      } else if (prevType === "In progress") {
+        return "Completed";
+      } else {
+        return "Assignments";
+      }
+    });
+  };
+
+  const handleAssignmentClick = async (assignment) => {
+    try {
+      let submission = submissions.find(
+        (s) => s.assignment_id === assignment._id
+      );
+
+      if (!submission) {
+        console.log("Creating new submission for assignment:", assignment._id);
+
+        // Make sure the student_id is included from the user object
+        submission = await createSubmission({
+          assignment_id: assignment._id,
+          student_id: user.id, // This ensures student_id is passed
+          submit_date: new Date().toISOString(),
+          status: "In progress",
+        });
+
+        console.log("New submission created:", submission);
+        setSubmissions([...submissions, submission]);
+      }
+
+      navigation.navigate("AssignmentScreen", {
+        assignment,
+        submission,
+        onComplete: () => handleSubmissionComplete(submission._id),
+      });
+    } catch (error) {
+      console.error("Failed to navigate to assignment screen:", error);
+      console.error("Error details:", error.message);
+      Alert.alert("Error", "Failed to create submission. Please try again.");
+    }
+  };
+
+  const handleSubmissionComplete = (submissionId) => {
+    setSubmissions(
+      submissions.map((s) =>
+        s._id === submissionId ? { ...s, status: "Submitted" } : s
+      )
+    );
+  };
+
+  const filteredAssignments = () => {
+    switch (viewType) {
+      case "Assignments":
+        return assignments.filter(
+          (a) => !submissions.some((s) => s.assignment_id === a._id)
+        );
+      case "In progress":
+        return assignments.filter((a) =>
+          submissions.some(
+            (s) => s.assignment_id === a._id && s.status === "In progress"
+          )
+        );
+      case "Completed":
+        return assignments.filter((a) =>
+          submissions.some(
+            (s) => s.assignment_id === a._id && s.status === "Submitted"
+          )
+        );
+      default:
+        return [];
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -80,14 +149,16 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
           />
         </TouchableOpacity>
       </View>
-      <Text style={styles.tapableTextAssignment}>Assignments</Text>
+      <TouchableOpacity onPress={toggleViewType}>
+        <Text style={styles.tapableTextAssignment}>{viewType}</Text>
+      </TouchableOpacity>
       <ScrollView style={styles.scrollView}>
-        {assignments.map((assignment) => (
+        {filteredAssignments().map((assignment) => (
           <AssignmentTile
-            key={assignment._id} // Use unique ID for each tile
-            title={assignment.title}
-            description={assignment.description} // Pass description here
+            key={assignment._id}
+            assignment={assignment}
             navigation={navigation}
+            onAssignmentClick={handleAssignmentClick}
           />
         ))}
       </ScrollView>
@@ -132,7 +203,7 @@ const styles = StyleSheet.create({
     height: 14,
     marginRight: 5,
     position: "absolute",
-    left: 0, // Adjust for correct positioning
+    left: 0,
     top: 1,
   },
   emailText: {
@@ -141,7 +212,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 17,
     color: "#636363",
-    marginLeft: 18, // Adjust to match with icon
+    marginLeft: 18,
   },
   notificationIcon: {
     padding: 10,

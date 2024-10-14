@@ -10,11 +10,14 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-
+import { uploadSubmissionVideo, updateSubmission } from "../services/api";
+import { useRoute } from "@react-navigation/native";
 const { width, height } = Dimensions.get("window");
 
 const AssignmentScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { assignment, submission, onComplete } = route.params;
   const [video, setVideo] = useState(null);
 
   useEffect(() => {
@@ -62,6 +65,33 @@ const AssignmentScreen = () => {
     }
   };
 
+  const handleSubmit = async () => {
+    if (video) {
+      try {
+        // Upload the video
+        await uploadSubmissionVideo(submission._id, {
+          uri: video,
+          type: "video/mp4",
+          name: "submission_video.mp4",
+        });
+
+        // Update the submission status
+        await updateSubmission(submission._id, { status: "Completed" });
+
+        // Call the onComplete callback
+        onComplete();
+
+        Alert.alert("Success", "Assignment completed successfully!");
+        navigation.goBack();
+      } catch (error) {
+        console.error("Error submitting assignment:", error);
+        Alert.alert("Error", "Failed to submit assignment. Please try again.");
+      }
+    } else {
+      Alert.alert("Error", "Please upload a video before submitting.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
@@ -69,13 +99,9 @@ const AssignmentScreen = () => {
         <Text style={styles.backButtonText}>Back</Text>
       </TouchableOpacity>
       <View style={styles.assignmentNameContainer}>
-        <Text style={styles.assignmentName}>Assignment Name</Text>
+        <Text style={styles.assignmentName}>{assignment.title}</Text>
       </View>
-      <View style={styles.currentGrade}>
-        <Text style={styles.gradeText}>A+</Text>
-      </View>
-      <Text style={styles.assignmentDescription}>Assignment Description</Text>
-      <Text style={styles.feedback}>Feedback</Text>
+      <Text style={styles.assignmentDescription}>{assignment.description}</Text>
       <Text style={styles.uploadVideo}>Upload Video</Text>
       <View style={styles.buttonsContainer}>
         <TouchableOpacity style={styles.cameraButton} onPress={recordVideo}>
@@ -95,7 +121,7 @@ const AssignmentScreen = () => {
             resizeMode="contain"
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.submitButton}>
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
           <Image
             source={require("../assets/Submit.png")}
             style={styles.buttonIcon}
@@ -104,7 +130,7 @@ const AssignmentScreen = () => {
         </TouchableOpacity>
       </View>
       {video && <Video source={{ uri: video }} style={styles.preview} />}
-      <Text style={styles.fileUploaded}>File Uploaded</Text>
+      {video && <Text style={styles.fileUploaded}>File Uploaded</Text>}
     </View>
   );
 };
