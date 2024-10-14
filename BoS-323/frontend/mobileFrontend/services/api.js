@@ -93,6 +93,25 @@ export const fetchSubmissions = async () => {
 export const createSubmission = async (submissionData) => {
   try {
     const token = await AsyncStorage.getItem("token");
+    console.log("Sending submission data:", JSON.stringify(submissionData));
+
+    // Check for missing fields
+    const requiredFields = [
+      "assignment_id",
+      "student_id",
+      "submit_date",
+      "status",
+    ];
+    const missingFields = requiredFields.filter(
+      (field) => !submissionData[field]
+    );
+
+    if (missingFields.length > 0) {
+      throw new Error(
+        `Missing required fields for submission: ${missingFields.join(", ")}`
+      );
+    }
+
     const response = await fetch(`${SUBMISSION_URL}/create`, {
       method: "POST",
       headers: {
@@ -102,15 +121,18 @@ export const createSubmission = async (submissionData) => {
       body: JSON.stringify(submissionData),
     });
 
+    console.log("Response status:", response.status);
+    const responseData = await response.json();
+    console.log("Response data:", responseData);
+
     if (!response.ok) {
-      const errorResponse = await response.json();
-      throw new Error(errorResponse.message || "Failed to create submission");
+      throw new Error(responseData.message || "Failed to create submission");
     }
 
-    const data = await response.json();
-    return data.submission;
+    return responseData.submission;
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error in createSubmission:", error);
+    throw error;
   }
 };
 

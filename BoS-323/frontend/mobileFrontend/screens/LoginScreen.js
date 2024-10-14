@@ -40,6 +40,7 @@ const LoginScreen = ({ navigation }) => {
       ) {
         navigation.navigate("ViewAssignment", {
           user: {
+            id: response.user.id,
             name: response.user.name,
             surname: response.user.surname,
             email: email,

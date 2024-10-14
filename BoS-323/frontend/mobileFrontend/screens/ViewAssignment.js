@@ -12,8 +12,7 @@ import {
   fetchAssignments,
   fetchSubmissions,
   createSubmission,
-  updateSubmission,
-} from "../services/api"; // Ensure correct import path
+} from "../services/api";
 
 // Updated AssignmentTile component
 const AssignmentTile = ({ assignment, navigation, onAssignmentClick }) => (
@@ -26,7 +25,7 @@ const AssignmentTile = ({ assignment, navigation, onAssignmentClick }) => (
 );
 
 const ViewAssignmentScreen = ({ navigation, route }) => {
-  const { user } = route.params; // Destructure user details from route params
+  const { user } = route.params;
 
   const [userDetails, setUserDetails] = useState({
     name: user.name || "Name",
@@ -66,14 +65,22 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
 
   const handleAssignmentClick = async (assignment) => {
     try {
-      let submision = submissions.find((s) => s.assignmetId === assignment._id);
+      let submission = submissions.find(
+        (s) => s.assignment_id === assignment._id
+      );
 
-      if (!submision) {
+      if (!submission) {
+        console.log("Creating new submission for assignment:", assignment._id);
+
+        // Make sure the student_id is included from the user object
         submission = await createSubmission({
-          userId: user._id,
-          assignmentId: assignment._id,
-          status: "In Progress",
+          assignment_id: assignment._id,
+          student_id: user.id, // This ensures student_id is passed
+          submit_date: new Date().toISOString(),
+          status: "In progress",
         });
+
+        console.log("New submission created:", submission);
         setSubmissions([...submissions, submission]);
       }
 
@@ -84,38 +91,35 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
       });
     } catch (error) {
       console.error("Failed to navigate to assignment screen:", error);
+      console.error("Error details:", error.message);
+      Alert.alert("Error", "Failed to create submission. Please try again.");
     }
   };
 
-  const handleSubmissionComplete = async (submissionId) => {
-    try {
-      const updatedSubmission = await updateSubmission(submissionId, {
-        status: "Completed",
-      });
-      setSubmissions(
-        submissions.map((s) => (s._id === submissionId ? updatedSubmission : s))
-      );
-    } catch (error) {
-      console.error("Failed to update submission status:", error);
-    }
+  const handleSubmissionComplete = (submissionId) => {
+    setSubmissions(
+      submissions.map((s) =>
+        s._id === submissionId ? { ...s, status: "Completed" } : s
+      )
+    );
   };
 
-  const fileteredAssignments = () => {
+  const filteredAssignments = () => {
     switch (viewType) {
       case "Assignments":
         return assignments.filter(
-          (a) => !submissions.some((s) => s.assignmentId === a._id)
+          (a) => !submissions.some((s) => s.assignment_id === a._id)
         );
       case "In Progress":
         return assignments.filter((a) =>
           submissions.some(
-            (s) => s.assignmentId === a._id && s.status === "In Progress"
+            (s) => s.assignment_id === a._id && s.status === "In Progress"
           )
         );
       case "Completed":
         return assignments.filter((a) =>
           submissions.some(
-            (s) => s.assignmentId === a._id && s.status === "Completed"
+            (s) => s.assignment_id === a._id && s.status === "Completed"
           )
         );
       default:
@@ -149,7 +153,7 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
         <Text style={styles.tapableTextAssignment}>{viewType}</Text>
       </TouchableOpacity>
       <ScrollView style={styles.scrollView}>
-        {fileteredAssignments().map((assignment) => (
+        {filteredAssignments().map((assignment) => (
           <AssignmentTile
             key={assignment._id}
             assignment={assignment}
