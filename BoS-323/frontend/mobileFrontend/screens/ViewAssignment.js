@@ -54,8 +54,8 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
   const toggleViewType = () => {
     setViewType((prevType) => {
       if (prevType === "Assignments") {
-        return "In Progress";
-      } else if (prevType === "In Progress") {
+        return "In progress";
+      } else if (prevType === "In progress") {
         return "Completed";
       } else {
         return "Assignments";
@@ -110,10 +110,10 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
         return assignments.filter(
           (a) => !submissions.some((s) => s.assignment_id === a._id)
         );
-      case "In Progress":
+      case "In progress":
         return assignments.filter((a) =>
           submissions.some(
-            (s) => s.assignment_id === a._id && s.status === "In Progress"
+            (s) => s.assignment_id === a._id && s.status === "In progress"
           )
         );
       case "Completed":
