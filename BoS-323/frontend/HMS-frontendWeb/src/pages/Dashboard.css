@@ -252,9 +252,9 @@
 }
 
 /* Logged In User Info */
-.logged-in-name,
-.logged-in-surname,
-.logged-in-email {
+.user-info,
+.user-name,
+.user-email {
   font-family: "Inter";
   font-style: normal;
   font-weight: 500;

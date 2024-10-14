@@ -52,6 +52,14 @@ const getSubmissionById = async (submissionId) => {
   return await Submission.findById(submissionId);
 };
 
+// Function to retrieve a submission by student_id and status
+const getSubmissionByStatus = async (studentId, status) => {
+  return await Submission.find({
+    student_id: new mongoose.Types.ObjectId(studentId),
+    status: status,
+  });
+};
+
 //Function to update a submission based on the id
 const updateSubmission = async (submissionId, updateData) => {
   return await Submission.findByIdAndUpdate(submissionId, updateData, {
@@ -219,6 +227,7 @@ module.exports = {
   getSubmissions,
   getFeedbackForAssignment,
   getSubmissionById,
+  getSubmissionByStatus,
   updateSubmission,
   deleteSubmission,
   uploadVideoToCloudinary,
