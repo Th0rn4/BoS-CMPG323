@@ -1,9 +1,11 @@
+// Admin.js
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Admin.css";
 import AddUserModal from "./AddUserModal";
-import { fetchUsers, addUser, deleteUser as deleteUserService } from "../Services/apiUsers";
+import UpdateUserModal from "./UpdateUserModal"; // Import the new modal
+import { fetchUsers, deleteUser as deleteUserService, updateUser as updateUserService } from "../Services/apiUsers"; // Import the update service
 import HomeButton from "../assets/HomeButton.svg";
 import LogoutIcon from "../assets/LogoutIcon.svg";
 
@@ -11,6 +13,8 @@ const Admin = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); // State for update modal
+  const [selectedUser, setSelectedUser] = useState(null); // State for selected user
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -20,7 +24,7 @@ const Admin = () => {
       try {
         const usersData = await fetchUsers();
         if (usersData.success && usersData.users) {
-          setUsers(usersData.users || []); // Safeguard to always set an array
+          setUsers(usersData.users || []);
         } else {
           setError(usersData.message || "No users available.");
         }
@@ -32,7 +36,7 @@ const Admin = () => {
       }
     };
     loadData();
-  }, );
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -40,26 +44,8 @@ const Admin = () => {
     navigate("/login", { state: { message: "Logout successful!" } });
   };
 
-  const handleAddUser = async (userData) => {
-    try {
-      // Ensure userData includes name with firstName and lastName
-      const newUser = await addUser({
-        ...userData,
-        name: { firstName: userData.firstName, lastName: userData.lastName }, // Ensure name structure
-      });
-
-      setUsers((prevUsers) => [...prevUsers, newUser]); // Update state with new user
-      setError(null);
-      setIsModalOpen(false); // Close the modal
-      
-      // Reload page after new user is added
-      window.location.reload();
-      return true;
-    } catch (error) {
-      console.error("Error adding user:", error);
-      setError("Failed to add user. Please try again.");
-      return false;
-    }
+  const handleHomeClick = () => {
+    navigate("/dashboard");
   };
 
   const handleDeleteUser = async (userId) => {
@@ -75,53 +61,62 @@ const Admin = () => {
     }
   };
 
+  const handleUpdateUser = async (updatedUser) => {
+    try {
+      await updateUserService(updatedUser._id, updatedUser);
+      setUsers((prevUsers) =>
+        prevUsers.map((user) => (user._id === updatedUser._id ? updatedUser : user))
+      );
+      setIsUpdateModalOpen(false);
+      setSelectedUser(null);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      setError("Failed to update user. Please try again.");
+    }
+  };
+
   if (!user) return null;
 
   return (
-    <div className="admin-container">
+    <div className="dashboard-container">
       {/* Left Panel */}
       <div className="left-panel">
-        <div className="home-button" onClick={() => navigate('/dashboard')}>
-          <img src = {HomeButton} alt="Home" />
+        <div className="home-button" onClick={handleHomeClick}>
+          <img src={HomeButton} alt="Home" />
         </div>
         <div className="logout-button" onClick={handleLogout}>
           <img src={LogoutIcon} alt="Logout" />
         </div>
       </div>
 
-    
-
       {/* User Section */}
       <div className="user-section">
         {error ? (
           <p>{error}</p>
         ) : users.length > 0 ? (
-          <div className="user-cards-container">
+          <div className="user-card">
             {users.map(({ _id, name, email, role }) => (
-              <div className="user-" key={_id}>
+              <div className="user" key={_id}>
                 <h3 className="user-name">
                   {name?.firstName || "First Name Missing"} {name?.lastName || "Last Name Missing"}
                 </h3>
                 <p className="user-email">Email: {email || "Email Missing"}</p>
                 <p className="user-role">Role: {role || "Role Missing"}</p>
-                <button
-                  className="delete-user"
-                  onClick={() => handleDeleteUser(_id)}
-                >
-                  <img src="/assets/DeleteNotification.svg" alt="Delete" className="delete-icon" />
-                </button>
+                <div className="user-actions">
+                  <button
+                    className="delete-user"
+                    onClick={() => handleDeleteUser(_id)}
+                  >
+                    <img src="/assets/DeleteNotification.svg" alt="Delete" className="delete-icon" />
+                  </button>
+                 
+                </div>
               </div>
             ))}
           </div>
         ) : (
           <p>Loading users...</p>
         )}
-      </div>
-
-      {/* Intro Card */}
-      <div className="intro_card">
-        <h1 className="intro-title">Admin Panel</h1>
-        <p className="intro-subtitle">Manage Users</p>
       </div>
 
       {/* Add User Button */}
@@ -131,10 +126,14 @@ const Admin = () => {
       </div>
 
       {/* Add User Modal */}
-      <AddUserModal
-        show={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAddUser={handleAddUser}
+      <AddUserModal show={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      {/* Update User Modal */}
+      <UpdateUserModal
+        show={isUpdateModalOpen}
+        onClose={() => setIsUpdateModalOpen(false)}
+        user={selectedUser}
+        onUpdate={handleUpdateUser}
       />
     </div>
   );

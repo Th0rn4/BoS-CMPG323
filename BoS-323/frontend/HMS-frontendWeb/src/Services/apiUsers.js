@@ -65,3 +65,16 @@ export const deleteUser = async (userId) => {
     throw error; // Re-throw the error for handling in the Admin component
   }
 };
+
+export const updateUser = async (userId, updatedData) => {
+  const token = localStorage.getItem("token"); // Retrieve the token from local storage
+  try {
+    const response = await axios.put(`${API_URL}/${userId}`, updatedData, {
+      headers: { Authorization: `Bearer ${token}` }, // Include token in the request
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error; // Rethrow the error for handling in the Admin component
+  }
+};

@@ -31,7 +31,8 @@
   
   /* Form Group */
   .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    
   }
   
   /* Input and Textarea */
@@ -53,7 +54,8 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    background: #70abaf; /* Match the dashboard's button color */
+    background: #70abaf;
+    /* Match the dashboard's button color */
     color: #e6f4ee; /* Ensure the text is readable */
     font-family: "Inter"; /* Consistent font style */
     font-size: 1.2vw; /* Responsive font size */

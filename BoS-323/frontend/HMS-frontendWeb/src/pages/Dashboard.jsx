@@ -7,7 +7,7 @@ import LogoutIcon from "../assets/LogoutIcon.svg";
 import SlothBanner from "../assets/SlothBanner.svg";
 import DeleteIcon from "../assets/DeleteNotification.svg";
 import AddAssignmentModal from "./AddAssignmentModal"; // Import the modal
-import { fetchAssignments, addAssignment, deleteAssignment as deleteAssignmentService } from "../Services/apiAssignments"; // Import API services
+import { fetchAssignments, addAssignment, deleteAssignment } from "../Services/apiAssignments"; // Import API services
 import { fetchNotifications, deleteNotification as deleteNotificationService, addNotification } from "../Services/apiNotifications"; // Import API services
 
 const MAX_DESCRIPTION_LENGTH = 100; // Set a limit for description length
@@ -94,7 +94,7 @@ const Dashboard = () => {
         throw new Error("Assignment ID is missing"); // Check if the ID is present
       }
 
-      await deleteAssignmentService(_id);
+      await deleteAssignment(_id);
       setAssignments((prevAssignments) =>
         prevAssignments.filter((assignment) => assignment._id !== _id) // Use _id here
       );
@@ -130,18 +130,19 @@ const Dashboard = () => {
     <div className="dashboard-container">
       {/* Left Panel */}
       <div className="left-panel">
-        <div className="home-button">
-          <img src={HomeButton} alt="Home" />
-        </div>
-        <div className="logout-button" onClick={handleLogout}>
-          <img src={LogoutIcon} alt="Logout" />
-        </div>
-        {user.role === 'admin' && ( // Check if the user is an admin
-          <div className="admin-button" onClick={() => navigate("/Admin")}>
-            <span>Manage Users</span> {/* Button text */}
-          </div>
-        )}
-      </div>
+  <div className="home-button">
+    <img src={HomeButton} alt="Home" />
+  </div>
+  {user.role === 'admin' && ( // Check if the user is an admin
+    <div className="admin-button" onClick={() => navigate("/Admin")}>
+      <span>Manage Users</span> {/* Button text */}
+    </div>
+  )}
+  <div className="logout-button" onClick={handleLogout}>
+    <img src={LogoutIcon} alt="Logout" />
+  </div>
+  </div>
+
 
       {/* Intro Section */}
       <div className="intro">
@@ -183,6 +184,7 @@ const Dashboard = () => {
         ) : (
           <p>Loading assignments...</p> // Display a loading message while fetching
         )}
+        
       </div>
 
       {/* Add Assignment Button placed outside of the assignment section */}

@@ -9,78 +9,10 @@
 }
 
 
-
-
-/* Home Button */
-.home-button {
-  position: absolute;
-  width: 4vw;
-  height: 4vh;
-  left: -0.5vw;
-  top: 5vh;
-  cursor: pointer;
-}
-
-.home-button img {
-  width: 150%;
-  height: 150%;
-  object-fit: contain;
-}
-
-/* Logout Button */
-.logout-button {
-  position: absolute;
-  width: 10vw;
-  height: 10vh;
-  left: -1vw;
-  top: 90vh; /* Position near the bottom */
-  cursor: pointer; /* Pointer cursor for interactivity */
-}
-
-.logout-button img {
-  width: 5%; /* Scale image */
-  height: 5%;
-  object-fit: contain; /* Maintain aspect ratio */
-}
-
-/* Intro Section */
-.intro {
-  position: absolute;
-  width: 30vw;
-  height: 15vh;
-  left: 15vw;
-  top: 0vh;
-}
-
-.intro-title {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 3vw;
-  line-height: 4vw;
-  color: #000000;
-}
-
-.intro-subtitle {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 2vw;
-  line-height: 2.5vw;
-  color: #636363;
-  position: absolute;
-  top: 6vh;
-}
-
-
-/* User Management Title */
-
-
-/* User Section */
 .user-section {
   position: absolute;
-  width: 60vw; /* Full width of the container */
-  height: 50vh; /* Height of the section */
+  width: 80vw; /* Full width of the container */
+  height: 55vh; /* Height of the section */
   left: 10vw; /* Position relative to the main container */
   top: 20vh; /* Position relative to the main container */
   display: flex; /* Use flexbox for alignment */
@@ -93,23 +25,12 @@
   scrollbar-width: thin; /* Thin scrollbar for Firefox */
   scrollbar-color: #70abaf #f0f7f4; /* Custom scrollbar colors for Firefox */
   
-} /* Custom scrollbar colors for Firefox */
-
-
-.user-section::-webkit-scrollbar {
-  width: 0.8vh; /* Width of the scrollbar */
-}
-
-.user-section::-webkit-scrollbar-thumb {
-  background-color: #70abaf; /* Color of the scroll thumb */
-  border-radius: 1vw; /* Rounded corners for the scrollbar thumb */
-}
-
-.user-section::-webkit-scrollbar-track {
-  background-color: #f0f7f4; /* Background of the scroll track */
-}
+} 
 
 .user-card {
+  position: absolute;
+  width: 75vw; /* Full width of the container */
+  height: 19vh; /* Height of the section */
   background: #70abaf; /* Background color of cards */
   border-radius: 2vw; /* Rounded corners for cards */
   padding: 1vw; /* Padding inside the card */
@@ -119,20 +40,7 @@
   position: relative; /* For delete button positioning */
 }
 
-.user-name {
-  font-size: 1.5rem; /* Name font size */
-  margin: 0.5rem 0; /* Margin for name */
-  text-align: center; /* Center align text */
-  color: #f0f7f4; /* Name text color */
-}
 
-.user-email,
-.user-role {
-  font-size: 1rem; /* Email/Role font size */
-  margin: 0.5rem 0; /* Margin for email/role */
-  text-align: center; /* Center align text */
-  color: #f0f7f4; /* Email/Role text color */
-}
 
 /* Delete User Button */
 .delete-user {
@@ -161,23 +69,21 @@
   z-index: 10; /* Ensure it's above other elements */
 }
 
-.button-text {
-  font-family: "Inter", sans-serif; /* Font family */
-  font-weight: 500; /* Medium font weight */
-  font-size: 2vw; /* Responsive font size */
-  line-height: 2vw; /* Line height */
-  color: #f0f7f4; /* Text color */
-  white-space: nowrap; /* Prevent text wrapping */
-  text-align: center; /* Center align text */
-  cursor: pointer; /* Pointer cursor for interactivity */
-  margin: 0; /* No margin */
+.user-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px; /* Add some space above the buttons */
 }
 
-.plus-icon {
-  font-family: "Inter", sans-serif; /* Font family */
-  font-weight: 500; /* Medium font weight */
-  font-size: 3vw; /* Larger font size for plus icon */
-  line-height: 3vw; /* Line height */
-  color: #99e1d9; /* Plus icon color */
-  margin-left: 1vw; /* Space between icon and text */
+.update-user {
+  background-color:#705d56; /* Bootstrap primary color */
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.update-user:hover {
+  background-color: #99e1d9; /* Darker blue on hover */
 }
