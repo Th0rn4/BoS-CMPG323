@@ -1,62 +1,42 @@
+// apiAssignments.js
+
 import axios from "axios";
 
-// Change the API_URL to point to the create endpoint
-const API_URL = "https://bos-cmpg323-assignmentdeploy.onrender.com/api/assignments";
+const ASSIGNMENTS_API_URL = "https://bos-cmpg323-assignmentdeploy.onrender.com/api/assignments";
 
-
-// Fetch assignments function (Lecturer-Specific)
+// Fetch all assignments
 export const fetchAssignments = async () => {
-  const user = JSON.parse(localStorage.getItem("user")); // Get the logged-in user's details
-
-  if (!user || !user._id) {
-    throw new Error("User not logged in or invalid user data.");
-  }
-
-  console.log("Fetching assignments for creator_id:", user._id); // Log the creator_id being used
-
   try {
-    // Pass the creator_id (lecturer's ID) as a query parameter
-    const response = await axios.get(`${API_URL}?creator_id=${user._id}`);
-    console.log("Fetched Lecturer-Specific Assignments:", response.data); // Log the fetched data
-    return response.data; // Adjust this based on the actual structure
+    const response = await axios.get(`${ASSIGNMENTS_API_URL}`);
+    return response.data;
   } catch (error) {
-    console.error(
-      "Error fetching assignments:",
-      error.response?.data?.error || error.message
-    );
-    throw new Error("Failed to fetch assignments");
+    console.error("Error fetching assignments:", error);
+    throw error;
   }
 };
 
-
-// Add assignment function
-export const addAssignment = async (newAssignment) => {
-  if (!newAssignment.title || !newAssignment.description || !newAssignment.due_date) {
-    throw new Error("Title, description, and due date are required fields.");
-  }
-
+// Add a new assignment
+export const addAssignment = async (assignmentData) => {
   try {
-    const response = await axios.post(`${API_URL}/create`, newAssignment, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return response.data; // This should return a success state from your API
+    const response = await axios.post(`${ASSIGNMENTS_API_URL}/create`, assignmentData);
+    return response.data;
   } catch (error) {
-    console.error(
-      "Error adding assignment:",
-      error.response?.data?.error || error.message
-    );
-    throw new Error("Failed to add assignment");
+    console.error("Error adding assignment:", error);
+    throw error;
   }
 };
 
-export const deleteAssignment = async (_id) => {
+// Delete an assignment
+export const deleteAssignment = async (id) => {
   try {
-    // Make sure to use the correct endpoint for deletion
-    await axios.delete(`${API_URL}/delete/${_id}`);
+    if (!id) {
+      throw new Error("Assignment ID is required to delete.");
+    }
+
+    const response = await axios.delete(`${ASSIGNMENTS_API_URL}/delete/${id}`); // Ensure correct DELETE request
+    return response.data;
   } catch (error) {
-    console.error("Error deleting notification:", error.response?.data?.error || error.message);
-    throw new Error("Failed to delete notification");
+    console.error("Error deleting assignment:", error); // Log the error
+    throw error; // Rethrow to handle it in the component
   }
 };

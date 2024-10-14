@@ -4,16 +4,16 @@ import {
     fetchUsers,
     addUser,
     deleteUser,
-    updateUser, // Import the update user API function
-} from "../Services/apiUsers"; // Import API services
-import './Admin.css'; // Make sure to import your CSS for styles
+    updateUser, 
+} from "../Services/apiUsers"; 
+import './Admin.css'; 
 
 const Admin = () => {
     const [users, setUsers] = useState([]);
     const [newUser, setNewUser] = useState({ firstName: '', lastName: '', email: '', password: '', role: 'student' });
-    const [selectedUser, setSelectedUser] = useState(null); // State for selected user for updating
+    const [selectedUser, setSelectedUser] = useState(null); 
     const [showModal, setShowModal] = useState(false);
-    const [showUpdateModal, setShowUpdateModal] = useState(false); // State for update modal
+    const [showUpdateModal, setShowUpdateModal] = useState(false); 
 
     useEffect(() => {
         const getUsers = async () => {
@@ -45,10 +45,12 @@ const Admin = () => {
         try {
             const response = await addUser(newUser);
             if (response.success) {
-                setUsers([...users, response.data]); // Add the new user to the list
-                setShowModal(false); // Close the modal
-                setNewUser({ firstName: '', lastName: '', email: '', password: '', role: 'student' }); // Reset form
+                setUsers([...users, response.data]); 
+                setShowModal(false); 
+                setNewUser({ firstName: '', lastName: '', email: '', password: '', role: 'student' }); 
             }
+            window.location.reload(); 
+
         } catch (error) {
             console.error("Error adding user:", error);
         }
@@ -59,8 +61,8 @@ const Admin = () => {
             const response = await updateUser(selectedUser._id, selectedUser);
             if (response.success) {
                 setUsers(users.map(user => user._id === selectedUser._id ? response.data : user));
-                setShowUpdateModal(false); // Close the update modal
-                setSelectedUser(null); // Reset selected user
+                setShowUpdateModal(false); 
+                setSelectedUser(null); 
             }
         } catch (error) {
             console.error("Error updating user:", error);
@@ -82,8 +84,8 @@ const Admin = () => {
                             <p className="user-email">{user.email}</p>
                             <p className="user-role">{user.role}</p>
                             <button className="update-user" onClick={() => {
-                                setSelectedUser(user); // Set the selected user for updating
-                                setShowUpdateModal(true); // Open update modal
+                                setSelectedUser(user); 
+                                setShowUpdateModal(true); 
                             }}>Update</button>
                             <button className="delete-user" onClick={() => handleDeleteUser(user._id)}>Delete</button>
                         </div>
@@ -136,8 +138,10 @@ const Admin = () => {
                             <option value="lecturer">Lecturer</option>
                             <option value="admin">Admin</option>
                         </select>
+                        <div className="modal-actions">
                         <button onClick={handleAddUser}>Add User</button>
                         <button onClick={() => setShowModal(false)}>Cancel</button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -177,8 +181,10 @@ const Admin = () => {
                             <option value="lecturer">Lecturer</option>
                             <option value="admin">Admin</option>
                         </select>
+                        <div className="modal-actions">
                         <button onClick={handleUpdateUser}>Update User</button>
                         <button onClick={() => setShowUpdateModal(false)}>Cancel</button>
+                        </div>
                     </div>
                 </div>
             )}

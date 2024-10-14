@@ -24,9 +24,11 @@
   
   /* Modal Actions */
   .modal-actions {
+    color: #705d56;
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
+    
   }
   
   /* Form Group */
@@ -40,7 +42,7 @@
   textarea {
     width: 100%;
     padding: 5px;
-    border: 1px solid #080000; /* Light border */
+    border: 1px solid #d7cdcd; /* Light border */
     border-radius: 4px;
     background: white; /* White background */
     color: black; /* Black text */
@@ -50,12 +52,12 @@
   
   /* Button Styles */
   button {
+    background-color: #705d56;
     padding: 15px 15px;
-    border: none;
+    border:1px;
     border-radius: 4px;
     cursor: pointer;
-    background: #70abaf;
-    /* Match the dashboard's button color */
+    background:#705d56;
     color: #e6f4ee; /* Ensure the text is readable */
     font-family: "Inter"; /* Consistent font style */
     font-size: 1.2vw; /* Responsive font size */
@@ -65,4 +67,6 @@
   button:hover {
     background: #4d8f94; /* Darker shade for hover effect */
   }
+  
+  
   

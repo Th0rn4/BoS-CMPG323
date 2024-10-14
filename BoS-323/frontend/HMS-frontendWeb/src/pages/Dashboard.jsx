@@ -7,25 +7,33 @@ import LogoutIcon from "../assets/LogoutIcon.svg";
 import SlothBanner from "../assets/SlothBanner.svg";
 import DeleteIcon from "../assets/DeleteNotification.svg";
 import AddAssignmentModal from "./AddAssignmentModal"; // Import the modal
-import { fetchAssignments, addAssignment, deleteAssignment } from "../Services/apiAssignments"; // Import API services
-import { fetchNotifications, deleteNotification as deleteNotificationService, addNotification } from "../Services/apiNotifications"; // Import API services
+import {
+  fetchAssignments,
+  addAssignment,
+  deleteAssignment as DeleteAssignmentService,
+} from "../Services/apiAssignments"; // Import API services
+import {
+  fetchNotifications,
+  deleteNotification as deleteNotificationService,
+  addNotification,
+} from "../Services/apiNotifications"; // Import API services
 
 const MAX_DESCRIPTION_LENGTH = 100; // Set a limit for description length
 
 const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
-  const [error, setError] = useState(null); // Error state to track fetching issues
+  const [error, setError] = useState(null); 
   const [notifications, setNotifications] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user")); // Retrieve user from local storage
+  const user = JSON.parse(localStorage.getItem("user")); // Fetch user data from localStorage
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const assignmentsData = await fetchAssignments();
-        const notificationsData = await fetchNotifications();
+        const assignmentsData = await fetchAssignments(); // Fetch assignments
+        const notificationsData = await fetchNotifications(); // Fetch notifications
 
         if (notificationsData.success && notificationsData.notifications) {
           setNotifications(notificationsData.notifications);
@@ -34,9 +42,7 @@ const Dashboard = () => {
         if (assignmentsData.success && assignmentsData.assignments) {
           setAssignments(assignmentsData.assignments);
           const now = Date.now();
-
-          // Store the current page load time for future comparison
-          localStorage.setItem("lastPageLoadTime", now);
+          localStorage.setItem("lastPageLoadTime", now); // Store current page load time
         } else {
           setError(assignmentsData.message || "No assignments available.");
         }
@@ -50,10 +56,7 @@ const Dashboard = () => {
   }, []);
 
   const truncateText = (text, maxLength) => {
-    if (!text || typeof text !== "string") {
-      return ""; // Handle undefined or non-string descriptions
-    }
-
+    if (!text || typeof text !== "string") return ""; 
     return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
   };
 
@@ -65,60 +68,49 @@ const Dashboard = () => {
 
   const handleAddAssignment = async (assignmentData) => {
     try {
-      // Step 1: Add the assignment
-      const newAssignment = await addAssignment(assignmentData);
-      setAssignments((prevAssignments) => [...prevAssignments, newAssignment]);
-      setError(null); // Reset any previous errors
+      const newAssignment = await addAssignment(assignmentData); // Add assignment
+      setAssignments((prevAssignments) => [...prevAssignments, newAssignment]); // Update assignments
+      setError(null); 
+
+      window.location.reload(); // Reload page
 
       await addNotification({
         NotificationHeader: "New Assignment Created",
-        NotificationDescription: "You have a new assignment.", // Message for the notification
+        NotificationDescription: "You have a new assignment.", // Add notification
       });
-
-      // Refresh the page to load new assignments
-      window.location.reload();
 
       return true;
     } catch (error) {
       console.error("Error adding assignment:", error);
       setError("Failed to add assignment. Please try again.");
-      return false; // Indicate failure
+      return false;
     }
   };
 
-  const handleDeleteAssignments = async (_id, e) => {
-    e.stopPropagation(); // Prevents the parent click event from being triggered
-    console.log("Deleting Assignment ID:", _id); // Log the ID being deleted
+  const handleDeleteAssignment = async (_id, e) => {
+    e.stopPropagation(); // Prevent bubbling
+    console.log("Deleting Assignment ID:", _id);
     try {
-      if (!_id) {
-        throw new Error("Assignment ID is missing"); // Check if the ID is present
-      }
-
-      await deleteAssignment(_id);
+      await DeleteAssignmentService(_id); // Delete assignment
       setAssignments((prevAssignments) =>
-        prevAssignments.filter((assignment) => assignment._id !== _id) // Use _id here
-      );
+        prevAssignments.filter((assignment) => assignment._id !== _id)
+      ); // Update state
     } catch (error) {
       console.error("Error deleting assignment:", error);
     }
   };
 
   const handleAssignmentClick = () => {
-    navigate("/assignments"); // Navigate to the Assignments component
+    navigate("/assignments");
   };
 
-  // Delete notification handler
   const handleDeleteNotification = async (notificationId) => {
-    console.log("Deleting Notification ID:", notificationId); // Log the ID being deleted
+    console.log("Deleting Notification ID:", notificationId);
     try {
-      if (!notificationId) {
-        throw new Error("Notification ID is missing"); // Check if the ID is present
-      }
-
-      await deleteNotificationService(notificationId);
+      await deleteNotificationService(notificationId); // Delete notification
       setNotifications((prevNotifications) =>
-        prevNotifications.filter((notification) => notification._id !== notificationId) // Use _id here
-      );
+        prevNotifications.filter((notification) => notification._id !== notificationId)
+      ); // Update state
     } catch (error) {
       console.error("Error deleting notification:", error);
     }
@@ -130,23 +122,22 @@ const Dashboard = () => {
     <div className="dashboard-container">
       {/* Left Panel */}
       <div className="left-panel">
-  <div className="home-button">
-    <img src={HomeButton} alt="Home" />
-  </div>
-  {user.role === 'admin' && ( // Check if the user is an admin
-    <div className="admin-button" onClick={() => navigate("/Admin")}>
-      <span>Manage Users</span> {/* Button text */}
-    </div>
-  )}
-  <div className="logout-button" onClick={handleLogout}>
-    <img src={LogoutIcon} alt="Logout" />
-  </div>
-  </div>
-
+        <div className="home-button">
+          <img src={HomeButton} alt="Home" />
+        </div>
+        {user.role === 'admin' && ( 
+          <div className="admin-button" onClick={() => navigate("/Admin")}>
+            <span>Manage Users</span>
+          </div>
+        )}
+        <div className="logout-button" onClick={handleLogout}>
+          <img src={LogoutIcon} alt="Logout" />
+        </div>
+      </div>
 
       {/* Intro Section */}
       <div className="intro">
-        <h1 className="intro-title">Hi, {user.role || "User"}!</h1> {/* Add the user's name */}
+        <h1 className="intro-title">Hi, {user.role || "User"}!</h1>
         <p className="intro-subtitle">Manage your Assignments</p>
       </div>
 
@@ -160,7 +151,7 @@ const Dashboard = () => {
               <div
                 className="assignment-card"
                 key={_id}
-                onClick={handleAssignmentClick} // Navigate to Assignments
+                onClick={handleAssignmentClick}
               >
                 <h3 className="assignment-title">{title}</h3>
                 <p className="assignment-description">
@@ -174,7 +165,7 @@ const Dashboard = () => {
                 </p>
                 <button
                   className="delete-assignment"
-                  onClick={(e) => handleDeleteAssignments(_id, e)} // Pass the event to the handler
+                  onClick={(e) => handleDeleteAssignment(_id, e)}
                 >
                   <img src={DeleteIcon} alt="Delete" className="delete-icon" />
                 </button>
@@ -182,15 +173,14 @@ const Dashboard = () => {
             ))}
           </div>
         ) : (
-          <p>Loading assignments...</p> // Display a loading message while fetching
+          <p>Loading assignments...</p>
         )}
-        
       </div>
 
-      {/* Add Assignment Button placed outside of the assignment section */}
+      {/* Add Assignment Button */}
       <div
         className="add-assignment-button"
-        onClick={() => setIsModalOpen(true)} // Open the modal
+        onClick={() => setIsModalOpen(true)}
       >
         <span className="plus-icon">+</span>
         <span className="button-text">Add Assignment</span>
@@ -199,7 +189,7 @@ const Dashboard = () => {
       {/* Add Assignment Modal */}
       <AddAssignmentModal
         show={isModalOpen}
-        onClose={() => setIsModalOpen(false)} // Close modal handler
+        onClose={() => setIsModalOpen(false)}
         onAddAssignment={handleAddAssignment}
       />
 
@@ -214,7 +204,7 @@ const Dashboard = () => {
                 <p className="notification-description">{notification.NotificationDescription}</p>
                 <button
                   className="delete-notification"
-                  onClick={() => handleDeleteNotification(notification._id)} // Pass _id correctly
+                  onClick={() => handleDeleteNotification(notification._id)}
                 >
                   <img src={DeleteIcon} alt="Delete" className="delete-icon" />
                 </button>
@@ -231,12 +221,12 @@ const Dashboard = () => {
         <div className="sloth-banner">
           <img src={SlothBanner} alt="Sloth" />
         </div>
-        <div className="user-info"> {/* Add user info */}
+        <div className="user-info">
           <p>Logged in as:</p>
           <p className="user-name">
             {user.name?.firstName || "Unknown User"} {user.name?.lastName || ""}
           </p>
-          <p className="user-email">{user.email || "No Email Provided"}</p> {/* Display email */}
+          <p className="user-email">{user.email || "No Email Provided"}</p>
         </div>
       </div>
     </div>
