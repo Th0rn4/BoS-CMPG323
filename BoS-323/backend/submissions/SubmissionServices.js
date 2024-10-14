@@ -222,6 +222,10 @@ const downloadVideoFromCloudinary = async (publicId) => {
   }
 };
 
+const getSubmissionsByAssignment = async (assignmentId) => {
+  return await Submission.find({ assignmentId });
+};
+
 module.exports = {
   createSubmission,
   getSubmissions,
@@ -234,4 +238,5 @@ module.exports = {
   streamVideoFromCloudinary,
   generateFeedbackExcel,
   downloadVideoFromCloudinary,
+  getSubmissionsByAssignment,
 };

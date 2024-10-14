@@ -23,10 +23,15 @@ const deleteUser = async (userId) => {
   return await User.findByIdAndDelete(userId);
 };
 
+const getUsersByRole = async (role) => {
+  return await User.find({ role });
+};
+
 module.exports = {
   createUser,
   getUsers,
   getUserById,
   updateUser,
   deleteUser,
+  getUsersByRole,
 };
