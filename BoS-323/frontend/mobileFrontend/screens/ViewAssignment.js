@@ -12,6 +12,7 @@ import {
   fetchAssignments,
   fetchSubmissions,
   createSubmission,
+  fetchNotifications,
 } from "../services/api";
 
 // Updated AssignmentTile component
@@ -22,6 +23,17 @@ const AssignmentTile = ({ assignment, navigation, onAssignmentClick }) => (
   >
     <Text style={styles.assignmentTitle}>{assignment.title}</Text>
   </TouchableOpacity>
+);
+
+const NotificationItem = ({ notification }) => (
+  <View style={styles.notificationItem}>
+    <Text style={styles.notificationHeader}>
+      {notification.NotificationHeader}
+    </Text>
+    <Text style={styles.notificationDescription} numberOfLines={2}>
+      {notification.NotificationDescription}
+    </Text>
+  </View>
 );
 
 const ViewAssignmentScreen = ({ navigation, route }) => {
@@ -36,20 +48,31 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
   const [submissions, setSubmissions] = useState([]);
   const [viewType, setViewType] = useState("Assignments");
 
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedAssignments = await fetchAssignments();
+        const [fetchedAssignments, fetchedSubmissions, fetchedNotifications] =
+          await Promise.all([
+            fetchAssignments(),
+            fetchSubmissions(),
+            fetchNotifications(),
+          ]);
         setAssignments(fetchedAssignments);
-
-        const fetchedSubmissions = await fetchSubmissions();
         setSubmissions(fetchedSubmissions);
+        setNotifications(fetchedNotifications);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
     };
     fetchData();
   }, [user._id]);
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+  };
 
   const toggleViewType = () => {
     setViewType((prevType) => {
@@ -142,26 +165,42 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
             <Text style={styles.emailText}>{userDetails.email}</Text>
           </View>
         </View>
-        <TouchableOpacity style={styles.notificationIcon}>
+        <TouchableOpacity
+          style={styles.notificationIcon}
+          onPress={toggleNotifications}
+        >
           <Image
             source={require("../assets/NotificationIcon.png")}
             style={styles.icon}
           />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={toggleViewType}>
-        <Text style={styles.tapableTextAssignment}>{viewType}</Text>
-      </TouchableOpacity>
-      <ScrollView style={styles.scrollView}>
-        {filteredAssignments().map((assignment) => (
-          <AssignmentTile
-            key={assignment._id}
-            assignment={assignment}
-            navigation={navigation}
-            onAssignmentClick={handleAssignmentClick}
-          />
-        ))}
-      </ScrollView>
+      {/* ... (existing JSX) */}
+      <Modal
+        visible={showNotifications}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={toggleNotifications}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.notificationList}>
+            <Text style={styles.notificationTitle}>Notifications</Text>
+            <FlatList
+              data={notifications}
+              renderItem={({ item }) => (
+                <NotificationItem notification={item} />
+              )}
+              keyExtractor={(item) => item._id}
+            />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={toggleNotifications}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -242,6 +281,47 @@ const styles = StyleSheet.create({
   },
   assignmentTitle: {
     fontSize: 18,
+    fontWeight: "bold",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  notificationList: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: "80%",
+  },
+  notificationTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  notificationItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  notificationHeader: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  notificationDescription: {
+    fontSize: 14,
+    color: "#666",
+  },
+  closeButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: "#70ABAF",
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  closeButtonText: {
+    color: "#fff",
     fontWeight: "bold",
   },
 });
