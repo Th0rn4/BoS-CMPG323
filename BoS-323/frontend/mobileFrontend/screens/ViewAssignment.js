@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   Modal,
   FlatList,
   Alert,
+  TouchableWithoutFeedback,
+  Animated,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -33,16 +35,17 @@ const NotificationItem = ({ notification }) => (
   <TouchableOpacity style={styles.notificationItem}>
     <View style={styles.notificationIcon}>
       <Image
-        source={require("../assets/notificationItemIcon.png")}
+        source={require("../assets/NotificationIcon.png")}
         style={styles.smallIcon}
       />
     </View>
     <View style={styles.notificationContent}>
       <Text style={styles.notificationTitle}>
-        {notification.NotificationHeader}
+        {notification.NoftifcationHeader}
       </Text>
-      <Text style={styles.notificationSource}>System</Text>
-      <Text style={styles.notificationTime}>1h ago</Text>
+      <Text style={styles.notificationSource}>
+        {notification.NotificationDescription}
+      </Text>
     </View>
   </TouchableOpacity>
 );
@@ -172,6 +175,10 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
     }
   };
 
+  const clearNotifications = () => {
+    setNotifications([]); // Clear all notifications
+  };
+
   return (
     <TouchableWithoutFeedback onPress={closeNotifications}>
       <View style={styles.container}>
@@ -205,8 +212,8 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
         >
           <View style={styles.notificationHeader}>
             <Text style={styles.notificationHeaderText}>Notifications</Text>
-            <TouchableOpacity>
-              <Text style={styles.settingsText}>Settings</Text>
+            <TouchableOpacity onPress={clearNotifications}>
+              <Text style={styles.settingsText}>Clear</Text>
             </TouchableOpacity>
           </View>
           <FlatList
@@ -220,7 +227,7 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
           <Text style={styles.tapableTextAssignment}>{viewType}</Text>
         </TouchableOpacity>
         <ScrollView style={styles.scrollView}>
-          {assignments.map((assignment) => (
+          {filteredAssignments().map((assignment) => (
             <AssignmentTile
               key={assignment._id}
               assignment={assignment}
