@@ -1,31 +1,42 @@
-// eslint-disable-next-line no-unused-vars
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import "./Assignments.css";
-import HomeButton from "../assets/HomeButton.svg";
-import LogoutIcon from "../assets/LogoutIcon.svg";
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Assignments.css';
+import HomeButton from '../assets/HomeButton.svg';
+import LogoutIcon from '../assets/LogoutIcon.svg';
+
 
 const Assignments = () => {
+  const [students, setStudents] = useState([]);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Fetch all users from the backend
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('/api/users'); // Fetch all users
+        const data = await response.json();
+
+        // Filter users to get only those with role 'student'
+        const studentUsers = data.users.filter(
+          (user) => user.role === 'student'
+        );
+        setStudents(studentUsers); // Set the filtered students
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   const handleLogout = () => {
-    // Perform any logout logic here (e.g., clearing local storage, etc.)
-    // For example:
-    // localStorage.removeItem('token');
-    // Navigate to the login page
-    navigate("/login");
+    navigate('/login');
   };
 
   const handleHomeClick = () => {
-    navigate("/dashboard");
+    navigate('/dashboard');
   };
-
-  const students = [
-    { id: 1, name: "Student1 Name Lastname" },
-    { id: 2, name: "Student2 Name Lastname" },
-    { id: 3, name: "Student3 Name Lastname" },
-    { id: 4, name: "Student4 Name Lastname" },
-  ];
 
   const handleStudentClick = (studentId) => {
     navigate(`/view-assignment/${studentId}`);
@@ -46,15 +57,19 @@ const Assignments = () => {
       <div className="main-content">
         <h1 className="page-title">AssignmentName</h1>
         <div className="list-of-students">
-          {students.map((student, index) => (
-            <div
-              key={student.id}
-              className={`student student${index + 1}`}
-              onClick={() => handleStudentClick(student.id)}
-            >
-              <div className="student-name">{student.name}</div>
-            </div>
-          ))}
+          {students.length > 0 ? (
+            students.map((student) => (
+              <div
+                key={student.id}
+                className="student"
+                onClick={() => handleStudentClick(student.id)}
+              >
+                <div className="student-name">{student.name}</div>
+              </div>
+            ))
+          ) : (
+            <p>No students found</p>
+          )}
         </div>
       </div>
     </div>

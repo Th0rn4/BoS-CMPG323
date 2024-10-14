@@ -19,7 +19,8 @@ const updateAssignment = async (id, updateData) => {
   );
 };
 
-const getAssignment = async (id) => {
+// Renamed function for clarity
+const getAssignmentById = async (id) => {
   return await Assignment.findById(new mongoose.Types.ObjectId(id));
 };
 
@@ -31,6 +32,6 @@ module.exports = {
   createAssignment,
   getAssignments,
   updateAssignment,
-  getAssignment,
+  getAssignmentById,
   deleteAssignment,
 };
