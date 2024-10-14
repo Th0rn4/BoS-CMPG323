@@ -99,7 +99,7 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
   const handleSubmissionComplete = (submissionId) => {
     setSubmissions(
       submissions.map((s) =>
-        s._id === submissionId ? { ...s, status: "Completed" } : s
+        s._id === submissionId ? { ...s, status: "Submitted" } : s
       )
     );
   };
@@ -119,7 +119,7 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
       case "Completed":
         return assignments.filter((a) =>
           submissions.some(
-            (s) => s.assignment_id === a._id && s.status === "Completed"
+            (s) => s.assignment_id === a._id && s.status === "Submitted"
           )
         );
       default:
