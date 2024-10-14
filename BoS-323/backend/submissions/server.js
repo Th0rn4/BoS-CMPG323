@@ -14,7 +14,7 @@ app.use(express.json());
 // CORS configuration
 const corsOptions = {
   origin: "http://localhost:3000", // Replace frontend URL
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
   optionsSuccessStatus: 204,
