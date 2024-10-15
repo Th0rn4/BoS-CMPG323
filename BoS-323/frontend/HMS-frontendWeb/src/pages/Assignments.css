@@ -19,7 +19,7 @@ body {
 /* Left Panel / Sidebar */
 .left-panel {
   position: fixed;
-  width: 5vw;
+  width: 5vw; /* Match this with the main content margin-left */
   height: 100vh;
   left: 0;
   top: 0;
@@ -64,16 +64,14 @@ body {
 
 /* Main Content */
 .main-content {
-  margin-left: 2vw;
-  width: calc(100vw - 2vw); /* Fix to match the viewport width exactly */
+  margin-left: 5vw; /* Update to match left-panel width */
+  width: calc(100vw - 5vw); /* Fix to match the viewport width exactly */
+  padding: 2vw 1vw; /* Add some padding for better spacing */
 }
 
 .page-title {
-  position: absolute;
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
-  left: 6vw;
-  top: 0vh;
   font-weight: 700;
   font-size: 3vw;
   line-height: 4vw;
@@ -83,11 +81,11 @@ body {
 
 /* List of Students */
 .list-of-students {
-  margin-top: 20vh;
+  margin-top: 8vh; /* Adjust to reduce empty space between title and students */
 }
 
 .students-header {
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 1.5vw;
@@ -96,20 +94,24 @@ body {
 }
 
 .student {
-  margin-left: 4vw;
+  margin: 2vh auto; /* Center the student boxes */
   background: #705d56;
   border-radius: 25px;
-  margin-bottom: 2vh;
-  padding: 1.5vh 0;
-  width: 90vw;
+  padding: 2vh 0; /* Increase padding for better readability */
+  width: 85vw; /* Reduced width to leave some margin on the sides */
   cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+.student:hover {
+  background-color: #806a63; /* Darker shade on hover */
 }
 
 .student-name {
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
   font-weight: 500;
-  font-size: 1.2vw;
+  font-size: 1.5vw; /* Increase font size for better readability */
   color: #f0f7f4;
   text-align: center;
 }
