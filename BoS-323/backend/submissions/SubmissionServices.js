@@ -228,16 +228,59 @@ const getSubmissionsByAssignment = async (assignmentId) => {
 };
 
 const getSubmissionsByAssignmentId = async (assignmentId) => {
-  try {
-    const submissions = await Submission.find({ assignment_id: assignmentId })
-      .populate({
-        path: 'student_id',
-        select: 'name role',
-      })
-      .exec();
+  if (!mongoose.Types.ObjectId.isValid(assignmentId)) {
+    throw new Error('Invalid assignment ID format');
+  }
 
-    return submissions;
+  try {
+    const submissions = await Submission.aggregate([
+      {
+        // Match submissions for the given assignment ID
+        $match: { assignment_id: new mongoose.Types.ObjectId(assignmentId) },
+      },
+      {
+        // Perform a lookup to fetch student data from the 'users' collection
+        $lookup: {
+          from: 'users',
+          localField: 'student_id',
+          foreignField: '_id',
+          as: 'student',
+        },
+      },
+      {
+        // Unwind the 'student' array to flatten the result (1-to-1 relation)
+        $unwind: '$student',
+      },
+      {
+        // Project the required fields for submission and student data
+        $project: {
+          submissionId: '$_id',
+          studentId: '$student_id',
+          studentName: {
+            $concat: ['$student.name.firstName', ' ', '$student.name.lastName'],
+          },
+          status: 1,
+          feedback: 1,
+          submit_date: 1,
+          'student.role': 1,
+        },
+      },
+    ]);
+
+    // If no submissions are found, return an empty array
+    if (submissions.length === 0) {
+      return {
+        assignment: {}, // Assuming you want to format the assignment if needed
+        submissions: [],
+      };
+    }
+
+    // Return the aggregated and formatted submissions
+    return {
+      submissions,
+    };
   } catch (error) {
+    console.error('Error in getSubmissionsByAssignmentId:', error);
     throw new Error('Error fetching submissions: ' + error.message);
   }
 };

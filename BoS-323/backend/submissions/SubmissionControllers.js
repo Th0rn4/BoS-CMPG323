@@ -349,22 +349,23 @@ exports.getSubmissionsByAssignment = async (req, res) => {
   }
 };
 
-exports.getSubmissionsByAssignmentId = async (req, res) => {
+exports.getSubmissionsByAssignment = async (req, res) => {
   try {
     const { assignmentId } = req.params;
 
-    // Fetch submissions with user data (students) and their statuses
-    const submissions = await getSubmissionsByAssignmentId(assignmentId);
+    const result = await getSubmissionsByAssignmentId(assignmentId);
 
-    res.status(200).json({
-      success: true,
-      data: submissions,
-    });
+    if (!result || result.submissions.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Submissions not found' });
+    }
+
+    res.status(200).json({ success: true, data: result });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error fetching submissions',
-      error: error.message,
-    });
+    console.error('Error in getSubmissionsByAssignment:', error);
+    res
+      .status(500)
+      .json({ success: false, message: 'Error fetching submissions', error });
   }
 };

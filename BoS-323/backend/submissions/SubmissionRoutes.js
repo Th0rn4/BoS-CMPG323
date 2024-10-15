@@ -31,6 +31,11 @@ router.get('/stream/:id', SubmissionController.streamVideo);
 router.get('/:id/download', SubmissionController.downloadVideo);
 
 router.get('/submissions', SubmissionController.getSubmissionsByAssignment);
-router.get('/submissions/:assignmentId', getSubmissionsByAssignmentId);
+
+// Get all submissions for a specific assignment
+router.get(
+  '/assignments/:assignmentId/submissions',
+  SubmissionController.getSubmissionsByAssignment
+);
 
 module.exports = router;
