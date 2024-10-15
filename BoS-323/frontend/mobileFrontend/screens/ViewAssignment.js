@@ -6,7 +6,6 @@ import {
   StyleSheet,
   ScrollView,
   Image,
-  Modal,
   FlatList,
   Alert,
   TouchableWithoutFeedback,
@@ -18,6 +17,7 @@ import {
   fetchSubmissions,
   createSubmission,
   fetchNotifications,
+  fetchSingleSubmission,
 } from "../services/api";
 
 // AssignmentTile component
@@ -130,17 +130,20 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
 
         console.log("New submission created:", submission);
         setSubmissions([...submissions, submission]);
+
+        //await new Promise((resolve) => setTimeout(resolve, 1000));
       }
 
       navigation.navigate("AssignmentScreen", {
         assignment,
         submission,
+        //submissionId: latestSubmission.submission._id,
+        //submission: latestSubmission.submission,
         onComplete: () => handleSubmissionComplete(submission._id),
       });
     } catch (error) {
       console.error("Failed to navigate to assignment screen:", error);
-      console.error("Error details:", error.message);
-      Alert.alert("Error", "Failed to create submission. Please try again.");
+      Alert.alert("Error", `Failed to load submission: ${error.message}`);
     }
   };
 
