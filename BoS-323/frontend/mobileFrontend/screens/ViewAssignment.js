@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,7 +6,6 @@ import {
   StyleSheet,
   ScrollView,
   Image,
-  Modal,
   FlatList,
   Alert,
   TouchableWithoutFeedback,
@@ -63,24 +62,31 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationPanelHeight = useRef(new Animated.Value(0)).current;
 
+  const fetchData = useCallback(async () => {
+    try {
+      const [fetchedAssignments, fetchedSubmissions, fetchedNotifications] =
+        await Promise.all([
+          fetchAssignments(),
+          fetchSubmissions(),
+          fetchNotifications(),
+        ]);
+
+      const userSubmissions = fetchedSubmissions.filter(
+        (submission) => submission.student_id === user.id
+      );
+
+      setAssignments(fetchedAssignments);
+      setSubmissions(userSubmissions);
+      setNotifications(fetchedNotifications);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+      Alert.alert("Error", "Failed to load data. Please try again.");
+    }
+  }, [user.id]);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [fetchedAssignments, fetchedSubmissions, fetchedNotifications] =
-          await Promise.all([
-            fetchAssignments(),
-            fetchSubmissions(),
-            fetchNotifications(),
-          ]);
-        setAssignments(fetchedAssignments);
-        setSubmissions(fetchedSubmissions);
-        setNotifications(fetchedNotifications);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      }
-    };
     fetchData();
-  }, [user._id]);
+  }, [fetchData]);
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -119,8 +125,6 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
       );
 
       if (!submission) {
-        console.log("Creating new submission for assignment:", assignment._id);
-
         submission = await createSubmission({
           assignment_id: assignment._id,
           student_id: user.id,
@@ -128,8 +132,7 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
           status: "In progress",
         });
 
-        console.log("New submission created:", submission);
-        setSubmissions([...submissions, submission]);
+        setSubmissions((prevSubmissions) => [...prevSubmissions, submission]);
       }
 
       navigation.navigate("AssignmentScreen", {
@@ -139,44 +142,56 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
       });
     } catch (error) {
       console.error("Failed to navigate to assignment screen:", error);
-      console.error("Error details:", error.message);
-      Alert.alert("Error", "Failed to create submission. Please try again.");
+      Alert.alert("Error", `Failed to load submission: ${error.message}`);
     }
   };
 
-  const handleSubmissionComplete = (submissionId) => {
-    setSubmissions(
-      submissions.map((s) =>
+  const handleSubmissionComplete = useCallback((submissionId) => {
+    setSubmissions((prevSubmissions) =>
+      prevSubmissions.map((s) =>
         s._id === submissionId ? { ...s, status: "Submitted" } : s
       )
     );
-  };
+  }, []);
 
-  const filteredAssignments = () => {
+  const filteredAssignments = useCallback(() => {
+    if (!Array.isArray(submissions)) {
+      return assignments;
+    }
+
     switch (viewType) {
       case "Assignments":
         return assignments.filter(
-          (a) => !submissions.some((s) => s.assignment_id === a._id)
+          (a) =>
+            !submissions.some(
+              (s) => s?.assignment_id === a._id && s?.student_id === user.id
+            )
         );
       case "In progress":
         return assignments.filter((a) =>
           submissions.some(
-            (s) => s.assignment_id === a._id && s.status === "In progress"
+            (s) =>
+              s?.assignment_id === a._id &&
+              s?.status === "In progress" &&
+              s?.student_id === user.id
           )
         );
       case "Completed":
         return assignments.filter((a) =>
           submissions.some(
-            (s) => s.assignment_id === a._id && s.status === "Submitted"
+            (s) =>
+              s?.assignment_id === a._id &&
+              s?.status === "Submitted" &&
+              s?.student_id === user.id
           )
         );
       default:
-        return [];
+        return assignments;
     }
-  };
+  }, [assignments, submissions, viewType, user.id]);
 
   const clearNotifications = () => {
-    setNotifications([]); // Clear all notifications
+    setNotifications([]);
   };
 
   return (
@@ -338,10 +353,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   notificationSource: {
-    fontSize: 12,
-    color: "#636363",
-  },
-  notificationTime: {
     fontSize: 12,
     color: "#636363",
   },
