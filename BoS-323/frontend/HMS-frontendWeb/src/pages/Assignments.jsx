@@ -1,35 +1,73 @@
-// eslint-disable-next-line no-unused-vars
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import "./Assignments.css";
-import HomeButton from "../assets/HomeButton.svg";
-import LogoutIcon from "../assets/LogoutIcon.svg";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import './Assignments.css';
+import HomeButton from '../assets/HomeButton.svg';
+import LogoutIcon from '../assets/LogoutIcon.svg';
+import axios from 'axios';
 
 const Assignments = () => {
   const navigate = useNavigate();
+  const { assignmentId } = useParams(); // Fetch the assignment_id from the URL
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch submissions by assignment ID
+  useEffect(() => {
+    const fetchSubmissions = async () => {
+      try {
+        const response = await axios.get(
+          `/api/submissions/submissions/${assignmentId}`
+        );
+        console.log('API Response:', response.data); // Log the entire response
+        setSubmissions(response.data.data || []); // Ensure it's an array
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching submissions:', error); // Log the error
+        setError('Error fetching submissions');
+        setLoading(false);
+      }
+    };
+
+    fetchSubmissions();
+  }, [assignmentId]);
+
+  // Function to group students by their submission status
+  const groupByStatus = (submissions) => {
+    if (!submissions || !Array.isArray(submissions)) return {};
+
+    const statuses = ['Not Started', 'In Progress', 'Submitted', 'Graded'];
+
+    const grouped = {};
+    statuses.forEach((status) => {
+      grouped[status] = submissions.filter(
+        (submission) => submission.status === status
+      );
+    });
+    return grouped;
+  };
+
+  const groupedSubmissions = groupByStatus(submissions);
 
   const handleLogout = () => {
-    // Perform any logout logic here (e.g., clearing local storage, etc.)
-    // For example:
-    // localStorage.removeItem('token');
-    // Navigate to the login page
-    navigate("/login");
+    navigate('/login');
   };
 
   const handleHomeClick = () => {
-    navigate("/dashboard");
+    navigate('/dashboard');
   };
-
-  const students = [
-    { id: 1, name: "Student1 Name Lastname" },
-    { id: 2, name: "Student2 Name Lastname" },
-    { id: 3, name: "Student3 Name Lastname" },
-    { id: 4, name: "Student4 Name Lastname" },
-  ];
 
   const handleStudentClick = (studentId) => {
     navigate(`/view-assignment/${studentId}`);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="assignments-container">
@@ -44,18 +82,30 @@ const Assignments = () => {
       </div>
       {/* Main Content */}
       <div className="main-content">
-        <h1 className="page-title">AssignmentName</h1>
-        <div className="list-of-students">
-          {students.map((student, index) => (
-            <div
-              key={student.id}
-              className={`student student${index + 1}`}
-              onClick={() => handleStudentClick(student.id)}
-            >
-              <div className="student-name">{student.name}</div>
+        <h1 className="page-title">Assignment Submissions</h1>
+
+        {/* Grouped Student Submissions */}
+        {Object.keys(groupedSubmissions).map((status) => (
+          <div key={status}>
+            <h2 className="students-header">List of Students: {status}</h2>
+            <div className="list-of-students">
+              {groupedSubmissions[status].map((submission) => (
+                <div
+                  key={submission.user._id}
+                  className="student"
+                  onClick={() => handleStudentClick(submission.user._id)}
+                >
+                  <div className="student-name">
+                    {submission.user.name} -{' '}
+                    <span className="submission-status">
+                      {submission.status}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 const User = require('./UserModels');
 const jwt = require('jsonwebtoken');
+const { getUsersByRole } = require('./UserService');
 
 const sendTokenResponse = (user, statusCode, res, message) => {
   const token = user.getSignedJwtToken();
@@ -190,5 +191,24 @@ exports.deleteUser = async (req, res) => {
     res.status(200).json({ success: true, data: {} });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Get all users with a specific role (e.g., 'student')
+exports.getUsersByRole = async (req, res) => {
+  try {
+    const role = req.query.role;
+    const users = await getUsersByRole(role);
+
+    res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching users by role',
+      error: error.message,
+    });
   }
 };

@@ -44,11 +44,11 @@ const Dashboard = () => {
           const now = Date.now();
           localStorage.setItem("lastPageLoadTime", now); // Store current page load time
         } else {
-          setError(assignmentsData.message || "No assignments available.");
+          setError(assignmentsData.message || 'No assignments available.');
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Failed to fetch data. Please try again later.");
+        console.error('Error fetching data:', error);
+        setError('Failed to fetch data. Please try again later.');
       }
     };
 
@@ -61,9 +61,9 @@ const Dashboard = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login", { state: { message: "Logout successful!" } });
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login', { state: { message: 'Logout successful!' } });
   };
 
   const handleAddAssignment = async (assignmentData) => {
@@ -96,7 +96,7 @@ const Dashboard = () => {
         prevAssignments.filter((assignment) => assignment._id !== _id)
       ); // Update state
     } catch (error) {
-      console.error("Error deleting assignment:", error);
+      console.error('Error deleting assignment:', error);
     }
   };
 
@@ -105,6 +105,7 @@ const Dashboard = () => {
   };
 
   const handleDeleteNotification = async (notificationId) => {
+
     console.log("Deleting Notification ID:", notificationId);
     try {
       await deleteNotificationService(notificationId); // Delete notification
@@ -112,7 +113,7 @@ const Dashboard = () => {
         prevNotifications.filter((notification) => notification._id !== notificationId)
       ); // Update state
     } catch (error) {
-      console.error("Error deleting notification:", error);
+      console.error('Error deleting notification:', error);
     }
   };
 
@@ -137,6 +138,7 @@ const Dashboard = () => {
 
       {/* Intro Section */}
       <div className="intro">
+
         <h1 className="intro-title">Hi, {user.role || "User"}!</h1>
         <p className="intro-subtitle">Manage your Assignments</p>
       </div>
@@ -146,6 +148,7 @@ const Dashboard = () => {
         {error ? (
           <p>{error}</p>
         ) : assignments.length > 0 ? (
+          
           <div className="assignment-cards-container" style={{ display: "flex", gap: "2vw" }}>
             {assignments.map(({ _id, title, description, due_date, mark_allocation }) => (
               <div
@@ -167,10 +170,29 @@ const Dashboard = () => {
                   className="delete-assignment"
                   onClick={(e) => handleDeleteAssignment(_id, e)}
                 >
-                  <img src={DeleteIcon} alt="Delete" className="delete-icon" />
-                </button>
-              </div>
-            ))}
+                  <h3 className="assignment-title">{title}</h3>
+                  <p className="assignment-description">
+                    {truncateText(description, MAX_DESCRIPTION_LENGTH)}
+                  </p>
+                  <p className="assignment-due-date">
+                    Due Date: {new Date(due_date).toLocaleDateString()}
+                  </p>
+                  <p className="assignment-mark-allocation">
+                    Mark Allocation: {mark_allocation}
+                  </p>
+                  <button
+                    className="delete-assignment"
+                    onClick={(e) => handleDeleteAssignments(_id, e)} // Pass the event to the handler
+                  >
+                    <img
+                      src={DeleteIcon}
+                      alt="Delete"
+                      className="delete-icon"
+                    />
+                  </button>
+                </div>
+              )
+            )}
           </div>
         ) : (
           <p>Loading assignments...</p>
@@ -200,8 +222,12 @@ const Dashboard = () => {
           {notifications.length > 0 ? (
             notifications.map((notification) => (
               <div className="notification-card" key={notification._id}>
-                <p className="notification-text">{notification.NotificationHeader}</p>
-                <p className="notification-description">{notification.NotificationDescription}</p>
+                <p className="notification-text">
+                  {notification.NotificationHeader}
+                </p>
+                <p className="notification-description">
+                  {notification.NotificationDescription}
+                </p>
                 <button
                   className="delete-notification"
                   onClick={() => handleDeleteNotification(notification._id)}
