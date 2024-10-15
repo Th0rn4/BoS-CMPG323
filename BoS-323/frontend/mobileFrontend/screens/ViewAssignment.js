@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -6,16 +6,22 @@ import {
   StyleSheet,
   ScrollView,
   Image,
+  Modal,
+  FlatList,
+  Alert,
+  TouchableWithoutFeedback,
+  Animated,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   fetchAssignments,
   fetchSubmissions,
   createSubmission,
+  fetchNotifications,
 } from "../services/api";
 
-// Updated AssignmentTile component
-const AssignmentTile = ({ assignment, navigation, onAssignmentClick }) => (
+// AssignmentTile component
+const AssignmentTile = ({ assignment, onAssignmentClick }) => (
   <TouchableOpacity
     style={styles.assignmentTile}
     onPress={() => onAssignmentClick(assignment)}
@@ -24,32 +30,75 @@ const AssignmentTile = ({ assignment, navigation, onAssignmentClick }) => (
   </TouchableOpacity>
 );
 
+// NotificationItem component
+const NotificationItem = ({ notification }) => (
+  <TouchableOpacity style={styles.notificationItem}>
+    <View style={styles.notificationIcon}>
+      <Image
+        source={require("../assets/NotificationIcon.png")}
+        style={styles.smallIcon}
+      />
+    </View>
+    <View style={styles.notificationContent}>
+      <Text style={styles.notificationTitle}>
+        {notification.NoftifcationHeader}
+      </Text>
+      <Text style={styles.notificationSource}>
+        {notification.NotificationDescription}
+      </Text>
+    </View>
+  </TouchableOpacity>
+);
+
 const ViewAssignmentScreen = ({ navigation, route }) => {
   const { user } = route.params;
-
   const [userDetails, setUserDetails] = useState({
     name: user.name || "Name",
     email: user.email || "Email",
   });
-
   const [assignments, setAssignments] = useState([]);
   const [submissions, setSubmissions] = useState([]);
   const [viewType, setViewType] = useState("Assignments");
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationPanelHeight = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedAssignments = await fetchAssignments();
+        const [fetchedAssignments, fetchedSubmissions, fetchedNotifications] =
+          await Promise.all([
+            fetchAssignments(),
+            fetchSubmissions(),
+            fetchNotifications(),
+          ]);
         setAssignments(fetchedAssignments);
-
-        const fetchedSubmissions = await fetchSubmissions();
         setSubmissions(fetchedSubmissions);
+        setNotifications(fetchedNotifications);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
     };
     fetchData();
   }, [user._id]);
+
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+    Animated.timing(notificationPanelHeight, {
+      toValue: showNotifications ? 0 : 300,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const closeNotifications = () => {
+    setShowNotifications(false);
+    Animated.timing(notificationPanelHeight, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
 
   const toggleViewType = () => {
     setViewType((prevType) => {
@@ -72,10 +121,9 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
       if (!submission) {
         console.log("Creating new submission for assignment:", assignment._id);
 
-        // Make sure the student_id is included from the user object
         submission = await createSubmission({
           assignment_id: assignment._id,
-          student_id: user.id, // This ensures student_id is passed
+          student_id: user.id,
           submit_date: new Date().toISOString(),
           status: "In progress",
         });
@@ -127,42 +175,68 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
     }
   };
 
+  const clearNotifications = () => {
+    setNotifications([]); // Clear all notifications
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.userInfo}>
-          <Text style={styles.nameText}>
-            {userDetails.name} {userDetails.surname}
-          </Text>
-          <View style={styles.emailContainer}>
-            <Image
-              source={require("../assets/aticon.png")}
-              style={styles.emailIcon}
-            />
-            <Text style={styles.emailText}>{userDetails.email}</Text>
+    <TouchableWithoutFeedback onPress={closeNotifications}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.userInfo}>
+            <Text style={styles.nameText}>{userDetails.name}</Text>
+            <View style={styles.emailContainer}>
+              <Image
+                source={require("../assets/aticon.png")}
+                style={styles.emailIcon}
+              />
+              <Text style={styles.emailText}>{userDetails.email}</Text>
+            </View>
           </View>
+          <TouchableOpacity
+            style={styles.notificationIcon}
+            onPress={toggleNotifications}
+          >
+            <Image
+              source={require("../assets/NotificationIcon.png")}
+              style={styles.icon}
+            />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.notificationIcon}>
-          <Image
-            source={require("../assets/NotificationIcon.png")}
-            style={styles.icon}
+
+        <Animated.View
+          style={[
+            styles.notificationPanel,
+            { maxHeight: notificationPanelHeight },
+          ]}
+        >
+          <View style={styles.notificationHeader}>
+            <Text style={styles.notificationHeaderText}>Notifications</Text>
+            <TouchableOpacity onPress={clearNotifications}>
+              <Text style={styles.settingsText}>Clear</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={notifications}
+            renderItem={({ item }) => <NotificationItem notification={item} />}
+            keyExtractor={(item) => item._id}
           />
+        </Animated.View>
+
+        <TouchableOpacity onPress={toggleViewType}>
+          <Text style={styles.tapableTextAssignment}>{viewType}</Text>
         </TouchableOpacity>
+        <ScrollView style={styles.scrollView}>
+          {filteredAssignments().map((assignment) => (
+            <AssignmentTile
+              key={assignment._id}
+              assignment={assignment}
+              onAssignmentClick={handleAssignmentClick}
+            />
+          ))}
+        </ScrollView>
       </View>
-      <TouchableOpacity onPress={toggleViewType}>
-        <Text style={styles.tapableTextAssignment}>{viewType}</Text>
-      </TouchableOpacity>
-      <ScrollView style={styles.scrollView}>
-        {filteredAssignments().map((assignment) => (
-          <AssignmentTile
-            key={assignment._id}
-            assignment={assignment}
-            navigation={navigation}
-            onAssignmentClick={handleAssignmentClick}
-          />
-        ))}
-      </ScrollView>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -180,7 +254,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   userInfo: {
-    position: "relative",
     justifyContent: "center",
     alignItems: "flex-start",
   },
@@ -190,29 +263,22 @@ const styles = StyleSheet.create({
     fontSize: 23,
     lineHeight: 28,
     color: "#000",
-    width: 172,
-    textAlign: "left",
   },
   emailContainer: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    marginTop: 12,
+    alignItems: "center",
+    marginTop: 5,
   },
   emailIcon: {
     width: 14,
     height: 14,
     marginRight: 5,
-    position: "absolute",
-    left: 0,
-    top: 1,
   },
   emailText: {
     fontFamily: "Inter",
     fontWeight: "500",
     fontSize: 14,
-    lineHeight: 17,
     color: "#636363",
-    marginLeft: 18,
   },
   notificationIcon: {
     padding: 10,
@@ -221,12 +287,69 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
   },
+  notificationPanel: {
+    position: "absolute",
+    top: 130,
+    right: 10,
+    width: 300,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex: 1000,
+  },
+  notificationHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+  },
+  notificationHeaderText: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  settingsText: {
+    color: "#70ABAF",
+    fontSize: 14,
+  },
+  notificationItem: {
+    flexDirection: "row",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+  },
+  notificationIcon: {
+    marginRight: 10,
+  },
+  smallIcon: {
+    width: 20,
+    height: 20,
+  },
+  notificationContent: {
+    flex: 1,
+  },
+  notificationTitle: {
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  notificationSource: {
+    fontSize: 12,
+    color: "#636363",
+  },
+  notificationTime: {
+    fontSize: 12,
+    color: "#636363",
+  },
   tapableTextAssignment: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
-    alignSelf: "center",
   },
   scrollView: {
     paddingHorizontal: 20,
@@ -243,6 +366,7 @@ const styles = StyleSheet.create({
   assignmentTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#fff",
   },
 });
 

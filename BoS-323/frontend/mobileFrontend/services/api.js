@@ -4,6 +4,9 @@ const BASE_URL = "https://bos-cmpg323-usersdeploy.onrender.com/api"; // Define t
 const SUBMISSION_URL =
   "https://bos-cmpg323-submissionsdeploy.onrender.com/api/submissions";
 
+const NOTIFICATION_URL =
+  "https://bos-cmpg323-notificationsdeploy.onrender.com/api/notifications";
+
 // Function to handle login
 export const login = async (email, password) => {
   try {
@@ -178,11 +181,10 @@ export const uploadSubmissionVideo = async (submissionId, videoFile) => {
   }
 };
 
-// Get a single submission
-export const getSubmission = async (submissionId) => {
+export const fetchNotifications = async () => {
   try {
     const token = await AsyncStorage.getItem("token");
-    const response = await fetch(`${SUBMISSION_URL}/${submissionId}/single`, {
+    const response = await fetch(`${NOTIFICATION_URL}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -190,46 +192,12 @@ export const getSubmission = async (submissionId) => {
 
     if (!response.ok) {
       const errorResponse = await response.json();
-      throw new Error(errorResponse.message || "Failed to fetch submission");
+      throw new Error(errorResponse.message || "Failed to fetch notifications");
     }
 
     const data = await response.json();
-    return data.submission;
+    return data.notifications;
   } catch (error) {
     throw new Error(error.message);
   }
-};
-
-// Get assignment feedback
-export const getAssignmentFeedback = async (assignmentId) => {
-  try {
-    const token = await AsyncStorage.getItem("token");
-    const response = await fetch(`${SUBMISSION_URL}/${assignmentId}/feedback`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorResponse = await response.json();
-      throw new Error(
-        errorResponse.message || "Failed to fetch assignment feedback"
-      );
-    }
-
-    const data = await response.json();
-    return data.feedbackList;
-  } catch (error) {
-    throw new Error(error.message);
-  }
-};
-
-// Get video stream URL
-export const getVideoStreamUrl = (submissionId) => {
-  return `${SUBMISSION_URL}/stream/${submissionId}`;
-};
-
-// Get video download URL
-export const getVideoDownloadUrl = (submissionId) => {
-  return `${SUBMISSION_URL}/${submissionId}/download`;
 };

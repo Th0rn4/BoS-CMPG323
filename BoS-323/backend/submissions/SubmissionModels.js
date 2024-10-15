@@ -1,17 +1,17 @@
 // Defines the Submission schema and model
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Defines the Submissions schema
 const SubmissionSchema = new Schema({
   assignment_id: {
     type: Schema.Types.ObjectId,
-    ref: "Assignment",
+    ref: 'Assignment',
     required: true,
   },
   student_id: {
     type: Schema.Types.ObjectId,
-    ref: "Student",
+    ref: 'User',
     required: true,
   },
   submit_date: {
@@ -21,8 +21,8 @@ const SubmissionSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["Not Started", "In progress", "Submitted", "Graded"],
-    default: "Not Started",
+    enum: ['Not Started', 'In progress', 'Submitted', 'Graded'],
+    default: 'Not Started',
     required: true,
   },
   feedback: [
@@ -71,4 +71,4 @@ const SubmissionSchema = new Schema({
   ],
 });
 
-module.exports = mongoose.model("Submission", SubmissionSchema);
+module.exports = mongoose.model('Submission', SubmissionSchema);
