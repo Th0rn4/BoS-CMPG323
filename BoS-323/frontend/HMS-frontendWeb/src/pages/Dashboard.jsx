@@ -22,7 +22,7 @@ const MAX_DESCRIPTION_LENGTH = 100; // Set a limit for description length
 
 const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -44,11 +44,11 @@ const Dashboard = () => {
           const now = Date.now();
           localStorage.setItem("lastPageLoadTime", now); // Store current page load time
         } else {
-          setError(assignmentsData.message || 'No assignments available.');
+          setError(assignmentsData.message || "No assignments available.");
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Failed to fetch data. Please try again later.');
+        console.error("Error fetching data:", error);
+        setError("Failed to fetch data. Please try again later.");
       }
     };
 
@@ -56,21 +56,23 @@ const Dashboard = () => {
   }, []);
 
   const truncateText = (text, maxLength) => {
-    if (!text || typeof text !== "string") return ""; 
-    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+    if (!text || typeof text !== "string") return "";
+    return text.length > maxLength
+      ? text.substring(0, maxLength) + "..."
+      : text;
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/login', { state: { message: 'Logout successful!' } });
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login", { state: { message: "Logout successful!" } });
   };
 
   const handleAddAssignment = async (assignmentData) => {
     try {
       const newAssignment = await addAssignment(assignmentData); // Add assignment
       setAssignments((prevAssignments) => [...prevAssignments, newAssignment]); // Update assignments
-      setError(null); 
+      setError(null);
 
       window.location.reload(); // Reload page
 
@@ -96,7 +98,7 @@ const Dashboard = () => {
         prevAssignments.filter((assignment) => assignment._id !== _id)
       ); // Update state
     } catch (error) {
-      console.error('Error deleting assignment:', error);
+      console.error("Error deleting assignment:", error);
     }
   };
 
@@ -105,19 +107,20 @@ const Dashboard = () => {
   };
 
   const handleDeleteNotification = async (notificationId) => {
-
     console.log("Deleting Notification ID:", notificationId);
     try {
       await deleteNotificationService(notificationId); // Delete notification
       setNotifications((prevNotifications) =>
-        prevNotifications.filter((notification) => notification._id !== notificationId)
+        prevNotifications.filter(
+          (notification) => notification._id !== notificationId
+        )
       ); // Update state
     } catch (error) {
-      console.error('Error deleting notification:', error);
+      console.error("Error deleting notification:", error);
     }
   };
 
-  if (!user) return null; // Prevent rendering if no user data is loaded 
+  if (!user) return null; // Prevent rendering if no user data is loaded
 
   return (
     <div className="dashboard-container">
@@ -126,7 +129,7 @@ const Dashboard = () => {
         <div className="home-button">
           <img src={HomeButton} alt="Home" />
         </div>
-        {user.role === 'admin' && ( 
+        {user.role === "admin" && (
           <div className="admin-button" onClick={() => navigate("/Admin")}>
             <span>Manage Users</span>
           </div>
@@ -138,7 +141,6 @@ const Dashboard = () => {
 
       {/* Intro Section */}
       <div className="intro">
-
         <h1 className="intro-title">Hi, {user.role || "User"}!</h1>
         <p className="intro-subtitle">Manage your Assignments</p>
       </div>
@@ -148,28 +150,31 @@ const Dashboard = () => {
         {error ? (
           <p>{error}</p>
         ) : assignments.length > 0 ? (
-          
-          <div className="assignment-cards-container" style={{ display: "flex", gap: "2vw" }}>
-            {assignments.map(({ _id, title, description, due_date, mark_allocation }) => (
-              <div
-                className="assignment-card"
-                key={_id}
-                onClick={handleAssignmentClick}
-              >
-                <h3 className="assignment-title">{title}</h3>
-                <p className="assignment-description">
-                  {truncateText(description, MAX_DESCRIPTION_LENGTH)}
-                </p>
-                <p className="assignment-due-date">
-                  Due Date: {new Date(due_date).toLocaleDateString()}
-                </p>
-                <p className="assignment-mark-allocation">
-                  Mark Allocation: {mark_allocation}
-                </p>
-                <button
-                  className="delete-assignment"
-                  onClick={(e) => handleDeleteAssignment(_id, e)}
+          <div
+            className="assignment-cards-container"
+            style={{ display: "flex", gap: "2vw" }}
+          >
+            {assignments.map(
+              ({ _id, title, description, due_date, mark_allocation }) => (
+                <div
+                  className="assignment-card"
+                  key={_id}
+                  onClick={handleAssignmentClick}
                 >
+                  <h3 className="assignment-title">{title}</h3>
+                  <p className="assignment-description">
+                    {truncateText(description, MAX_DESCRIPTION_LENGTH)}
+                  </p>
+                  <p className="assignment-due-date">
+                    Due Date: {new Date(due_date).toLocaleDateString()}
+                  </p>
+                  <p className="assignment-mark-allocation">
+                    Mark Allocation: {mark_allocation}
+                  </p>
+                  <button
+                    className="delete-assignment"
+                    onClick={(e) => handleDeleteAssignment(_id, e)}
+                  />
                   <h3 className="assignment-title">{title}</h3>
                   <p className="assignment-description">
                     {truncateText(description, MAX_DESCRIPTION_LENGTH)}

@@ -7,17 +7,17 @@ const AddAssignmentModal = ({ show, onClose, onAddAssignment }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [markAllocation, setMarkAllocation] = useState(""); 
+  const [markAllocation, setMarkAllocation] = useState(""); // State for mark allocation
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Create a new assignment object 
+    // Create a new assignment object including mark allocation
     const newAssignment = {
       title,
       description,
       due_date: dueDate,
-      mark_allocation: markAllocation, 
+      mark_allocation: markAllocation, // Include mark allocation
     };
 
     // Call the function passed from the parent to add the new assignment
@@ -27,12 +27,12 @@ const AddAssignmentModal = ({ show, onClose, onAddAssignment }) => {
     setTitle("");
     setDescription("");
     setDueDate("");
-    setMarkAllocation(""); 
+    setMarkAllocation(""); // Clear mark allocation field
     onClose();
   };
 
   if (!show) {
-    return null; 
+    return null; // Return null if modal is not supposed to be visible
   }
 
   return (
@@ -77,7 +77,7 @@ const AddAssignmentModal = ({ show, onClose, onAddAssignment }) => {
           </div>
           <div className="modal-actions">
             <button type="submit">Add Assignment</button>
-            <button className="button" onClick={onClose}>
+            <button type="button" onClick={onClose}>
               Cancel
             </button>
           </div>
