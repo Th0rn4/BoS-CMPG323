@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Admin.css";
-import AddUserModal from "./AddUserModal";
+import AddUserModal from "./UserModal";
 
 
 import HomeButton from "../assets/HomeButton.svg";

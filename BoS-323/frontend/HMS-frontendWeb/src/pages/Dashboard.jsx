@@ -6,6 +6,7 @@ import HomeButton from "../assets/HomeButton.svg";
 import LogoutIcon from "../assets/LogoutIcon.svg";
 import SlothBanner from "../assets/SlothBanner.svg";
 import DeleteIcon from "../assets/DeleteNotification.svg";
+import UserIcon from "../assets/UserIcon.svg";
 import AddAssignmentModal from "./AddAssignmentModal"; // Import the modal
 import {
   fetchAssignments,
@@ -130,8 +131,8 @@ const Dashboard = () => {
           <img src={HomeButton} alt="Home" />
         </div>
         {user.role === "admin" && (
-          <div className="admin-button" onClick={() => navigate("/Admin")}>
-            <span>Manage Users</span>
+          <div className="user-button" onClick={() => navigate("/Admin")}>
+            <img src={UserIcon} alt="Admin" />
           </div>
         )}
         <div className="logout-button" onClick={handleLogout}>
@@ -161,6 +162,8 @@ const Dashboard = () => {
                   key={_id}
                   onClick={handleAssignmentClick}
                 >
+                 
+                  
                   <h3 className="assignment-title">{title}</h3>
                   <p className="assignment-description">
                     {truncateText(description, MAX_DESCRIPTION_LENGTH)}
@@ -173,21 +176,7 @@ const Dashboard = () => {
                   </p>
                   <button
                     className="delete-assignment"
-                    onClick={(e) => handleDeleteAssignment(_id, e)}
-                  />
-                  <h3 className="assignment-title">{title}</h3>
-                  <p className="assignment-description">
-                    {truncateText(description, MAX_DESCRIPTION_LENGTH)}
-                  </p>
-                  <p className="assignment-due-date">
-                    Due Date: {new Date(due_date).toLocaleDateString()}
-                  </p>
-                  <p className="assignment-mark-allocation">
-                    Mark Allocation: {mark_allocation}
-                  </p>
-                  <button
-                    className="delete-assignment"
-                    onClick={(e) => handleDeleteAssignments(_id, e)} // Pass the event to the handler
+                    onClick={(e) => handleDeleteAssignment(_id, e)} // Pass the event to the handler
                   >
                     <img
                       src={DeleteIcon}

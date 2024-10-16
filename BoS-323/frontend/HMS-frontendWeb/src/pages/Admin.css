@@ -3,80 +3,83 @@
   position: relative;
   width: 100vw;
   height: 100vh;
-  background: #f0f7f4; /* Light background color */
-  display: flex; /* Flexbox for layout */
-  flex-direction: row; /* Horizontal layout */
+  background: #f0f7f4; 
+  display: flex; 
+  flex-direction: row; 
 }
 
 
 .user-section {
   position: absolute;
-  width: 80vw; /* Full width of the container */
-  height: 55vh; /* Height of the section */
-  left: 10vw; /* Position relative to the main container */
-  top: 20vh; /* Position relative to the main container */
-  display: flex; /* Use flexbox for alignment */
-  flex-direction: column; /* Align items in a row */
-  flex-wrap: nowrap; /* Prevent wrapping to next line */
-  gap: 2vw; /* Space between cards */
-  overflow-x: auto; /* Enable horizontal scrolling */
-  overflow-y: auto; /* Hide vertical scrolling */
-  padding-bottom: 1vh; /* Padding at the bottom */
-  scrollbar-width: thin; /* Thin scrollbar for Firefox */
-  scrollbar-color: #70abaf #f0f7f4; /* Custom scrollbar colors for Firefox */
-  
+  width: 80vw; 
+  height: 55vh; 
+  left: 10vw; 
+  top: 20vh; 
+  display: flex; 
+  flex-direction: row; 
+  flex-wrap: wrap;
+  gap: 2vw; 
+  padding: auto;
+  overflow-y: auto; 
+  padding-bottom: 1vh; 
+  scrollbar-width: thin;
+  scrollbar-color: #70abaf #f0f7f4; 
 } 
 
 .user-card {
-  position: absolute;
-  width: 75vw; /* Full width of the container */
-  height: 19vh; /* Height of the section */
-  background: #70abaf; /* Background color of cards */
-  border-radius: 2vw; /* Rounded corners for cards */
-  padding: 1vw; /* Padding inside the card */
-  display: flex; /* Flexbox for card content */
-  flex-direction: column; /* Stack content vertically */
-  align-items: center; /* Center align text */
-  position: relative; /* For delete button positioning */
+  /* Remove absolute positioning */
+  width: calc(50% - 2vw); /* Each card takes up about half of the container width minus the gap */
+  height: 20vh; 
+  background: #70abaf; 
+  border-radius: 3vw; 
+  padding: 2vw; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; /* Center the content */
+  box-sizing: border-box;
 }
 
 
 
 /* Delete User Button */
 .delete-user {
-  position: absolute;
-  top: 10px; /* Positioning relative to the card */
-  right: 10px; /* Positioning relative to the card */
-  background: none; /* No background */
-  border: none; /* No border */
-  cursor: pointer; /* Pointer cursor for interactivity */
-  padding: 0; /* No padding */
+  position: relative;
+  width: 6vw; 
+  height: 6vh; 
+  left: 15vw; 
+  bottom: 4vh;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 /* Add User Button */
 .add-user-button {
-  position: fixed; /* Fixed position to keep it in view */
-  width: 30vw; /* Width for the button */
-  height: 7.5vh; /* Height for the button */
-  left: 35vw; /* Center align the button horizontally */
-  bottom: 5vh; /* Position near the bottom */
-  background: #705d56; /* Background color */
-  border-radius: 1.5vw; /* Rounded corners */
-  display: flex; /* Flexbox for centering content */
-  align-items: center; /* Center vertically */
-  justify-content: center; /* Center horizontally */
-  cursor: pointer; /* Pointer cursor for interactivity */
-  z-index: 10; /* Ensure it's above other elements */
+  position: fixed; 
+  width: 30vw; 
+  height: 7.5vh; 
+  left: 40vw; 
+  bottom: 5vh; 
+  background: #705d56; 
+  border-radius: 1.5vw; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+  z-index: 10; 
 }
 
 .user-actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px; /* Add some space above the buttons */
+  margin-top: 10px; 
 }
 
 .update-user {
-  background-color:#705d56; /* Bootstrap primary color */
+  background-color:#705d56; 
   color: white;
   border: none;
   padding: 6px 10px;
@@ -85,5 +88,5 @@
 }
 
 .update-user:hover {
-  background-color: #99e1d9; /* Darker blue on hover */
+  background-color: #99e1d9; 
 }

@@ -22,6 +22,7 @@ const AddAssignmentModal = ({ show, onClose, onAddAssignment }) => {
 
     // Call the function passed from the parent to add the new assignment
     onAddAssignment(newAssignment);
+    resetFields();
 
     // Clear the form and close the modal
     setTitle("");
@@ -29,6 +30,18 @@ const AddAssignmentModal = ({ show, onClose, onAddAssignment }) => {
     setDueDate("");
     setMarkAllocation(""); // Clear mark allocation field
     onClose();
+    
+  };
+
+  const resetFields = () => {
+    setTitle("");
+    setDescription("");
+    setDueDate("");
+    setMarkAllocation("");
+  };
+  const handleClose = () => {
+    resetFields(); // Clear the form fields
+    onClose(); // Close the modal
   };
 
   if (!show) {
@@ -76,8 +89,8 @@ const AddAssignmentModal = ({ show, onClose, onAddAssignment }) => {
             />
           </div>
           <div className="modal-actions">
-            <button type="submit">Add Assignment</button>
-            <button type="button" onClick={onClose}>
+            <button className="button" >Add Assignment</button>
+            <button className="button" onClick={handleClose}>
               Cancel
             </button>
           </div>
