@@ -38,13 +38,11 @@ const AssignmentScreen = () => {
   useEffect(() => {
     const setup = async () => {
       try {
-        console.log("Component mounted. Route params:", route.params);
         const submissionId = route.params.submission._id;
         if (submissionId) {
-          console.log("Using submission ID from route params:", submissionId);
           await fetchFeedback(submissionId);
         } else {
-          console.error("No submission ID available in route params");
+          Alert.alert("No submission ID available in route params");
         }
 
         // Request camera and media permissions
@@ -67,7 +65,6 @@ const AssignmentScreen = () => {
           setVideo(existingFile.uri);
         }
       } catch (error) {
-        console.error("Error in useEffect setup:", error);
         Alert.alert(
           "Error",
           "An error occurred while setting up the assignment screen. Please try again."
@@ -83,14 +80,9 @@ const AssignmentScreen = () => {
   };
 
   const fetchFeedback = async (submissionId) => {
-    console.log("Fetching feedback for submission:", submissionId);
     setIsLoadingFeedback(true);
     try {
       const submissionData = await fetchSingleSubmission(submissionId);
-      console.log(
-        "Fetched submission data:",
-        JSON.stringify(submissionData, null, 2)
-      );
 
       if (
         submissionData &&
@@ -98,14 +90,11 @@ const AssignmentScreen = () => {
         submissionData.submission.feedback &&
         submissionData.submission.feedback.length > 0
       ) {
-        console.log("Setting feedback:", submissionData.submission.feedback[0]);
         setFeedback(submissionData.submission.feedback[0]);
       } else {
-        console.log("No feedback found in submission data");
         setFeedback(null);
       }
     } catch (error) {
-      console.error("Error fetching feedback:", error);
       Alert.alert("Error", "Failed to load feedback. Please try again later.");
       setFeedback(null);
     } finally {
@@ -118,7 +107,6 @@ const AssignmentScreen = () => {
       const directory = FileSystem.documentDirectory + "assignments/";
       const dirInfo = await FileSystem.getInfoAsync(directory);
       if (!dirInfo.exists) {
-        console.log("Assignments directory doesn't exist. Creating it.");
         await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
         return null; // No existing file in a newly created directory
       }
@@ -136,7 +124,6 @@ const AssignmentScreen = () => {
       }
       return null;
     } catch (error) {
-      console.error("Error in getExistingFile:", error);
       return null;
     }
   };
@@ -164,10 +151,8 @@ const AssignmentScreen = () => {
         to: newPath,
       });
 
-      console.log("Video saved successfully:", newPath);
       return { name: fileName, uri: newPath };
     } catch (error) {
-      console.error("Error saving video locally:", error);
       throw error;
     }
   };
@@ -179,11 +164,10 @@ const AssignmentScreen = () => {
         const fileInfo = await FileSystem.getInfoAsync(existingFile.uri);
         if (fileInfo.exists) {
           await FileSystem.deleteAsync(existingFile.uri, { idempotent: true });
-          console.log("Existing file removed successfully");
         }
       }
     } catch (error) {
-      console.error("Error removing existing file:", error);
+      throw error;
     }
   };
 
@@ -204,12 +188,11 @@ const AssignmentScreen = () => {
           "The new video has been saved successfully."
         );
       } catch (error) {
-        console.error("Error handling video capture:", error);
         setIsReplacing(false);
         Alert.alert("Error", "Failed to save the video. Please try again.");
       }
     } else {
-      console.log("Video capture cancelled or no asset received");
+      Alert.alert("Video capture cancelled or no asset received");
     }
   };
 
@@ -278,10 +261,8 @@ const AssignmentScreen = () => {
         };
 
         await uploadSubmissionVideo(submission._id, videoFile);
-
         // Update the submission status
         await updateSubmission(submission._id, { status: "Submitted" });
-
         // Call the onComplete callback
         onComplete();
 
@@ -290,7 +271,6 @@ const AssignmentScreen = () => {
         navigation.goBack();
       } catch (error) {
         setIsSubmitting(false);
-        console.error("Error submitting assignment:", error);
         Alert.alert("Error", "Failed to submit assignment. Please try again.");
       }
     } else {
@@ -428,7 +408,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "400",
     color: "#FFFFFF",
-    fontFamily: "Inter",
+    fontFamily: "Inter", //Font family error
   },
   assignmentNameContainer: {
     position: "absolute",

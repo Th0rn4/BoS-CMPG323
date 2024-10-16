@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const BASE_URL = "https://bos-cmpg323-usersdeploy.onrender.com/api"; // Define the base URL for the API
+const BASE_URL = "https://bos-cmpg323-usersdeploy.onrender.com/api";
 const SUBMISSION_URL =
   "https://bos-cmpg323-submissionsdeploy.onrender.com/api/submissions";
 
@@ -23,9 +23,9 @@ export const login = async (email, password) => {
       throw new Error(errorResponse.message || "Login failed");
     }
 
-    const userData = await response.json(); // Assuming this returns both token and user details
-    await AsyncStorage.setItem("token", userData.token); // Store the token in AsyncStorage
-    return userData; // Return the full response with token and user details
+    const userData = await response.json();
+    await AsyncStorage.setItem("token", userData.token);
+    return userData;
   } catch (error) {
     throw new Error(error.message);
   }
@@ -34,7 +34,7 @@ export const login = async (email, password) => {
 // Function to handle logout
 export const logout = async () => {
   try {
-    await AsyncStorage.removeItem("token"); // Clear the token from AsyncStorage
+    await AsyncStorage.removeItem("token");
   } catch (error) {
     throw new Error("Failed to logout");
   }
@@ -75,7 +75,7 @@ export const fetchAssignments = async () => {
     }
 
     const data = await response.json();
-    return data.assignments; // Return the assignments array
+    return data.assignments;
   } catch (error) {
     throw new Error(error.message);
   }
@@ -107,7 +107,6 @@ export const fetchSubmissions = async () => {
 export const createSubmission = async (submissionData) => {
   try {
     const token = await AsyncStorage.getItem("token");
-    console.log("Sending submission data:", JSON.stringify(submissionData));
 
     // Check for missing fields
     const requiredFields = [
@@ -135,9 +134,7 @@ export const createSubmission = async (submissionData) => {
       body: JSON.stringify(submissionData),
     });
 
-    console.log("Response status:", response.status);
     const responseData = await response.json();
-    console.log("Response data:", responseData);
 
     if (!response.ok) {
       throw new Error(responseData.message || "Failed to create submission");
@@ -145,7 +142,6 @@ export const createSubmission = async (submissionData) => {
 
     return responseData.submission;
   } catch (error) {
-    console.error("Error in createSubmission:", error);
     throw error;
   }
 };
@@ -202,6 +198,7 @@ export const uploadSubmissionVideo = async (submissionId, videoFile) => {
   }
 };
 
+//Function to fetch notifications
 export const fetchNotifications = async () => {
   try {
     const token = await AsyncStorage.getItem("token");
@@ -223,7 +220,7 @@ export const fetchNotifications = async () => {
   }
 };
 
-// New function to fetch a single submission
+// Function to fetch a single submission
 const fetchWithRetry = async (url, options, maxRetries = 3) => {
   for (let i = 0; i < maxRetries; i++) {
     try {
@@ -241,12 +238,10 @@ const fetchWithRetry = async (url, options, maxRetries = 3) => {
   }
 };
 
-// Use this in your fetchSingleSubmission function
+// Use this in your fetchSingleSubmission function to fetch only one the submissions
 export const fetchSingleSubmission = async (submissionId) => {
-  console.log("Fetching submission with ID:", submissionId);
   try {
     const token = await AsyncStorage.getItem("token");
-    console.log("Token retrieved:", token ? "Token exists" : "No token");
 
     const data = await fetchWithRetry(
       `${SUBMISSION_URL}/${submissionId}/single`,
@@ -256,8 +251,6 @@ export const fetchSingleSubmission = async (submissionId) => {
         },
       }
     );
-
-    console.log("API response data:", JSON.stringify(data, null, 2));
 
     if (!data.submission) {
       console.warn("No submission data in API response");
@@ -270,7 +263,6 @@ export const fetchSingleSubmission = async (submissionId) => {
 
     return data;
   } catch (error) {
-    console.error("Error in fetchSingleSubmission:", error);
     throw error;
   }
 };
