@@ -241,12 +241,12 @@ const Dashboard = () => {
         <div className="sloth-banner">
           <img src={SlothBanner} alt="Sloth" />
         </div>
-        <div className="user-info">
+        <div className="login-header">
           <p>Logged in as:</p>
-          <p className="user-name">
+          <p className="name">
             {user.name?.firstName || "Unknown User"} {user.name?.lastName || ""}
           </p>
-          <p className="user-email">{user.email || "No Email Provided"}</p>
+          <p className="email">{user.email || "No Email Provided"}</p>
         </div>
       </div>
     </div>
