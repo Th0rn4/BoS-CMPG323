@@ -103,8 +103,8 @@ const Dashboard = () => {
     }
   };
 
-  const handleAssignmentClick = (_id) => {
-    navigate(`/assignments/${_id}`);
+  const handleAssignmentClick = (_id, title) => {
+    navigate(`/assignments/${_id}`, { state: { title } });
   };
 
   const handleDeleteNotification = async (notificationId) => {
@@ -160,7 +160,7 @@ const Dashboard = () => {
                 <div
                   className="assignment-card"
                   key={_id}
-                  onClick={() => handleAssignmentClick(_id)}
+                  onClick={() => handleAssignmentClick(_id, title)}
                 >
                   <h3 className="assignment-title">{title}</h3>
                   <p className="assignment-description">

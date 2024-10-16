@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { getSubmissionsByAssignment } from "../Services/apiSubmissions";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import {
+  getSubmissionsByAssignment,
+  downloadFeedback,
+} from "../Services/apiSubmissions";
 import "./Assignments.css";
 import HomeButton from "../assets/HomeButton.svg";
 import LogoutIcon from "../assets/LogoutIcon.svg";
@@ -8,20 +11,24 @@ import LogoutIcon from "../assets/LogoutIcon.svg";
 const Assignments = () => {
   const navigate = useNavigate();
   const { assignmentId } = useParams();
+  const { state } = useLocation();
+  const assignmentTitle = state?.title || "Assignment Submissions";
   const [studentData, setStudentData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hasGradedSubmissions, setHasGradedSubmissions] = useState(false);
+  const [downloadMessage, setDownloadMessage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("Fetching data for assignment:", assignmentId);
         const data = await getSubmissionsByAssignment(assignmentId);
-        console.log("Received merged data:", data);
-        setStudentData(data); // Set the merged data from the API call
+        setStudentData(data);
+        setHasGradedSubmissions(
+          data.some((submission) => submission.status === "Graded")
+        );
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
         setError("Error fetching data");
         setLoading(false);
       }
@@ -30,47 +37,57 @@ const Assignments = () => {
   }, [assignmentId]);
 
   const groupByStatus = (data) => {
-    console.log("Grouping data:", data);
     const statuses = ["In progress", "Submitted", "Graded"];
-    const grouped = statuses.reduce((acc, status) => {
-      acc[status] = data.filter((item) => item.status === status); // Group by status
+    return statuses.reduce((acc, status) => {
+      acc[status] = data.filter((item) => item.status === status);
       return acc;
     }, {});
-    console.log("Grouped data:", grouped);
-    return grouped;
   };
 
-  const groupedData = groupByStatus(studentData); // Group data by status
+  const handleDownloadFeedback = async () => {
+    if (!hasGradedSubmissions) {
+      setDownloadMessage("No submissions have been graded yet.");
+      return;
+    }
 
-  const handleLogout = () => {
-    navigate("/login");
+    setDownloadMessage(""); // Clear any previous message
+    try {
+      await downloadFeedback(assignmentId);
+    } catch (error) {
+      console.error("Error downloading feedback:", error);
+      setDownloadMessage("Error downloading feedback. Please try again.");
+    }
   };
 
-  const handleHomeClick = () => {
-    navigate("/dashboard");
-  };
-
-  const handleStudentClick = (studentId) => {
-    navigate(`/view-assignment/${studentId}`); // Navigate to view student assignment
-  };
+  const groupedData = groupByStatus(studentData);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
-  console.log("Rendering with grouped data:", groupedData);
-
   return (
     <div className="assignments-container">
       <div className="left-panel">
-        <div className="home-button" onClick={handleHomeClick}>
+        <div className="home-button" onClick={() => navigate("/dashboard")}>
           <img src={HomeButton} alt="Home" />
         </div>
-        <div className="logout-button" onClick={handleLogout}>
+        <div className="logout-button" onClick={() => navigate("/login")}>
           <img src={LogoutIcon} alt="Logout" />
         </div>
       </div>
       <div className="main-content">
-        <h1 className="page-title">Assignment Submissions</h1>
+        <h1 className="page-title">Submissions for: {assignmentTitle}</h1>
+        <button
+          className={`download-feedback-button ${
+            !hasGradedSubmissions ? "disabled" : ""
+          }`}
+          onClick={handleDownloadFeedback}
+          disabled={!hasGradedSubmissions}
+        >
+          Download Feedback
+        </button>
+        {downloadMessage && (
+          <p className="download-message">{downloadMessage}</p>
+        )}
         {Object.entries(groupedData).map(([status, students]) => (
           <div key={status}>
             <h2 className="students-header">
@@ -81,7 +98,9 @@ const Assignments = () => {
                 <div
                   key={student.studentId}
                   className="student"
-                  onClick={() => handleStudentClick(student.studentId)}
+                  onClick={() =>
+                    navigate(`/view-assignment/${student.studentId}`)
+                  }
                 >
                   <div className="student-name">{student.studentName}</div>
                 </div>
