@@ -103,6 +103,7 @@ const Assignments = () => {
                       state: {
                         studentName: student.studentName,
                         submissionId: student.submissionId, // Pass the submissionId
+                        assignmentId: assignmentId,
                       },
                     })
                   }

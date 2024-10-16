@@ -2,7 +2,7 @@
 .admin-container {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  height: 150vh;
   background: #f0f7f4; 
   display: flex; 
   flex-direction: row; 
@@ -12,7 +12,7 @@
 .user-section {
   position: absolute;
   width: 80vw; 
-  height: 55vh; 
+  height: 60vh; 
   left: 10vw; 
   top: 20vh; 
   display: flex; 
@@ -29,32 +29,31 @@
 .user-card {
   /* Remove absolute positioning */
   width: calc(50% - 2vw); /* Each card takes up about half of the container width minus the gap */
-  height: 20vh; 
+  height: 28vh; 
   background: #70abaf; 
   border-radius: 3vw; 
-  padding: 2vw; 
+  padding: 3vw; 
   display: flex; 
   flex-direction: column; 
   align-items: center; 
   justify-content: center; /* Center the content */
   box-sizing: border-box;
+  
 }
 
 
 
 /* Delete User Button */
 .delete-user {
-  position: relative;
-  width: 6vw; 
-  height: 6vh; 
-  left: 15vw; 
-  bottom: 4vh;
-  color: white;
+  width: 6vw;
+  height: 4vh; 
   border: none;
-  padding: 6px 10px;
-  border-radius: 5px;
   cursor: pointer;
+  align-self:auto;
+  margin-top: auto; /* Pushes the button to the bottom of the card */
+ 
 }
+
 
 /* Add User Button */
 .add-user-button {
@@ -87,6 +86,3 @@
   cursor: pointer;
 }
 
-.update-user:hover {
-  background-color: #99e1d9; 
-}

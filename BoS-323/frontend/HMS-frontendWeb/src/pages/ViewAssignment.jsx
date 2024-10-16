@@ -14,12 +14,14 @@ const ViewAssignment = () => {
   const { studentId } = useParams();
   const location = useLocation();
   const studentName = location.state?.studentName || "Unknown Student";
-  const submissionId = location.state?.submissionId; // Get submissionId from state
+  const submissionId = location.state?.submissionId;
+  const assignmentId = location.state?.assignmentId;
   const [grade, setGrade] = useState("");
   const [comments, setComments] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [markAllocation, setMarkAllocation] = useState("");
 
   useEffect(() => {
     if (!submissionId) {
@@ -42,8 +44,30 @@ const ViewAssignment = () => {
       }
     };
 
+    const fetchMarkAllocation = async () => {
+      if (assignmentId) {
+        try {
+          const response = await fetch(
+            "https://bos-cmpg323-assignmentdeploy.onrender.com/api/assignments/"
+          );
+          const data = await response.json();
+          const assignment = data.assignments.find(
+            (a) => a._id === assignmentId
+          );
+          if (assignment) {
+            setMarkAllocation(assignment.mark_allocation);
+          } else {
+            console.error("Assignment not found");
+          }
+        } catch (error) {
+          console.error("Failed to fetch mark allocation:", error);
+        }
+      }
+    };
+
     loadVideo();
-  }, [submissionId]);
+    fetchMarkAllocation();
+  }, [submissionId, assignmentId]);
 
   const handleDownload = async () => {
     try {
@@ -104,7 +128,7 @@ const ViewAssignment = () => {
               type="text"
               value={grade}
               onChange={(e) => setGrade(e.target.value)}
-              placeholder="Mark Out/X"
+              placeholder={markAllocation ? `${markAllocation}` : "Mark Out"}
               className="va-mark-input"
             />
           </div>
@@ -119,7 +143,7 @@ const ViewAssignment = () => {
           </button>
         </div>
         <div className="va-comments-block">
-          <input
+          <textarea
             value={comments}
             onChange={(e) => setComments(e.target.value)}
             placeholder="Enter your comments here..."

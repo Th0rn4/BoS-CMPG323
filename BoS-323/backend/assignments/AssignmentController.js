@@ -6,6 +6,7 @@ const {
   getAssignment,
   updateAssignment,
   deleteAssignment,
+  getAssignmentById,
 } = require('./AssignmentServices');
 
 exports.createAssignment = async (req, res) => {
@@ -96,7 +97,7 @@ exports.deleteAssignment = async (req, res) => {
         .json({ success: false, message: 'Invalid assignment ID format' });
     }
 
-    const assignment = await getAssignment(assignmentId);
+    const assignment = await getAssignmentById(assignmentId);
     if (!assignment) {
       return res
         .status(404)

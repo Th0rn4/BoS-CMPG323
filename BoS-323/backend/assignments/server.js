@@ -1,20 +1,21 @@
-const express = require('express');
-const connectDB = require('./db');
-const assignmentRoutes = require('./AssignmentRoutes');
-const dotenv = require('dotenv');
-const cors = require('cors'); // Import the CORS package
+const express = require("express");
+const connectDB = require("./db");
+const assignmentRoutes = require("./AssignmentRoutes");
+const dotenv = require("dotenv");
+const cors = require("cors"); // Import the CORS package
 
 // Load environment variables
-dotenv.config(); 
+dotenv.config();
 
-const app = express(); 
+const app = express();
 
 // Middleware
 app.use(express.json());
 
 // CORS configuration
 const corsOptions = {
-  origin: "http://localhost:3000", // Corrected: Removed trailing slash
+  //http://localhost:3000
+  origin: "https://bos-cmpg323-qj0i.onrender.com", // Corrected: Removed trailing slash
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -29,12 +30,14 @@ connectDB().catch((err) => {
 });
 
 // Routes
-app.use('/api/assignments', assignmentRoutes);
+app.use("/api/assignments", assignmentRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-}).on('error', (err) => {
-  console.error('Error starting the server:', err);
-});
+app
+  .listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  })
+  .on("error", (err) => {
+    console.error("Error starting the server:", err);
+  });

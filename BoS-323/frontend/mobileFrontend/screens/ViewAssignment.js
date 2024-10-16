@@ -181,7 +181,7 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
           submissions.some(
             (s) =>
               s?.assignment_id === a._id &&
-              s?.status === "Submitted" &&
+              ["Submitted", "Graded"].includes(s?.status) && // Check if status is either "Submitted" or "Graded"
               s?.student_id === user.id
           )
         );

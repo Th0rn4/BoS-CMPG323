@@ -66,6 +66,10 @@
   background-color: #f0f7f4;
   color: #000000;
   border-radius: 10px;
+  text-align: center;
+}
+.va-mark-input::placeholder {
+  text-align: center;
 }
 
 .va-download-button,
@@ -108,4 +112,7 @@
   font-size: 1vw;
   resize: none;
   background-color: #f0f7f4;
+}
+.va-comments-input::placeholder {
+  vertical-align: top;
 }
