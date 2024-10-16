@@ -223,10 +223,6 @@ const downloadVideoFromCloudinary = async (publicId) => {
   }
 };
 
-/*const getSubmissionsByAssignment = async (assignmentId) => {
-  return await Submission.find({ assignmentId });
-}; */
-
 const getSubmissionsByAssignmentId = async (assignmentId) => {
   if (!mongoose.Types.ObjectId.isValid(assignmentId)) {
     throw new Error("Invalid assignment ID format");
@@ -297,6 +293,5 @@ module.exports = {
   streamVideoFromCloudinary,
   generateFeedbackExcel,
   downloadVideoFromCloudinary,
-  //getSubmissionsByAssignment,
   getSubmissionsByAssignmentId,
 };
