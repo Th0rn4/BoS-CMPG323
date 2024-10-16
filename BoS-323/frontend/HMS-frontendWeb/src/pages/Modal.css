@@ -63,10 +63,8 @@
     font-size: 1.2vw; /* Responsive font size */
   }
   
-  /* Button Hover Effect */
-  button:hover {
-    background: #4d8f94; /* Darker shade for hover effect */
-  }
+
+ 
   
   .delete-user {
     position: absolute;

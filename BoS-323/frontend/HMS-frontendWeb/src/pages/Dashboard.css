@@ -169,9 +169,6 @@
 
 
 
-
-
-
 .delete-assignment{
   position: absolute; 
   width: 5vw; /* Full width of the container */
@@ -200,6 +197,7 @@
 }
 
 .button-text {
+  background: none;
   font-family: "Inter";
   font-style: normal;
   font-weight: 500;
@@ -367,6 +365,7 @@
   width: 5vw;
   height: 5vh;
   object-fit: contain;
+  background: none;
 }
 .admin-button {
   margin-top: 15vh; /* Space between the buttons */
