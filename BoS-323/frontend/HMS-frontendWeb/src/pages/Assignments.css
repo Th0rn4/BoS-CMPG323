@@ -70,7 +70,7 @@ body {
 }
 
 .page-title {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 700;
   font-size: 3vw;
@@ -81,16 +81,17 @@ body {
 
 /* List of Students */
 .list-of-students {
-  margin-top: 8vh; /* Adjust to reduce empty space between title and students */
+  margin-top: 2vh; /* Reduced space between title and student list */
+  margin-left: -3vw;
 }
 
 .students-header {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 1.5vw;
   color: #000000;
-  margin-bottom: 2vh;
+  margin-bottom: 1vh; /* Reduce gap below the header */
 }
 
 .student {
@@ -98,7 +99,7 @@ body {
   background: #705d56;
   border-radius: 25px;
   padding: 2vh 0; /* Increase padding for better readability */
-  width: 85vw; /* Reduced width to leave some margin on the sides */
+  width: 90vw; /* Reduced width to leave some margin on the sides */
   cursor: pointer;
   transition: background-color 0.3s ease; /* Smooth background color transition */
 }
@@ -108,10 +109,40 @@ body {
 }
 
 .student-name {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 1.5vw; /* Increase font size for better readability */
   color: #f0f7f4;
   text-align: center;
+}
+.download-feedback-button {
+  background-color: #99e1d9;
+  border: none;
+  color: rgb(0, 0, 0);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: background-color 0.3s;
+}
+
+.download-feedback-button:hover:not(.disabled) {
+  background-color: #99e1d9c0;
+}
+
+.download-feedback-button.disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+.download-message {
+  color: #ff0000;
+  margin-top: 10px;
+  font-weight: bold;
 }

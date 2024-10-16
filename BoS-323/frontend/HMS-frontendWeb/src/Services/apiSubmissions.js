@@ -73,3 +73,76 @@ export const updateFeedback = async (submissionId, feedbackData) => {
     throw error;
   }
 };
+
+export const getSubmissionsByAssignment = async (assignmentId) => {
+  try {
+    console.log(`Fetching submissions for assignment: ${assignmentId}`);
+
+    // Only fetch the submissions directly
+    const submissionsResponse = await axiosInstance.get(
+      `/assignments/${assignmentId}/submissions`
+    );
+
+    const submissions = submissionsResponse.data.data.submissions || []; // List of submissions
+
+    console.log("Submissions:", submissions);
+
+    // No need to merge with students, as submission data already contains the necessary info
+    const mergedData = submissions.map((submission) => ({
+      studentId: submission.studentId,
+      studentName: submission.studentName, // Assuming submission has studentName
+      status: submission.status || "Not Started", // Handle status from submission
+      submissionId: submission.submissionId, // Submission ID if it exists
+      ...submission, // Any additional submission data
+    }));
+
+    console.log("Merged Data:", mergedData);
+    return mergedData;
+  } catch (error) {
+    console.error("Failed to fetch submissions:", error);
+    throw error;
+  }
+};
+
+export const downloadFeedback = async (assignmentId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/${assignmentId}/feedback/download`,
+      {
+        responseType: "arraybuffer",
+      }
+    );
+
+    // Determine the file type based on the content-type header
+    const contentType = response.headers["content-type"];
+    let fileExtension = ".xlsx";
+    if (contentType.includes("sheet")) {
+      fileExtension = ".xlsx";
+    } else if (contentType.includes("zip")) {
+      fileExtension = ".zip";
+    }
+
+    // Create a Blob from the response data
+    const blob = new Blob([response.data], { type: contentType });
+
+    // Generate a filename
+    const filename = `feedback_${assignmentId}${fileExtension}`;
+
+    // Create a temporary URL for the Blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a temporary link element and trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Failed to download feedback:", error);
+    throw error;
+  }
+};

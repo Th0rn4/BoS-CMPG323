@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./ViewAssignment.css";
 import HomeButton from "../assets/HomeButton.svg";
 import LogoutIcon from "../assets/LogoutIcon.svg";
@@ -12,20 +12,27 @@ import {
 const ViewAssignment = () => {
   const navigate = useNavigate();
   const { studentId } = useParams();
+  const location = useLocation();
+  const studentName = location.state?.studentName || "Unknown Student";
+  const submissionId = location.state?.submissionId; // Get submissionId from state
   const [grade, setGrade] = useState("");
   const [comments, setComments] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [videoId, setVideoId] = useState("66f1a83f3ef7cb7a887eb23a"); // Replace with actual video ID later
-  const [submissionId, setSubmissionId] = useState("66f1a83f3ef7cb7a887eb23a"); //Replace with actual submission ID later
 
   useEffect(() => {
+    if (!submissionId) {
+      setError("No submission ID provided.");
+      setLoading(false);
+      return;
+    }
+
     const loadVideo = async () => {
       try {
         setLoading(true);
         setError(null);
-        const url = await streamVideo(videoId);
+        const url = await streamVideo(submissionId);
         setVideoUrl(url);
       } catch (error) {
         console.error("Failed to load video:", error);
@@ -36,19 +43,11 @@ const ViewAssignment = () => {
     };
 
     loadVideo();
-  }, [videoId]);
-
-  const handleLogout = () => {
-    navigate("/login");
-  };
-
-  const handleHomeClick = () => {
-    navigate("/dashboard");
-  };
+  }, [submissionId]);
 
   const handleDownload = async () => {
     try {
-      await downloadVideo(videoId);
+      await downloadVideo(submissionId);
     } catch (error) {
       console.error("Failed to initiate download:", error);
       alert(`Failed to download the video: ${error.message}`);
@@ -57,7 +56,7 @@ const ViewAssignment = () => {
 
   const handlePublishMark = async () => {
     const feedbackData = {
-      status: "Gemerk",
+      status: "Graded",
       feedback: {
         grade: grade,
         comment: comments,
@@ -65,7 +64,7 @@ const ViewAssignment = () => {
     };
 
     try {
-      await updateFeedback(videoId, feedbackData);
+      await updateFeedback(submissionId, feedbackData);
       alert("Feedback submitted successfully!");
     } catch (error) {
       console.error("Failed to update submission:", error);
@@ -73,25 +72,13 @@ const ViewAssignment = () => {
     }
   };
 
-  const getStudentName = (id) => {
-    const students = {
-      1: "StudentName StudentLastname",
-      2: "Student2 Name Lastname",
-      3: "Student3 Name Lastname",
-      4: "Student4 Name Lastname",
-    };
-    return students[id] || "Unknown Student";
-  };
-
-  const studentName = getStudentName(studentId);
-
   return (
     <div className="va-container">
       <div className="left-panel">
-        <div className="home-button" onClick={handleHomeClick}>
+        <div className="home-button" onClick={() => navigate("/dashboard")}>
           <img src={HomeButton} alt="Home" />
         </div>
-        <div className="logout-button" onClick={handleLogout}>
+        <div className="logout-button" onClick={() => navigate("/login")}>
           <img src={LogoutIcon} alt="Logout" />
         </div>
       </div>

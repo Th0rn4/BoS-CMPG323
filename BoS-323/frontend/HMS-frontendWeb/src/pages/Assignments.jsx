@@ -1,106 +1,113 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import './Assignments.css';
-import HomeButton from '../assets/HomeButton.svg';
-import LogoutIcon from '../assets/LogoutIcon.svg';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import {
+  getSubmissionsByAssignment,
+  downloadFeedback,
+} from "../Services/apiSubmissions";
+import "./Assignments.css";
+import HomeButton from "../assets/HomeButton.svg";
+import LogoutIcon from "../assets/LogoutIcon.svg";
 
 const Assignments = () => {
   const navigate = useNavigate();
-  const { assignmentId } = useParams(); // Fetch the assignment_id from the URL
-  const [submissions, setSubmissions] = useState([]);
+  const { assignmentId } = useParams();
+  const { state } = useLocation();
+  const assignmentTitle = state?.title || "Assignment Submissions";
+  const [studentData, setStudentData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hasGradedSubmissions, setHasGradedSubmissions] = useState(false);
+  const [downloadMessage, setDownloadMessage] = useState("");
 
-  // Fetch submissions by assignment ID
   useEffect(() => {
-    const fetchSubmissions = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `/api/submissions/submissions/${assignmentId}`
+        const data = await getSubmissionsByAssignment(assignmentId);
+        setStudentData(data);
+        setHasGradedSubmissions(
+          data.some((submission) => submission.status === "Graded")
         );
-        console.log('API Response:', response.data); // Log the entire response
-        setSubmissions(response.data.data || []); // Ensure it's an array
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching submissions:', error); // Log the error
-        setError('Error fetching submissions');
+        setError("Error fetching data");
         setLoading(false);
       }
     };
-
-    fetchSubmissions();
+    fetchData();
   }, [assignmentId]);
 
-  // Function to group students by their submission status
-  const groupByStatus = (submissions) => {
-    if (!submissions || !Array.isArray(submissions)) return {};
-
-    const statuses = ['Not Started', 'In Progress', 'Submitted', 'Graded'];
-
-    const grouped = {};
-    statuses.forEach((status) => {
-      grouped[status] = submissions.filter(
-        (submission) => submission.status === status
-      );
-    });
-    return grouped;
+  const groupByStatus = (data) => {
+    const statuses = ["In progress", "Submitted", "Graded"];
+    return statuses.reduce((acc, status) => {
+      acc[status] = data.filter((item) => item.status === status);
+      return acc;
+    }, {});
   };
 
-  const groupedSubmissions = groupByStatus(submissions);
+  const handleDownloadFeedback = async () => {
+    if (!hasGradedSubmissions) {
+      setDownloadMessage("No submissions have been graded yet.");
+      return;
+    }
 
-  const handleLogout = () => {
-    navigate('/login');
+    setDownloadMessage(""); // Clear any previous message
+    try {
+      await downloadFeedback(assignmentId);
+    } catch (error) {
+      console.error("Error downloading feedback:", error);
+      setDownloadMessage("Error downloading feedback. Please try again.");
+    }
   };
 
-  const handleHomeClick = () => {
-    navigate('/dashboard');
-  };
+  const groupedData = groupByStatus(studentData);
 
-  const handleStudentClick = (studentId) => {
-    navigate(`/view-assignment/${studentId}`);
-  };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="assignments-container">
-      {/* Left Panel */}
       <div className="left-panel">
-        <div className="home-button" onClick={handleHomeClick}>
+        <div className="home-button" onClick={() => navigate("/dashboard")}>
           <img src={HomeButton} alt="Home" />
         </div>
-        <div className="logout-button" onClick={handleLogout}>
+        <div className="logout-button" onClick={() => navigate("/login")}>
           <img src={LogoutIcon} alt="Logout" />
         </div>
       </div>
-      {/* Main Content */}
       <div className="main-content">
-        <h1 className="page-title">Assignment Submissions</h1>
-
-        {/* Grouped Student Submissions */}
-        {Object.keys(groupedSubmissions).map((status) => (
+        <h1 className="page-title">Submissions for: {assignmentTitle}</h1>
+        <button
+          className={`download-feedback-button ${
+            !hasGradedSubmissions ? "disabled" : ""
+          }`}
+          onClick={handleDownloadFeedback}
+          disabled={!hasGradedSubmissions}
+        >
+          Download Feedback
+        </button>
+        {downloadMessage && (
+          <p className="download-message">{downloadMessage}</p>
+        )}
+        {Object.entries(groupedData).map(([status, students]) => (
           <div key={status}>
-            <h2 className="students-header">List of Students: {status}</h2>
+            <h2 className="students-header">
+              List of Students: {status} ({students.length})
+            </h2>
             <div className="list-of-students">
-              {groupedSubmissions[status].map((submission) => (
+              {students.map((student) => (
                 <div
-                  key={submission.user._id}
+                  key={student.studentId}
                   className="student"
-                  onClick={() => handleStudentClick(submission.user._id)}
+                  onClick={() =>
+                    navigate(`/view-assignment/${student.studentId}`, {
+                      state: {
+                        studentName: student.studentName,
+                        submissionId: student.submissionId, // Pass the submissionId
+                      },
+                    })
+                  }
                 >
-                  <div className="student-name">
-                    {submission.user.name} -{' '}
-                    <span className="submission-status">
-                      {submission.status}
-                    </span>
-                  </div>
+                  <div className="student-name">{student.studentName}</div>
                 </div>
               ))}
             </div>
