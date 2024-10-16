@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { getSubmissionsByAssignment } from '../Services/apiSubmissions';
-import './Assignments.css';
-import HomeButton from '../assets/HomeButton.svg';
-import LogoutIcon from '../assets/LogoutIcon.svg';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getSubmissionsByAssignment } from "../Services/apiSubmissions";
+import "./Assignments.css";
+import HomeButton from "../assets/HomeButton.svg";
+import LogoutIcon from "../assets/LogoutIcon.svg";
 
 const Assignments = () => {
   const navigate = useNavigate();
@@ -15,14 +15,14 @@ const Assignments = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('Fetching data for assignment:', assignmentId);
+        console.log("Fetching data for assignment:", assignmentId);
         const data = await getSubmissionsByAssignment(assignmentId);
-        console.log('Received merged data:', data);
+        console.log("Received merged data:", data);
         setStudentData(data); // Set the merged data from the API call
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Error fetching data');
+        console.error("Error fetching data:", error);
+        setError("Error fetching data");
         setLoading(false);
       }
     };
@@ -30,24 +30,24 @@ const Assignments = () => {
   }, [assignmentId]);
 
   const groupByStatus = (data) => {
-    console.log('Grouping data:', data);
-    const statuses = ['In progress', 'Submitted', 'Graded'];
+    console.log("Grouping data:", data);
+    const statuses = ["In progress", "Submitted", "Graded"];
     const grouped = statuses.reduce((acc, status) => {
       acc[status] = data.filter((item) => item.status === status); // Group by status
       return acc;
     }, {});
-    console.log('Grouped data:', grouped);
+    console.log("Grouped data:", grouped);
     return grouped;
   };
 
   const groupedData = groupByStatus(studentData); // Group data by status
 
   const handleLogout = () => {
-    navigate('/login');
+    navigate("/login");
   };
 
   const handleHomeClick = () => {
-    navigate('/dashboard');
+    navigate("/dashboard");
   };
 
   const handleStudentClick = (studentId) => {
@@ -57,7 +57,7 @@ const Assignments = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
-  console.log('Rendering with grouped data:', groupedData);
+  console.log("Rendering with grouped data:", groupedData);
 
   return (
     <div className="assignments-container">
@@ -83,10 +83,7 @@ const Assignments = () => {
                   className="student"
                   onClick={() => handleStudentClick(student.studentId)}
                 >
-                  <div className="student-name">
-                    {student.studentName} -{' '}
-                    <span className="submission-status">{student.status}</span>
-                  </div>
+                  <div className="student-name">{student.studentName}</div>
                 </div>
               ))}
             </div>
