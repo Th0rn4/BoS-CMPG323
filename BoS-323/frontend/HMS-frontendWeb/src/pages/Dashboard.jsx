@@ -103,8 +103,8 @@ const Dashboard = () => {
     }
   };
 
-  const handleAssignmentClick = () => {
-    navigate("/assignments");
+  const handleAssignmentClick = (_id, title) => {
+    navigate(`/assignments/${_id}`, { state: { title } });
   };
 
   const handleDeleteNotification = async (notificationId) => {
@@ -160,10 +160,8 @@ const Dashboard = () => {
                 <div
                   className="assignment-card"
                   key={_id}
-                  onClick={handleAssignmentClick}
+                  onClick={() => handleAssignmentClick(_id, title)}
                 >
-                 
-                  
                   <h3 className="assignment-title">{title}</h3>
                   <p className="assignment-description">
                     {truncateText(description, MAX_DESCRIPTION_LENGTH)}
@@ -241,12 +239,12 @@ const Dashboard = () => {
         <div className="sloth-banner">
           <img src={SlothBanner} alt="Sloth" />
         </div>
-        <div className="user-info">
+        <div className="login-header">
           <p>Logged in as:</p>
-          <p className="user-name">
+          <p className="name">
             {user.name?.firstName || "Unknown User"} {user.name?.lastName || ""}
           </p>
-          <p className="user-email">{user.email || "No Email Provided"}</p>
+          <p className="email">{user.email || "No Email Provided"}</p>
         </div>
       </div>
     </div>

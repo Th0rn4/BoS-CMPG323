@@ -45,11 +45,7 @@ const Admin = () => {
 
      
 
-      {/* Add User Button */}
-      <div className="add-user-button" onClick={() => setIsModalOpen(true)}>
-        <span className="plus-icon">+</span>
-        <span className="button-text">Add User</span>
-      </div>
+     
 
       {/* Add User Modal */}
       <AddUserModal show={isModalOpen} onClose={() => setIsModalOpen(false)} />

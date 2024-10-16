@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -13,12 +13,12 @@ import Admin from './pages/Admin';
 
 function App() {
   return (
-    <div style={{ padding: '20px', backgroundColor: '#f0f0f0' }}>
+    <div style={{ padding: "20px", backgroundColor: "#f0f0f0" }}>
       <Router>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/assignments" element={<Assignments />} />
+          <Route path="/assignments/:assignmentId" element={<Assignments />} />
           <Route path="/admin" element={<Admin />} />
           <Route
             path="/view-assignment/:studentId"
