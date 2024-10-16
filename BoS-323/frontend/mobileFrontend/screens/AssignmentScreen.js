@@ -8,12 +8,17 @@ import {
   Image,
   Alert,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { Video } from "expo-av";
-import { uploadSubmissionVideo, updateSubmission } from "../services/api";
+import {
+  uploadSubmissionVideo,
+  updateSubmission,
+  fetchSingleSubmission,
+} from "../services/api";
 import { useRoute } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("window");
@@ -21,68 +26,145 @@ const { width, height } = Dimensions.get("window");
 const AssignmentScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { assignment, submission, onComplete } = route.params;
+  const { assignment, onComplete, submission } = route.params;
   const [video, setVideo] = useState(null);
   const [uploadedFileName, setUploadedFileName] = useState(null);
   const [isReplacing, setIsReplacing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+  const [isLoadingFeedback, setIsLoadingFeedback] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      const { status: cameraStatus } =
-        await ImagePicker.requestCameraPermissionsAsync();
-      const { status: mediaStatus } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const setup = async () => {
+      try {
+        console.log("Component mounted. Route params:", route.params);
+        const submissionId = route.params.submission._id;
+        if (submissionId) {
+          console.log("Using submission ID from route params:", submissionId);
+          await fetchFeedback(submissionId);
+        } else {
+          console.error("No submission ID available in route params");
+        }
 
-      if (cameraStatus !== "granted" || mediaStatus !== "granted") {
+        // Request camera and media permissions
+        const { status: cameraStatus } =
+          await ImagePicker.requestCameraPermissionsAsync();
+        const { status: mediaStatus } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (cameraStatus !== "granted" || mediaStatus !== "granted") {
+          Alert.alert(
+            "Permission Required",
+            "Sorry, we need camera and media permissions to make this work!"
+          );
+        }
+
+        // Check if there's already a file for this assignment
+        const existingFile = await getExistingFile(assignment._id);
+        if (existingFile) {
+          setUploadedFileName(existingFile.name);
+          setVideo(existingFile.uri);
+        }
+      } catch (error) {
+        console.error("Error in useEffect setup:", error);
         Alert.alert(
-          "Sorry, we need camera and media permissions to make this work!"
+          "Error",
+          "An error occurred while setting up the assignment screen. Please try again."
         );
       }
+    };
 
-      // Check if there's already a file for this assignment
-      const existingFile = await getExistingFile(assignment._id);
-      if (existingFile) {
-        setUploadedFileName(existingFile.name);
-        setVideo(existingFile.uri);
-      }
-    })();
-  }, [assignment._id]);
+    setup();
+  }, [route.params, assignment._id]);
 
   const handleBackPress = () => {
     navigation.goBack();
   };
 
-  const getExistingFile = async (assignmentId) => {
-    const directory = FileSystem.documentDirectory + "assignments/";
-    const files = await FileSystem.readDirectoryAsync(directory);
-    const assignmentFile = files.find((file) =>
-      file.startsWith(`assignment_${assignmentId}`)
-    );
+  const fetchFeedback = async (submissionId) => {
+    console.log("Fetching feedback for submission:", submissionId);
+    setIsLoadingFeedback(true);
+    try {
+      const submissionData = await fetchSingleSubmission(submissionId);
+      console.log(
+        "Fetched submission data:",
+        JSON.stringify(submissionData, null, 2)
+      );
 
-    if (assignmentFile) {
-      const filePath = directory + assignmentFile;
-      const fileInfo = await FileSystem.getInfoAsync(filePath);
-      if (fileInfo.exists) {
-        return { name: assignmentFile, uri: filePath };
+      if (
+        submissionData &&
+        submissionData.submission &&
+        submissionData.submission.feedback &&
+        submissionData.submission.feedback.length > 0
+      ) {
+        console.log("Setting feedback:", submissionData.submission.feedback[0]);
+        setFeedback(submissionData.submission.feedback[0]);
+      } else {
+        console.log("No feedback found in submission data");
+        setFeedback(null);
       }
+    } catch (error) {
+      console.error("Error fetching feedback:", error);
+      Alert.alert("Error", "Failed to load feedback. Please try again later.");
+      setFeedback(null);
+    } finally {
+      setIsLoadingFeedback(false);
     }
-    return null;
+  };
+
+  const getExistingFile = async (assignmentId) => {
+    try {
+      const directory = FileSystem.documentDirectory + "assignments/";
+      const dirInfo = await FileSystem.getInfoAsync(directory);
+      if (!dirInfo.exists) {
+        console.log("Assignments directory doesn't exist. Creating it.");
+        await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
+        return null; // No existing file in a newly created directory
+      }
+      const files = await FileSystem.readDirectoryAsync(directory);
+      const assignmentFile = files.find((file) =>
+        file.startsWith(`assignment_${assignmentId}`)
+      );
+
+      if (assignmentFile) {
+        const filePath = directory + assignmentFile;
+        const fileInfo = await FileSystem.getInfoAsync(filePath);
+        if (fileInfo.exists) {
+          return { name: assignmentFile, uri: filePath };
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error("Error in getExistingFile:", error);
+      return null;
+    }
   };
 
   const saveVideoLocally = async (uri, assignmentId) => {
     const directory = FileSystem.documentDirectory + "assignments/";
-    const fileExtension = uri.split(".").pop();
 
-    // Construct the new file name using student's name and assignment ID
-    const studentName = `${user.name} ${user.surname}`.replace(/\s+/g, "_"); // Replace spaces with underscores
-    const fileName = `${studentName}_assignment_${assignmentId}.${fileExtension}`;
+    // Extract the original file name from the URI
+    const originalFileName = uri.split("/").pop();
+
+    // Construct the new file name using assignment ID and original file name
+    const fileName = `assignment_${assignmentId}_${originalFileName}`;
     const newPath = directory + fileName;
 
     try {
-      await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
-      await FileSystem.moveAsync({ from: uri, to: newPath });
+      // Ensure the directory exists
+      const dirInfo = await FileSystem.getInfoAsync(directory);
+      if (!dirInfo.exists) {
+        await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
+      }
+
+      // Copy the file
+      await FileSystem.copyAsync({
+        from: uri,
+        to: newPath,
+      });
+
+      console.log("Video saved successfully:", newPath);
       return { name: fileName, uri: newPath };
     } catch (error) {
       console.error("Error saving video locally:", error);
@@ -91,31 +173,43 @@ const AssignmentScreen = () => {
   };
 
   const removeExistingFile = async (assignmentId) => {
-    const existingFile = await getExistingFile(assignmentId);
-    if (existingFile) {
-      try {
-        await FileSystem.deleteAsync(existingFile.uri);
-      } catch (error) {
-        console.error("Error removing existing file:", error);
+    try {
+      const existingFile = await getExistingFile(assignmentId);
+      if (existingFile) {
+        const fileInfo = await FileSystem.getInfoAsync(existingFile.uri);
+        if (fileInfo.exists) {
+          await FileSystem.deleteAsync(existingFile.uri, { idempotent: true });
+          console.log("Existing file removed successfully");
+        }
       }
+    } catch (error) {
+      console.error("Error removing existing file:", error);
     }
   };
 
   const handleVideoCapture = async (result) => {
-    if (!result.canceled) {
-      setIsReplacing(true);
-      await removeExistingFile(assignment._id);
-      const savedFile = await saveVideoLocally(
-        result.assets[0].uri,
-        assignment._id
-      );
-      setVideo(savedFile.uri);
-      setUploadedFileName(savedFile.name);
-      setIsReplacing(false);
-      Alert.alert(
-        "Video Updated",
-        "The new video has replaced the previous one."
-      );
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      try {
+        setIsReplacing(true);
+        await removeExistingFile(assignment._id);
+        const savedFile = await saveVideoLocally(
+          result.assets[0].uri,
+          assignment._id
+        );
+        setVideo(savedFile.uri);
+        setUploadedFileName(savedFile.name);
+        setIsReplacing(false);
+        Alert.alert(
+          "Video Updated",
+          "The new video has been saved successfully."
+        );
+      } catch (error) {
+        console.error("Error handling video capture:", error);
+        setIsReplacing(false);
+        Alert.alert("Error", "Failed to save the video. Please try again.");
+      }
+    } else {
+      console.log("Video capture cancelled or no asset received");
     }
   };
 
@@ -207,8 +301,8 @@ const AssignmentScreen = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-        <Text style={styles.backButtonVector}>←</Text>
-        <Text style={styles.backButtonText}>Back</Text>
+        <Text style={styles.backButtonVector}></Text>
+        <Text style={styles.backButtonText}>←Back</Text>
       </TouchableOpacity>
 
       <Text style={styles.headingDescription}>Description</Text>
@@ -219,6 +313,19 @@ const AssignmentScreen = () => {
         <Text style={styles.assignmentName}>{assignment.title}</Text>
       </View>
       <Text style={styles.assignmentDescription}>{assignment.description}</Text>
+
+      <View style={styles.feedbackContainer}>
+        {isLoadingFeedback ? (
+          <ActivityIndicator size="small" color="#705D56" />
+        ) : feedback ? (
+          <>
+            <Text style={styles.feedbackGrade}>Grade: {feedback.grade}</Text>
+            <Text style={styles.feedbackComment}>{feedback.comment}</Text>
+          </>
+        ) : (
+          <Text style={styles.noFeedback}>No feedback available</Text>
+        )}
+      </View>
 
       <View style={styles.buttonsContainer}>
         <TouchableOpacity style={styles.cameraButton} onPress={recordVideo}>
@@ -251,8 +358,7 @@ const AssignmentScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {isReplacing && <Text style={styles.statusText}>Replacing video...</Text>}
-
+      {isReplacing && <Text style={styles.statusText}>Adding video...</Text>}
       {isSubmitting && (
         <Text style={styles.statusText}>Submitting assignment...</Text>
       )}
@@ -370,6 +476,28 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "200",
     color: "#000",
+  },
+  feedbackContainer: {
+    position: "absolute",
+    left: 25,
+    top: 380,
+    right: 25,
+  },
+  feedbackGrade: {
+    fontSize: 18,
+    color: "#000",
+    fontWeight: "200",
+    marginBottom: 5,
+  },
+  feedbackComment: {
+    fontSize: 18,
+    fontWeight: "200",
+    color: "#000",
+  },
+  noFeedback: {
+    fontSize: 14,
+    color: "#666",
+    fontStyle: "italic",
   },
   buttonsContainer: {
     position: "absolute",

@@ -23,9 +23,9 @@ export const login = async (email, password) => {
       throw new Error(errorResponse.message || "Login failed");
     }
 
-    const user = await response.json();
-    await AsyncStorage.setItem("token", user.token); // Store the token in AsyncStorage
-    return user; // Return the user object
+    const userData = await response.json(); // Assuming this returns both token and user details
+    await AsyncStorage.setItem("token", userData.token); // Store the token in AsyncStorage
+    return userData; // Return the full response with token and user details
   } catch (error) {
     throw new Error(error.message);
   }
@@ -103,10 +103,28 @@ export const fetchSubmissions = async () => {
   }
 };
 
-// Create a new submission
+// Function to create a new submission
 export const createSubmission = async (submissionData) => {
   try {
     const token = await AsyncStorage.getItem("token");
+    console.log("Sending submission data:", JSON.stringify(submissionData));
+
+    // Check for missing fields
+    const requiredFields = [
+      "assignment_id",
+      "student_id",
+      "submit_date",
+      "status",
+    ];
+    const missingFields = requiredFields.filter(
+      (field) => !submissionData[field]
+    );
+
+    if (missingFields.length > 0) {
+      throw new Error(
+        `Missing required fields for submission: ${missingFields.join(", ")}`
+      );
+    }
 
     const response = await fetch(`${SUBMISSION_URL}/create`, {
       method: "POST",
@@ -117,15 +135,18 @@ export const createSubmission = async (submissionData) => {
       body: JSON.stringify(submissionData),
     });
 
+    console.log("Response status:", response.status);
+    const responseData = await response.json();
+    console.log("Response data:", responseData);
+
     if (!response.ok) {
-      const errorResponse = await response.json();
-      throw new Error(errorResponse.message || "Failed to create submission");
+      throw new Error(responseData.message || "Failed to create submission");
     }
 
-    const responseData = await response.json();
     return responseData.submission;
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error in createSubmission:", error);
+    throw error;
   }
 };
 
@@ -199,5 +220,57 @@ export const fetchNotifications = async () => {
     return data.notifications;
   } catch (error) {
     throw new Error(error.message);
+  }
+};
+
+// New function to fetch a single submission
+const fetchWithRetry = async (url, options, maxRetries = 3) => {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+      await new Promise((resolve) =>
+        setTimeout(resolve, 1000 * Math.pow(2, i))
+      );
+    }
+  }
+};
+
+// Use this in your fetchSingleSubmission function
+export const fetchSingleSubmission = async (submissionId) => {
+  console.log("Fetching submission with ID:", submissionId);
+  try {
+    const token = await AsyncStorage.getItem("token");
+    console.log("Token retrieved:", token ? "Token exists" : "No token");
+
+    const data = await fetchWithRetry(
+      `${SUBMISSION_URL}/${submissionId}/single`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("API response data:", JSON.stringify(data, null, 2));
+
+    if (!data.submission) {
+      console.warn("No submission data in API response");
+    } else if (
+      !data.submission.feedback ||
+      data.submission.feedback.length === 0
+    ) {
+      console.warn("No feedback in submission data");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in fetchSingleSubmission:", error);
+    throw error;
   }
 };

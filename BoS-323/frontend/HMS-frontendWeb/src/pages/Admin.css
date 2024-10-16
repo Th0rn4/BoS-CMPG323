@@ -1,0 +1,92 @@
+/* Main Admin Container */
+.admin-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: #f0f7f4; 
+  display: flex; 
+  flex-direction: row; 
+}
+
+
+.user-section {
+  position: absolute;
+  width: 80vw; 
+  height: 55vh; 
+  left: 10vw; 
+  top: 20vh; 
+  display: flex; 
+  flex-direction: row; 
+  flex-wrap: wrap;
+  gap: 2vw; 
+  padding: auto;
+  overflow-y: auto; 
+  padding-bottom: 1vh; 
+  scrollbar-width: thin;
+  scrollbar-color: #70abaf #f0f7f4; 
+} 
+
+.user-card {
+  /* Remove absolute positioning */
+  width: calc(50% - 2vw); /* Each card takes up about half of the container width minus the gap */
+  height: 20vh; 
+  background: #70abaf; 
+  border-radius: 3vw; 
+  padding: 2vw; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; /* Center the content */
+  box-sizing: border-box;
+}
+
+
+
+/* Delete User Button */
+.delete-user {
+  position: relative;
+  width: 6vw; 
+  height: 6vh; 
+  left: 15vw; 
+  bottom: 4vh;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Add User Button */
+.add-user-button {
+  position: fixed; 
+  width: 30vw; 
+  height: 7.5vh; 
+  left: 40vw; 
+  bottom: 5vh; 
+  background: #705d56; 
+  border-radius: 1.5vw; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  cursor: pointer; 
+  z-index: 10; 
+}
+
+.user-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px; 
+}
+
+.update-user {
+  background-color:#705d56; 
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.update-user:hover {
+  background-color: #99e1d9; 
+}

@@ -37,7 +37,20 @@
   height: 150%;
   object-fit: contain;
 }
+.user-button {
+  position: absolute;
+  width: 4vw;
+  height: 4vh;
+  left: -0.5vw;
+  top: 15vh;
+  cursor: pointer;
+}
 
+.user-button img {
+  width: 150%;
+  height: 150%;
+  object-fit: contain;
+}
 /* Logout Button */
 .logout-button {
   position: absolute;
@@ -87,8 +100,8 @@
 /* Assignment Section */
 .assignment-section {
   position: absolute;
-  width: 60vw; /* Full width of the container */
-  height: 50vh; /* Height of the section */
+  width: 58vw; /* Full width of the container */
+  height: 32vh; /* Height of the section */
   left: 10vw; /* Position relative to the main container */
   top: 20vh; /* Position relative to the main container */
   display: flex; /* Use flexbox for alignment */
@@ -97,16 +110,18 @@
   gap: 2vw; /* Space between cards */
   overflow-x: auto; /* Enable horizontal scrolling */
   overflow-y: hidden; /* Hide vertical scrolling */
-  padding-bottom: 1vh; /* Padding at the bottom */
+  padding-bottom: 0vh; /* Padding at the bottom */
   scrollbar-width: thin; /* Thin scrollbar for Firefox */
   scrollbar-color: #70abaf #f0f7f4; /* Custom scrollbar colors for Firefox */
 }
 
 .assignment-section::-webkit-scrollbar {
+  
   height: 0.8vh; /* Height of the scrollbar */
 }
 
 .assignment-section::-webkit-scrollbar-thumb {
+  
   background-color: #70abaf; /* Color of the scroll thumb */
   border-radius: 1vw; /* Rounded corners for the scrollbar thumb */
 }
@@ -117,16 +132,14 @@
 
 .assignment-card {
   flex-shrink: 0; /* Prevent shrinking when scrolling */
-  width: 20vw; /* Width of each card */
+  width: 18vw; /* Width of each card */
   height: 30vh; /* Height of each card */
   background: #70abaf; /* Background color of cards */
   border-radius: 2vw; /* Rounded corners for cards */
   cursor: pointer; /* Change cursor to pointer on hover */
 }
 
-.assignment-card:hover {
-  transform: scale(1.02); /* Slightly enlarge card on hover */
-}
+
 
 .assignment-title {
   font-size: 1.5rem; /* Title font size */
@@ -254,13 +267,16 @@
 /* Logged In User Info */
 .user-info,
 .user-name,
-.user-email {
+.user-email ,
+.user-role{
+  
   font-family: "Inter";
   font-style: normal;
   font-weight: 500;
-  font-size: 1.5vw;
+  font-size: 1vw;
   color: #636363;
-  margin-bottom: 0.5vh;
+  margin-bottom: 0vh;
+
 }
 
 .logged-in-email {
@@ -268,14 +284,7 @@
   color: #777;
 }
 
-/* Notifications Section */
-.notifications-section {
-  position: absolute;
-  width: 50vw;
-  height: 20vh;
-  left: 5vw;
-  top: 70vh;
-}
+
 
 .notifications-title {
   font-family: "Inter", sans-serif;
@@ -287,23 +296,57 @@
   margin-bottom: 2vh;
 }
 
-.notifications-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2vh;
+
+
+
+/* Notifications Section */
+.notifications-section {
+  position: absolute;
+  width: 75vw; 
+  height: 20vh; 
+  left: 5vw; 
+  top: 70vh; 
 }
 
-.notification-card {
-  width: 65vw;
-  height: 6vh;
-  margin-left: 1vw;
-  background: #705d56;
-  border-radius: 1vw;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2vw;
+/* Adjust the container for notifications */
+.notifications-container {
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Stack notifications vertically */
+  gap: 2vh; /* Space between notifications */
+  overflow-y: auto; /* Enable vertical scrolling */
+  height: 100%; /* Make it fill the parent section */
+  padding-right: 1vw; /* Optional: add some right padding for aesthetics */
+  scrollbar-width: thin; /* Thin scrollbar for Firefox */
+  scrollbar-color: #70abaf #f0f7f4; /* Custom scrollbar colors for Firefox */
 }
+
+/* Style for the scrollbar */
+.notifications-container::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.notifications-container::-webkit-scrollbar-thumb {
+  background: #70abaf; /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Rounded corners for the scrollbar thumb */
+}
+
+.notifications-container::-webkit-scrollbar-track {
+  background: #f0f7f4; /* Background of the scrollbar track */
+}
+
+/* Notification Card */
+.notification-card {
+  width: 65vw; /* Width of each notification card */
+  height: 6vh; /* Height of each notification card */
+  margin-left: 1vw; /* Margin on the left for spacing */
+  background: #705d56; /* Background color of notifications */
+  border-radius: 1vw; /* Rounded corners for cards */
+  display: flex; /* Flexbox for inner layout */
+  align-items: center; /* Center vertically */
+  justify-content: space-between; /* Space out content */
+  padding: 0 2vw; /* Horizontal padding */
+}
+
 
 .notification-text {
   font-family: "Inter", sans-serif;
@@ -324,4 +367,17 @@
   width: 5vw;
   height: 5vh;
   object-fit: contain;
+}
+.admin-button {
+  margin-top: 15vh; /* Space between the buttons */
+  background: #70abaf; /* Set a background color */
+  border-radius: 1.5vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0vh; /* Add padding */
+  color: #f0f7f4; /* Text color */
+  text-align: center; /* Center text */
+  width: 90%; /* Adjust width */
 }
