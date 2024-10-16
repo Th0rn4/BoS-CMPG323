@@ -90,13 +90,13 @@ const Dashboard = () => {
     }
   };
 
-  const handleDeleteAssignment = async (_id, e) => {
+  const handleDeleteAssignment = async (id, e) => {
     e.stopPropagation(); // Prevent bubbling
-    console.log("Deleting Assignment ID:", _id);
+    console.log("Deleting Assignment ID:", id);
     try {
-      await DeleteAssignmentService(_id); // Delete assignment
+      await DeleteAssignmentService(id); // Delete assignment
       setAssignments((prevAssignments) =>
-        prevAssignments.filter((assignment) => assignment._id !== _id)
+        prevAssignments.filter((assignment) => assignment.id !== id)
       ); // Update state
     } catch (error) {
       console.error("Error deleting assignment:", error);
