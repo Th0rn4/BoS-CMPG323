@@ -11,7 +11,6 @@ import {
   TouchableWithoutFeedback,
   Animated,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   fetchAssignments,
   fetchSubmissions,
@@ -79,7 +78,6 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
       setSubmissions(userSubmissions);
       setNotifications(fetchedNotifications);
     } catch (error) {
-      console.error("Failed to fetch data:", error);
       Alert.alert("Error", "Failed to load data. Please try again.");
     }
   }, [user.id]);
@@ -141,7 +139,6 @@ const ViewAssignmentScreen = ({ navigation, route }) => {
         onComplete: () => handleSubmissionComplete(submission._id),
       });
     } catch (error) {
-      console.error("Failed to navigate to assignment screen:", error);
       Alert.alert("Error", `Failed to load submission: ${error.message}`);
     }
   };
@@ -273,7 +270,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   nameText: {
-    fontFamily: "Inter",
+    fontFamily: "Inter", //Error for font
     fontWeight: "700",
     fontSize: 23,
     lineHeight: 28,
@@ -290,7 +287,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   emailText: {
-    fontFamily: "Inter",
+    fontFamily: "Inter", //Error for font
     fontWeight: "500",
     fontSize: 14,
     color: "#636363",
