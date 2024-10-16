@@ -13,7 +13,7 @@ app.use(express.json());
 
 // CORS configuration
 const corsOptions = {
-  origin: "http://localhost:3000", // Replace frontend URL
+  origin: "https://bos-cmpg323-qj0i.onrender.com", // Replace frontend URL
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
