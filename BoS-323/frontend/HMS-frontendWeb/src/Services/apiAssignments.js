@@ -2,7 +2,8 @@
 
 import axios from "axios";
 
-const ASSIGNMENTS_API_URL = "https://bos-cmpg323-assignmentdeploy.onrender.com/api/assignments";
+const ASSIGNMENTS_API_URL =
+  "https://bos-cmpg323-assignmentdeploy.onrender.com/api/assignments";
 
 // Fetch all assignments
 export const fetchAssignments = async () => {
@@ -18,7 +19,10 @@ export const fetchAssignments = async () => {
 // Add a new assignment
 export const addAssignment = async (assignmentData) => {
   try {
-    const response = await axios.post(`${ASSIGNMENTS_API_URL}/create`, assignmentData);
+    const response = await axios.post(
+      `${ASSIGNMENTS_API_URL}/create`,
+      assignmentData
+    );
     return response.data;
   } catch (error) {
     console.error("Error adding assignment:", error);
