@@ -99,7 +99,12 @@ const Assignments = () => {
                   key={student.studentId}
                   className="student"
                   onClick={() =>
-                    navigate(`/view-assignment/${student.studentId}`)
+                    navigate(`/view-assignment/${student.studentId}`, {
+                      state: {
+                        studentName: student.studentName,
+                        submissionId: student.submissionId, // Pass the submissionId
+                      },
+                    })
                   }
                 >
                   <div className="student-name">{student.studentName}</div>
