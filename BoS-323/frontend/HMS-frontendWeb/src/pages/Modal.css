@@ -68,5 +68,13 @@
     background: #4d8f94; /* Darker shade for hover effect */
   }
   
+  .delete-user {
+    position: absolute;
   
-  
+
+
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }

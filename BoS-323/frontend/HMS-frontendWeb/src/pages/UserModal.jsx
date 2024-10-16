@@ -6,6 +6,7 @@ import {
     deleteUser,
     updateUser, 
 } from "../Services/apiUsers"; 
+import DeleteIcon from "../assets/DeleteNotification.svg";
 import './Admin.css'; 
 
 const Admin = () => {
@@ -97,7 +98,9 @@ const Admin = () => {
                                 setSelectedUser(user); 
                                 setShowUpdateModal(true); 
                             }}>Update</button>
-                            <button className="delete-user" onClick={() => handleDeleteUser(user._id)}>Delete</button>
+                            <button  className="delete-user" onClick={() => handleDeleteUser(user._id)}>
+                            <img src={DeleteIcon} alt="Delete" className="delete-icon" />
+                            </button>
                         </div>
                     ))
                 ) : (

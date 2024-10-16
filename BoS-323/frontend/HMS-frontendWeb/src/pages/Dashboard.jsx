@@ -6,6 +6,7 @@ import HomeButton from "../assets/HomeButton.svg";
 import LogoutIcon from "../assets/LogoutIcon.svg";
 import SlothBanner from "../assets/SlothBanner.svg";
 import DeleteIcon from "../assets/DeleteNotification.svg";
+import UserIcon from "../assets/UserIcon.svg";
 import AddAssignmentModal from "./AddAssignmentModal"; // Import the modal
 import {
   fetchAssignments,
@@ -130,8 +131,8 @@ const Dashboard = () => {
           <img src={HomeButton} alt="Home" />
         </div>
         {user.role === "admin" && (
-          <div className="admin-button" onClick={() => navigate("/Admin")}>
-            <span>Manage Users</span>
+          <div className="user-button" onClick={() => navigate("/Admin")}>
+            <img src={UserIcon} alt="Admin" />
           </div>
         )}
         <div className="logout-button" onClick={handleLogout}>
