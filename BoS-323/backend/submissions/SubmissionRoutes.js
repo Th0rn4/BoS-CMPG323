@@ -30,8 +30,6 @@ router.get("/stream/:id", SubmissionController.streamVideo);
 
 router.get("/:id/download", SubmissionController.downloadVideo);
 
-//router.get('/submissions', SubmissionController.getSubmissionsByAssignment);
-
 // Get all submissions for a specific assignment
 router.get(
   "/assignments/:assignmentId/submissions",
