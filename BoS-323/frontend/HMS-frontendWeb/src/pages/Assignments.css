@@ -81,7 +81,7 @@ body {
 
 /* List of Students */
 .list-of-students {
-  margin-top: 8vh; /* Adjust to reduce empty space between title and students */
+  margin-top: 2vh; /* Reduced space between title and student list */
 }
 
 .students-header {
@@ -90,7 +90,7 @@ body {
   font-weight: 500;
   font-size: 1.5vw;
   color: #000000;
-  margin-bottom: 2vh;
+  margin-bottom: 1vh; /* Reduce gap below the header */
 }
 
 .student {

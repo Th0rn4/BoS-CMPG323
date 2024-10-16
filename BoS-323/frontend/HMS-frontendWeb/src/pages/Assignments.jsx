@@ -1,53 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { getSubmissionsByAssignment } from '../Services/apiSubmissions';
 import './Assignments.css';
 import HomeButton from '../assets/HomeButton.svg';
 import LogoutIcon from '../assets/LogoutIcon.svg';
-import axios from 'axios';
 
 const Assignments = () => {
   const navigate = useNavigate();
-  const { assignmentId } = useParams(); // Fetch the assignment_id from the URL
-  const [submissions, setSubmissions] = useState([]);
+  const { assignmentId } = useParams();
+  const [studentData, setStudentData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch submissions by assignment ID
   useEffect(() => {
-    const fetchSubmissions = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `/api/submissions/submissions/${assignmentId}`
-        );
-        console.log('API Response:', response.data); // Log the entire response
-        setSubmissions(response.data.data || []); // Ensure it's an array
+        console.log('Fetching data for assignment:', assignmentId);
+        const data = await getSubmissionsByAssignment(assignmentId);
+        console.log('Received merged data:', data);
+        setStudentData(data); // Set the merged data from the API call
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching submissions:', error); // Log the error
-        setError('Error fetching submissions');
+        console.error('Error fetching data:', error);
+        setError('Error fetching data');
         setLoading(false);
       }
     };
-
-    fetchSubmissions();
+    fetchData();
   }, [assignmentId]);
 
-  // Function to group students by their submission status
-  const groupByStatus = (submissions) => {
-    if (!submissions || !Array.isArray(submissions)) return {};
-
-    const statuses = ['Not Started', 'In Progress', 'Submitted', 'Graded'];
-
-    const grouped = {};
-    statuses.forEach((status) => {
-      grouped[status] = submissions.filter(
-        (submission) => submission.status === status
-      );
-    });
+  const groupByStatus = (data) => {
+    console.log('Grouping data:', data);
+    const statuses = ['In progress', 'Submitted', 'Graded'];
+    const grouped = statuses.reduce((acc, status) => {
+      acc[status] = data.filter((item) => item.status === status); // Group by status
+      return acc;
+    }, {});
+    console.log('Grouped data:', grouped);
     return grouped;
   };
 
-  const groupedSubmissions = groupByStatus(submissions);
+  const groupedData = groupByStatus(studentData); // Group data by status
 
   const handleLogout = () => {
     navigate('/login');
@@ -58,20 +51,16 @@ const Assignments = () => {
   };
 
   const handleStudentClick = (studentId) => {
-    navigate(`/view-assignment/${studentId}`);
+    navigate(`/view-assignment/${studentId}`); // Navigate to view student assignment
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  console.log('Rendering with grouped data:', groupedData);
 
   return (
     <div className="assignments-container">
-      {/* Left Panel */}
       <div className="left-panel">
         <div className="home-button" onClick={handleHomeClick}>
           <img src={HomeButton} alt="Home" />
@@ -80,26 +69,23 @@ const Assignments = () => {
           <img src={LogoutIcon} alt="Logout" />
         </div>
       </div>
-      {/* Main Content */}
       <div className="main-content">
         <h1 className="page-title">Assignment Submissions</h1>
-
-        {/* Grouped Student Submissions */}
-        {Object.keys(groupedSubmissions).map((status) => (
+        {Object.entries(groupedData).map(([status, students]) => (
           <div key={status}>
-            <h2 className="students-header">List of Students: {status}</h2>
+            <h2 className="students-header">
+              List of Students: {status} ({students.length})
+            </h2>
             <div className="list-of-students">
-              {groupedSubmissions[status].map((submission) => (
+              {students.map((student) => (
                 <div
-                  key={submission.user._id}
+                  key={student.studentId}
                   className="student"
-                  onClick={() => handleStudentClick(submission.user._id)}
+                  onClick={() => handleStudentClick(student.studentId)}
                 >
                   <div className="student-name">
-                    {submission.user.name} -{' '}
-                    <span className="submission-status">
-                      {submission.status}
-                    </span>
+                    {student.studentName} -{' '}
+                    <span className="submission-status">{student.status}</span>
                   </div>
                 </div>
               ))}
