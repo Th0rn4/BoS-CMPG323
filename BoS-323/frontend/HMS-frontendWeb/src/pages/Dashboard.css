@@ -169,9 +169,6 @@
 
 
 
-
-
-
 .delete-assignment{
   position: absolute; 
   width: 5vw; /* Full width of the container */
@@ -200,6 +197,7 @@
 }
 
 .button-text {
+  background: none;
   font-family: "Inter";
   font-style: normal;
   font-weight: 500;
@@ -256,12 +254,13 @@
 /* Info Section */
 .info {
   margin-top: 2vh;
-  width: 90%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  font-size: x-large;
   padding: 1vw;
-  font-family: "Inter", sans-serif;
+ font-family: "Inter", sans-serif;
 }
 
 /* Logged In User Info */
@@ -273,17 +272,38 @@
   font-family: "Inter";
   font-style: normal;
   font-weight: 500;
-  font-size: 1vw;
+  font-size: large;
   color: #636363;
   margin-bottom: 0vh;
 
 }
 
 .logged-in-email {
-  font-size: 1.2vw;
+  font-size: 21px;
+  color: #777;
+}
+.name{
+  position: absolute;
+  top: 12.5vh;
+  
+  font-size: 30px;
+  color: #777;
+}
+.email{
+  position: absolute;
+  top: 7.5vh;
+
+  font-size: 30px;
   color: #777;
 }
 
+.login-header{
+  position: absolute;
+  top: 57vh;
+  left: 2vw;
+  font-size: 40px;
+  color: #777;
+}
 
 
 .notifications-title {
@@ -367,6 +387,7 @@
   width: 5vw;
   height: 5vh;
   object-fit: contain;
+  background: none;
 }
 .admin-button {
   margin-top: 15vh; /* Space between the buttons */
