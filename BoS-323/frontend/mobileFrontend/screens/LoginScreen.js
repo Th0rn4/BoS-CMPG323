@@ -9,8 +9,6 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
   Alert,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
@@ -30,8 +28,6 @@ const LoginScreen = ({ navigation }) => {
 
     try {
       const response = await login(email, password);
-      console.log("User object:", response); // Log the entire response
-
       // Check if the user object has the role property correctly
       if (
         response.user &&
@@ -124,7 +120,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 40, // Ensures content is centered
+    paddingVertical: 40,
   },
   loginSlothImage: {
     width: 297,
@@ -157,7 +153,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#636363",
     width: 250,
     paddingBottom: 5,
-    zIndex: 1, // Ensure the input is interactable
+    zIndex: 1,
   },
   loginButton: {
     width: 276,
