@@ -119,7 +119,7 @@ body {
 .download-feedback-button {
   background-color: #99e1d9;
   border: none;
-  color: white;
+  color: rgb(0, 0, 0);
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
@@ -132,7 +132,7 @@ body {
 }
 
 .download-feedback-button:hover:not(.disabled) {
-  background-color: #99e1d950;
+  background-color: #99e1d9c0;
 }
 
 .download-feedback-button.disabled {

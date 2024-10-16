@@ -24,7 +24,7 @@
 }
 
 .va-video-container {
-  background: #99e1d9;
+  background: #000000;
   border-radius: 15px;
   width: 96%;
   height: 50vh;
@@ -32,7 +32,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #000000;
+  color: #fffcfc;
   margin-left: 3vw;
   overflow: hidden; /* Ensures content doesn't overflow the container */
 }
