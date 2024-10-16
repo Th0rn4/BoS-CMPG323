@@ -73,3 +73,16 @@ export const updateFeedback = async (submissionId, feedbackData) => {
     throw error;
   }
 };
+
+// Function to fetch submissions for a specific assignment
+export const getSubmissionsByAssignment = async (assignmentId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/assignments/${assignmentId}/submissions`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch submissions:", error);
+    throw error;
+  }
+};
