@@ -5,7 +5,7 @@ import './Assignments.css';
 import HomeButton from '../assets/HomeButton.svg';
 import LogoutIcon from '../assets/LogoutIcon.svg';
 
-const Assignment = () => {
+const Assignments = () => {
   const navigate = useNavigate();
   const { assignmentId } = useParams();
   const [studentData, setStudentData] = useState([]);
@@ -97,4 +97,4 @@ const Assignment = () => {
   );
 };
 
-export default Assignment;
+export default Assignments;
