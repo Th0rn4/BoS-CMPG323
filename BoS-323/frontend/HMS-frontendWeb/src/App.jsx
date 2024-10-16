@@ -4,12 +4,12 @@ import {
   Routes,
   Route,
   Navigate,
-} from "react-router-dom";
-import LoginPage from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Assignments from "./pages/Assignments";
-import ViewAssignment from "./pages/ViewAssignment"; // Make sure to import ViewAssignment
-import Admin from "./pages/admin";
+} from 'react-router-dom';
+import LoginPage from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Assignments from './pages/Assignments';
+import ViewAssignment from './pages/ViewAssignment'; // Make sure to import ViewAssignment
+import Admin from './pages/Admin';
 
 function App() {
   return (
