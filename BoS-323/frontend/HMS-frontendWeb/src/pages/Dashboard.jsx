@@ -161,6 +161,8 @@ const Dashboard = () => {
                   key={_id}
                   onClick={handleAssignmentClick}
                 >
+                 
+                  
                   <h3 className="assignment-title">{title}</h3>
                   <p className="assignment-description">
                     {truncateText(description, MAX_DESCRIPTION_LENGTH)}
@@ -173,21 +175,7 @@ const Dashboard = () => {
                   </p>
                   <button
                     className="delete-assignment"
-                    onClick={(e) => handleDeleteAssignment(_id, e)}
-                  />
-                  <h3 className="assignment-title">{title}</h3>
-                  <p className="assignment-description">
-                    {truncateText(description, MAX_DESCRIPTION_LENGTH)}
-                  </p>
-                  <p className="assignment-due-date">
-                    Due Date: {new Date(due_date).toLocaleDateString()}
-                  </p>
-                  <p className="assignment-mark-allocation">
-                    Mark Allocation: {mark_allocation}
-                  </p>
-                  <button
-                    className="delete-assignment"
-                    onClick={(e) => handleDeleteAssignments(_id, e)} // Pass the event to the handler
+                    onClick={(e) => handleDeleteAssignment(_id, e)} // Pass the event to the handler
                   >
                     <img
                       src={DeleteIcon}

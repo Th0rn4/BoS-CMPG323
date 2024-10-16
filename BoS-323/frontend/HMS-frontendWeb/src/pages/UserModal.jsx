@@ -68,6 +68,16 @@ const Admin = () => {
             console.error("Error updating user:", error);
         }
     };
+       // Reset newUser fields
+       const resetNewUser = () => {
+        setNewUser({ firstName: '', lastName: '', email: '', password: '', role: 'student' });
+    };
+
+    // Function to handle closing Add User modal
+    const handleCloseAddUser = () => {
+        resetNewUser(); // Clear fields when modal is closed
+        setShowModal(false); 
+    };
 
     return (
         <div className="admin-container">
@@ -139,8 +149,8 @@ const Admin = () => {
                             <option value="admin">Admin</option>
                         </select>
                         <div className="modal-actions">
-                        <button onClick={handleAddUser}>Add User</button>
-                        <button onClick={() => setShowModal(false)}>Cancel</button>
+                        <button className="button" onClick={handleAddUser}>Add User</button>
+                        <button className="button" onClick={handleCloseAddUser}>Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -182,8 +192,8 @@ const Admin = () => {
                             <option value="admin">Admin</option>
                         </select>
                         <div className="modal-actions">
-                        <button onClick={handleUpdateUser}>Update User</button>
-                        <button onClick={() => setShowUpdateModal(false)}>Cancel</button>
+                        <button className="button" onClick={handleUpdateUser}>Update User</button>
+                        <button className="button" onClick={() => setShowUpdateModal(false)}>Cancel</button>
                         </div>
                     </div>
                 </div>
